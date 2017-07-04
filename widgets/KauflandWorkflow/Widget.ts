@@ -12,14 +12,14 @@ class Widget extends BaseWidget {
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));
 
-    alert("constructor was called");
-    alert("another one was called... tadaaaaa!");
+    alert("constructor was called" + this.map.id);
   }
 
   startup() {
     this.inherited(arguments);
     this.mapIdNode.innerHTML = 'map id:' + this.map.id;
-    console.log('startup');
+    alert("mapID: " + this.map.id);
+    console.log('startup', arguments);
   }
 
 /*

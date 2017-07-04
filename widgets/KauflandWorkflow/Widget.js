@@ -15,14 +15,14 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang"], function (r
         function Widget(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-kauflandworkflow" }, args)) || this;
             _this.baseClass = "jimu-widget-kauflandworkflow";
-            alert("constructor was called");
-            alert("another one was called... tadaaaaa!");
+            alert("constructor was called" + _this.map.id);
             return _this;
         }
         Widget.prototype.startup = function () {
             this.inherited(arguments);
             this.mapIdNode.innerHTML = 'map id:' + this.map.id;
-            console.log('startup');
+            alert("mapID: " + this.map.id);
+            console.log('startup', arguments);
         };
         return Widget;
     }(BaseWidget));
