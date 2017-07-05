@@ -47,12 +47,9 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geomet
             var _this = this;
             var pointLayer = this.map.getLayer(this.config.pointLayerId);
             var pointSelection = pointLayer.getSelectedFeatures();
-            console.log('point', pointLayer, pointSelection);
             var pointGeometries = pointSelection.map(function (currentValue, index, array) {
-                console.log('in geometries callback', currentValue, index, array);
                 return currentValue.geometry;
             });
-            console.log('all buffers', this.bufferRadiusMeters);
             var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters");
             var symbol = new SimpleFillSymbol();
             symbol.setColor(new Color([100, 100, 100, 0.25]));

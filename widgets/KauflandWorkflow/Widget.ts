@@ -57,13 +57,10 @@ class Widget extends BaseWidget {
   generateBufferAroundPointSelection() {
     var pointLayer = this.map.getLayer(this.config.pointLayerId) as FeatureLayer;
     var pointSelection = pointLayer.getSelectedFeatures();
-    console.log('point', pointLayer, pointSelection);
 
     var pointGeometries = pointSelection.map(function(currentValue, index, array) {
-      console.log('in geometries callback', currentValue as Graphic, index, array);
       return currentValue.geometry;
     })
-    console.log('all buffers', this.bufferRadiusMeters);
     var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters") as Polygon[];
 
     var symbol = new SimpleFillSymbol();
