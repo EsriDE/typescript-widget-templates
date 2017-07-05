@@ -63,8 +63,8 @@ class Widget extends BaseWidget {
       console.log('in geometries callback', currentValue as Graphic, index, array);
       return currentValue.geometry;
     })
-    var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, 50, "meters") as Polygon[];
-    console.log('all buffers', pointBuffers);
+    console.log('all buffers', this.bufferRadiusMeters);
+    var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters") as Polygon[];
 
     var symbol = new SimpleFillSymbol();
     symbol.setColor(new Color([100,100,100,0.25]));

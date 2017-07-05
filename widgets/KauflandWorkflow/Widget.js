@@ -52,8 +52,8 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geomet
                 console.log('in geometries callback', currentValue, index, array);
                 return currentValue.geometry;
             });
-            var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, 50, "meters");
-            console.log('all buffers', pointBuffers);
+            console.log('all buffers', this.bufferRadiusMeters);
+            var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters");
             var symbol = new SimpleFillSymbol();
             symbol.setColor(new Color([100, 100, 100, 0.25]));
             symbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color('#000'), 1));
