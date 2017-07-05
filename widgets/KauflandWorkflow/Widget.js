@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang"], function (require, exports, BaseWidget, lang) {
+define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color"], function (require, exports, BaseWidget, lang, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -19,23 +19,10 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang"], function (r
         }
         Widget.prototype.startup = function () {
             this.mapIdNode.innerHTML = 'map id:' + this.map.id;
-            console.log('startup', this.config, this.map.id);
+            console.log('startup', this.config, this.map.id, this.map);
         };
         Widget.prototype.postCreate = function () {
             console.log('postCreate', this.config);
-            /*
-            for(var element of this.config.elements){
-              var divElement = document.createElement("div");
-              var linkElement = document.createElement("a");
-              
-              linkElement.textContent = element.name;
-              linkElement.href = element.href;
-        
-              divElement.appendChild(linkElement);
-        
-              this.subnode.appendChild(divElement);
-            }
-            */
         };
         Widget.prototype.onOpen = function () {
             console.log('onOpen');
@@ -55,6 +42,23 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang"], function (r
         };
         Widget.prototype.onSignOut = function () {
             console.log('onSignOut');
+        };
+        Widget.prototype.generateBufferAroundPointSelection = function () {
+            var _this = this;
+            var pointLayer = this.map.getLayer(this.config.pointLayerId);
+            var pointSelection = pointLayer.getSelectedFeatures();
+            console.log('point', pointLayer, pointSelection);
+            var pointGeometries = pointSelection.map(function (currentValue, index, array) {
+                console.log('in geometries callback', currentValue, index, array);
+                return currentValue.geometry;
+            });
+            var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, 50, "meters");
+            console.log('all buffers', pointBuffers);
+            var symbol = new SimpleFillSymbol();
+            symbol.setColor(new Color([100, 100, 100, 0.25]));
+            symbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color('#000'), 1));
+            pointBuffers.map(function (pointBuffer) { return _this.map.graphics.add(new Graphic(pointBuffer, symbol)); });
+            console.log('map.graphics', this.map.graphics);
         };
         return Widget;
     }(BaseWidget));

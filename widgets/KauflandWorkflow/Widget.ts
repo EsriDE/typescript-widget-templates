@@ -1,6 +1,13 @@
 import BaseWidget = require("jimu/BaseWidget");
 import lang = require("dojo/_base/lang");
 import array = require("dojo/_base/array");
+import FeatureLayer = require("esri/layers/FeatureLayer");
+import geometryEngine = require("esri/geometry/geometryEngine");
+import Graphic = require("esri/graphic");
+import SimpleFillSymbol = require("esri/symbols/SimpleFillSymbol");
+import SimpleLineSymbol = require("esri/symbols/SimpleLineSymbol");
+import Color = require("esri/Color");
+import Polygon = require("esri/geometry/Polygon");
 
 class Widget extends BaseWidget {
 
@@ -10,33 +17,17 @@ class Widget extends BaseWidget {
   private subnode: HTMLElement;
 
   constructor(args?) {
-    super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"} args));  // replaces "this.inherited(args)" from Esri tutorials
+    super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));  // replaces "this.inherited(args)" from Esri tutorials
   }
 
   startup() {
     this.mapIdNode.innerHTML = 'map id:' + this.map.id;
-    console.log('startup', this.config, this.map.id);
+    console.log('startup', this.config, this.map.id, this.map);
   }
-
 
   postCreate() {
     console.log('postCreate', this.config);
-    /*
-    for(var element of this.config.elements){
-      var divElement = document.createElement("div");
-      var linkElement = document.createElement("a");
-      
-      linkElement.textContent = element.name;
-      linkElement.href = element.href;
-
-      divElement.appendChild(linkElement);
-
-      this.subnode.appendChild(divElement);
-    }
-    */
   }
-
-  
 
   onOpen() {
     console.log('onOpen');
@@ -63,6 +54,30 @@ class Widget extends BaseWidget {
     console.log('onSignOut');
   }
 
+  generateBufferAroundPointSelection() {
+    var pointLayer = this.map.getLayer(this.config.pointLayerId) as FeatureLayer;
+    var pointSelection = pointLayer.getSelectedFeatures();
+    console.log('point', pointLayer, pointSelection);
+
+    var pointGeometries = pointSelection.map(function(currentValue, index, array) {
+      console.log('in geometries callback', currentValue as Graphic, index, array);
+      return currentValue.geometry;
+    })
+    var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, 50, "meters") as Polygon[];
+    console.log('all buffers', pointBuffers);
+
+    var symbol = new SimpleFillSymbol();
+    symbol.setColor(new Color([100,100,100,0.25]));
+    symbol.setOutline(new SimpleLineSymbol(
+            SimpleLineSymbol.STYLE_SOLID,
+            new Color('#000'), 
+            1
+          ));
+    pointBuffers.map(
+      pointBuffer => this.map.graphics.add(new Graphic(pointBuffer,symbol))
+    );
+    console.log('map.graphics', this.map.graphics);
+  }
 }
 
 interface SpecificWidgetConfig{
