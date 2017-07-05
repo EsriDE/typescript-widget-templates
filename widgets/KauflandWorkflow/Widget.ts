@@ -58,9 +58,9 @@ class Widget extends BaseWidget {
     var pointLayer = this.map.getLayer(this.config.pointLayerId) as FeatureLayer;
     var pointSelection = pointLayer.getSelectedFeatures();
 
-    var pointGeometries = pointSelection.map(function(currentValue, index, array) {
-      return currentValue.geometry;
-    })
+    var pointGeometries = pointSelection.map(
+      currentValue => currentValue.geometry
+    )
     var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters") as Polygon[];
 
     var symbol = new SimpleFillSymbol();
@@ -70,8 +70,10 @@ class Widget extends BaseWidget {
             new Color('#000'), 
             1
           ));
+
+    // add buffers to map default graphic layer with attributes from original points
     pointBuffers.map(
-      pointBuffer => this.map.graphics.add(new Graphic(pointBuffer,symbol))
+      (pointBuffer, pointIndex) => this.map.graphics.add(new Graphic(pointBuffer,symbol,pointSelection[pointIndex].attributes))
     );
     console.log('map.graphics', this.map.graphics);
   }
