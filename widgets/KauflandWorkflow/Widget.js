@@ -15,14 +15,46 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang"], function (r
         function Widget(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-kauflandworkflow" }, args)) || this;
             _this.baseClass = "jimu-widget-kauflandworkflow";
-            alert("constructor was called" + _this.map.id);
             return _this;
         }
         Widget.prototype.startup = function () {
-            this.inherited(arguments);
             this.mapIdNode.innerHTML = 'map id:' + this.map.id;
-            alert("mapID: " + this.map.id);
-            console.log('startup', arguments);
+            console.log('startup', this.config, this.map.id);
+        };
+        Widget.prototype.postCreate = function () {
+            console.log('postCreate', this.config);
+            /*
+            for(var element of this.config.elements){
+              var divElement = document.createElement("div");
+              var linkElement = document.createElement("a");
+              
+              linkElement.textContent = element.name;
+              linkElement.href = element.href;
+        
+              divElement.appendChild(linkElement);
+        
+              this.subnode.appendChild(divElement);
+            }
+            */
+        };
+        Widget.prototype.onOpen = function () {
+            console.log('onOpen');
+        };
+        Widget.prototype.onClose = function () {
+            console.log('onClose');
+        };
+        Widget.prototype.onMinimize = function () {
+            console.log('onMinimize');
+        };
+        Widget.prototype.onMaximize = function () {
+            console.log('onMaximize');
+        };
+        Widget.prototype.onSignIn = function (credential) {
+            /* jshint unused:false*/
+            console.log('onSignIn');
+        };
+        Widget.prototype.onSignOut = function () {
+            console.log('onSignOut');
         };
         return Widget;
     }(BaseWidget));

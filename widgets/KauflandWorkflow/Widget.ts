@@ -10,21 +10,18 @@ class Widget extends BaseWidget {
   private subnode: HTMLElement;
 
   constructor(args?) {
-    super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));
-
-    alert("constructor was called" + this.map.id);
+    super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"} args));  // replaces "this.inherited(args)" from Esri tutorials
   }
 
   startup() {
-    this.inherited(arguments);
     this.mapIdNode.innerHTML = 'map id:' + this.map.id;
-    alert("mapID: " + this.map.id);
-    console.log('startup', arguments);
+    console.log('startup', this.config, this.map.id);
   }
 
-/*
+
   postCreate() {
-    
+    console.log('postCreate', this.config);
+    /*
     for(var element of this.config.elements){
       var divElement = document.createElement("div");
       var linkElement = document.createElement("a");
@@ -36,9 +33,36 @@ class Widget extends BaseWidget {
 
       this.subnode.appendChild(divElement);
     }
-
+    */
   }
-*/
+
+  
+
+  onOpen() {
+    console.log('onOpen');
+  }
+
+  onClose() {
+    console.log('onClose');
+  }
+
+  onMinimize() {
+    console.log('onMinimize');
+  }
+
+  onMaximize() {
+    console.log('onMaximize');
+  }
+
+  onSignIn(credential){
+    /* jshint unused:false*/
+    console.log('onSignIn');
+  }
+
+  onSignOut() {
+    console.log('onSignOut');
+  }
+
 }
 
 interface SpecificWidgetConfig{
