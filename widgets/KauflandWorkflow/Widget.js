@@ -72,6 +72,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geomet
                 return graphic.attributes && graphic.attributes.category === "buffer";
             });
             polygonLayer.applyEdits(graphicsToAdd);
+            this.resetBuffers();
         };
         return Widget;
     }(BaseWidget));

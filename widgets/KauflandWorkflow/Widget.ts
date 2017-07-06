@@ -95,6 +95,7 @@ class Widget extends BaseWidget {
         return graphic.attributes && graphic.attributes.category==="buffer";
     });
     polygonLayer.applyEdits(graphicsToAdd);
+    this.resetBuffers();
   }
 }
 
