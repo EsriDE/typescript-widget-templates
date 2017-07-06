@@ -1,6 +1,7 @@
 import BaseWidget = require("jimu/BaseWidget");
 import lang = require("dojo/_base/lang");
 import array = require("dojo/_base/array");
+import event = require("dojo/_base/event");
 import json = require('dojo/_base/json');
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import geometryEngine = require("esri/geometry/geometryEngine");
@@ -9,6 +10,7 @@ import SimpleFillSymbol = require("esri/symbols/SimpleFillSymbol");
 import SimpleLineSymbol = require("esri/symbols/SimpleLineSymbol");
 import Color = require("esri/Color");
 import Polygon = require("esri/geometry/Polygon");
+import Edit = require("esri/toolbars/edit");
 
 class Widget extends BaseWidget {
 
@@ -23,6 +25,7 @@ class Widget extends BaseWidget {
 
   startup() {
     console.log('startup', this.config, this.map);
+    this.map.on("update-end", this.initEditing);
   }
 
   postCreate() {
@@ -97,6 +100,49 @@ class Widget extends BaseWidget {
     polygonLayer.applyEdits(graphicsToAdd);
     this.resetBuffers();
   }
+
+
+
+  initEditing(evt) {
+    console.log("initEditing", evt);
+    // var map = this;
+    var currentLayer = null;
+
+    var layers = evt.layers.map(result => result.layer);
+    console.log("layers", layers);
+
+    var editToolbar = new Edit(this.map);
+    editToolbar.on("deactivate", function(evt) {
+      currentLayer.applyEdits(null, [evt.graphic], null);
+    });
+
+    layers.map(function(layer) {
+      var editingEnabled = false;
+      layer.on("dbl-click", function(evt) {
+        event.stop(evt);
+        if (editingEnabled === false) {
+          editingEnabled = true;
+          editToolbar.activate(Edit.EDIT_VERTICES , evt.graphic);
+        } else {
+          currentLayer = this;
+          editToolbar.deactivate();
+          editingEnabled = false;
+        }
+      });
+
+      layer.on("click", function(evt) {
+        event.stop(evt);
+        if (evt.ctrlKey === true || evt.metaKey === true) {  //delete feature if ctrl key is depressed
+          layer.applyEdits(null,null,[evt.graphic]);
+          currentLayer = this;
+          editToolbar.deactivate();
+          editingEnabled=false;
+        }
+      });
+    });
+
+  }
+
 }
 
 interface SpecificWidgetConfig{

@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color"], function (require, exports, BaseWidget, lang, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color) {
+define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit"], function (require, exports, BaseWidget, lang, event, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -19,6 +19,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geomet
         }
         Widget.prototype.startup = function () {
             console.log('startup', this.config, this.map);
+            this.map.on("update-end", this.initEditing);
         };
         Widget.prototype.postCreate = function () {
             console.log('postCreate', this.config);
@@ -73,6 +74,41 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geomet
             });
             polygonLayer.applyEdits(graphicsToAdd);
             this.resetBuffers();
+        };
+        Widget.prototype.initEditing = function (evt) {
+            console.log("initEditing", evt);
+            // var map = this;
+            var currentLayer = null;
+            var layers = evt.layers.map(function (result) { return result.layer; });
+            console.log("layers", layers);
+            var editToolbar = new Edit(this.map);
+            editToolbar.on("deactivate", function (evt) {
+                currentLayer.applyEdits(null, [evt.graphic], null);
+            });
+            layers.map(function (layer) {
+                var editingEnabled = false;
+                layer.on("dbl-click", function (evt) {
+                    event.stop(evt);
+                    if (editingEnabled === false) {
+                        editingEnabled = true;
+                        editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic);
+                    }
+                    else {
+                        currentLayer = this;
+                        editToolbar.deactivate();
+                        editingEnabled = false;
+                    }
+                });
+                layer.on("click", function (evt) {
+                    event.stop(evt);
+                    if (evt.ctrlKey === true || evt.metaKey === true) {
+                        layer.applyEdits(null, null, [evt.graphic]);
+                        currentLayer = this;
+                        editToolbar.deactivate();
+                        editingEnabled = false;
+                    }
+                });
+            });
         };
         return Widget;
     }(BaseWidget));
