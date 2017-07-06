@@ -76,6 +76,15 @@ class Widget extends BaseWidget {
     );
     console.log('map.graphics', this.map.graphics);
   }
+
+  resetBuffers() {
+    var graphicsToRemove = this.map.graphics.graphics.map(graphic => graphic);
+
+    graphicsToRemove.map(
+      graphic => this.map.graphics.remove(graphic)
+      );
+    console.log('map.graphics', this.map.graphics);
+  }
 }
 
 interface SpecificWidgetConfig{

@@ -55,6 +55,12 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geomet
             pointBuffers.map(function (pointBuffer, pointIndex) { return _this.map.graphics.add(new Graphic(pointBuffer, symbol, pointSelection[pointIndex].attributes)); });
             console.log('map.graphics', this.map.graphics);
         };
+        Widget.prototype.resetBuffers = function () {
+            var _this = this;
+            var graphicsToRemove = this.map.graphics.graphics.map(function (graphic) { return graphic; });
+            graphicsToRemove.map(function (graphic) { return _this.map.graphics.remove(graphic); });
+            console.log('map.graphics', this.map.graphics);
+        };
         return Widget;
     }(BaseWidget));
     return Widget;

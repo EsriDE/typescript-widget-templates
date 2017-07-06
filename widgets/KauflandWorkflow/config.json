@@ -1,4 +1,5 @@
 {
-    "workflowTitle":"Kaufland Catchment Area Generation",
+    "workflowTitle": "Kaufland Catchment Area Generation",
+    "polygonTitle": "Catchment Area",
     "pointLayerId": "Test_Standorte_8435"
 }
