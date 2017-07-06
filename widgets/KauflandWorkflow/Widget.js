@@ -52,14 +52,26 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geomet
             symbol.setColor(new Color([100, 100, 100, 0.25]));
             symbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color('#000'), 1));
             // add buffers to map default graphic layer with attributes from original points
-            pointBuffers.map(function (pointBuffer, pointIndex) { return _this.map.graphics.add(new Graphic(pointBuffer, symbol, pointSelection[pointIndex].attributes)); });
-            console.log('map.graphics', this.map.graphics);
+            pointBuffers.map(function (pointBuffer, pointIndex) { return _this.map.graphics.add(new Graphic(pointBuffer, symbol, {
+                "title": pointSelection[pointIndex].attributes.title,
+                "originalobjectid": pointSelection[pointIndex].attributes.objectid,
+                "type": "buffer"
+            })); });
+            //console.log('map.graphics', this.map.graphics);
         };
         Widget.prototype.resetBuffers = function () {
             var _this = this;
-            var graphicsToRemove = this.map.graphics.graphics.map(function (graphic) { return graphic; });
+            var graphicsToRemove = this.map.graphics.graphics.filter(function (graphic) {
+                return graphic.attributes && graphic.attributes.type === "buffer";
+            });
             graphicsToRemove.map(function (graphic) { return _this.map.graphics.remove(graphic); });
-            console.log('map.graphics', this.map.graphics);
+        };
+        Widget.prototype.storeBuffers = function () {
+            var polygonLayer = this.map.getLayer(this.config.polygonLayerId);
+            var graphicsToAdd = this.map.graphics.graphics.filter(function (graphic) {
+                return graphic.attributes && graphic.attributes.type === "buffer";
+            });
+            polygonLayer.applyEdits(graphicsToAdd);
         };
         return Widget;
     }(BaseWidget));

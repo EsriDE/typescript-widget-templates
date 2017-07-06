@@ -1,6 +1,7 @@
 import BaseWidget = require("jimu/BaseWidget");
 import lang = require("dojo/_base/lang");
 import array = require("dojo/_base/array");
+import json = require('dojo/_base/json');
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import geometryEngine = require("esri/geometry/geometryEngine");
 import Graphic = require("esri/graphic");
@@ -72,18 +73,28 @@ class Widget extends BaseWidget {
 
     // add buffers to map default graphic layer with attributes from original points
     pointBuffers.map(
-      (pointBuffer, pointIndex) => this.map.graphics.add(new Graphic(pointBuffer,symbol,pointSelection[pointIndex].attributes))
+      (pointBuffer, pointIndex) => this.map.graphics.add(new Graphic(pointBuffer,symbol,{
+        "title": pointSelection[pointIndex].attributes.title,
+        "originalobjectid": pointSelection[pointIndex].attributes.objectid,
+        "type": "buffer"
+      }))
     );
-    console.log('map.graphics', this.map.graphics);
+    //console.log('map.graphics', this.map.graphics);
   }
 
   resetBuffers() {
-    var graphicsToRemove = this.map.graphics.graphics.map(graphic => graphic);
+    var graphicsToRemove = this.map.graphics.graphics.filter(function(graphic) {
+        return graphic.attributes && graphic.attributes.type==="buffer";
+    });
+    graphicsToRemove.map(graphic => this.map.graphics.remove(graphic));
+  }
 
-    graphicsToRemove.map(
-      graphic => this.map.graphics.remove(graphic)
-      );
-    console.log('map.graphics', this.map.graphics);
+  storeBuffers() {
+    var polygonLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
+    var graphicsToAdd = this.map.graphics.graphics.filter(function(graphic) {
+        return graphic.attributes && graphic.attributes.type==="buffer";
+    });
+    polygonLayer.applyEdits(graphicsToAdd);
   }
 }
 

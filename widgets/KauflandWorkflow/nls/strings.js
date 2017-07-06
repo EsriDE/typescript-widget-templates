@@ -1,10 +1,11 @@
 ﻿define({
     root:{
-        _widgetLabel: "Kaufland Workflow NLS",
         bufferLabel: "Create buffers around the selected locations",
         bufferRadius: "Buffer radius (m): ",
         bufferGenerateButton: "Generate buffers",
-        bufferResetButton: "Reset buffers"
+        bufferResetButton: "Reset buffers",
+        bufferStoreButton: "Store buffers",
+        _widgetLabel: "Kaufland Workflow NLS"
     },
     "de": true 
 });
