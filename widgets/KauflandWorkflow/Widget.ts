@@ -75,8 +75,8 @@ class Widget extends BaseWidget {
     pointBuffers.map(
       (pointBuffer, pointIndex) => this.map.graphics.add(new Graphic(pointBuffer,symbol,{
         "title": pointSelection[pointIndex].attributes.title,
-        "originalobjectid": pointSelection[pointIndex].attributes.objectid,
-        "type": "buffer"
+        "pointidentifier": pointSelection[pointIndex].attributes.pointidentifier,
+        "category": "buffer"
       }))
     );
     //console.log('map.graphics', this.map.graphics);
@@ -84,7 +84,7 @@ class Widget extends BaseWidget {
 
   resetBuffers() {
     var graphicsToRemove = this.map.graphics.graphics.filter(function(graphic) {
-        return graphic.attributes && graphic.attributes.type==="buffer";
+        return graphic.attributes && graphic.attributes.category==="buffer";
     });
     graphicsToRemove.map(graphic => this.map.graphics.remove(graphic));
   }
@@ -92,7 +92,7 @@ class Widget extends BaseWidget {
   storeBuffers() {
     var polygonLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
     var graphicsToAdd = this.map.graphics.graphics.filter(function(graphic) {
-        return graphic.attributes && graphic.attributes.type==="buffer";
+        return graphic.attributes && graphic.attributes.category==="buffer";
     });
     polygonLayer.applyEdits(graphicsToAdd);
   }

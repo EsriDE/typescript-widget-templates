@@ -54,22 +54,22 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geomet
             // add buffers to map default graphic layer with attributes from original points
             pointBuffers.map(function (pointBuffer, pointIndex) { return _this.map.graphics.add(new Graphic(pointBuffer, symbol, {
                 "title": pointSelection[pointIndex].attributes.title,
-                "originalobjectid": pointSelection[pointIndex].attributes.objectid,
-                "type": "buffer"
+                "pointidentifier": pointSelection[pointIndex].attributes.pointidentifier,
+                "category": "buffer"
             })); });
             //console.log('map.graphics', this.map.graphics);
         };
         Widget.prototype.resetBuffers = function () {
             var _this = this;
             var graphicsToRemove = this.map.graphics.graphics.filter(function (graphic) {
-                return graphic.attributes && graphic.attributes.type === "buffer";
+                return graphic.attributes && graphic.attributes.category === "buffer";
             });
             graphicsToRemove.map(function (graphic) { return _this.map.graphics.remove(graphic); });
         };
         Widget.prototype.storeBuffers = function () {
             var polygonLayer = this.map.getLayer(this.config.polygonLayerId);
             var graphicsToAdd = this.map.graphics.graphics.filter(function (graphic) {
-                return graphic.attributes && graphic.attributes.type === "buffer";
+                return graphic.attributes && graphic.attributes.category === "buffer";
             });
             polygonLayer.applyEdits(graphicsToAdd);
         };
