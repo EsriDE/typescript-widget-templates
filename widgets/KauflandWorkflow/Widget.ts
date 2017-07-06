@@ -21,8 +21,7 @@ class Widget extends BaseWidget {
   }
 
   startup() {
-    this.mapIdNode.innerHTML = 'map id:' + this.map.id;
-    console.log('startup', this.config, this.map.id, this.map);
+    console.log('startup', this.config, this.map);
   }
 
   postCreate() {

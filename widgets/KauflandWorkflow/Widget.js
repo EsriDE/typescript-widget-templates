@@ -18,8 +18,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "esri/geomet
             return _this;
         }
         Widget.prototype.startup = function () {
-            this.mapIdNode.innerHTML = 'map id:' + this.map.id;
-            console.log('startup', this.config, this.map.id, this.map);
+            console.log('startup', this.config, this.map);
         };
         Widget.prototype.postCreate = function () {
             console.log('postCreate', this.config);
