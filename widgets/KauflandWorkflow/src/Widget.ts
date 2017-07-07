@@ -66,7 +66,7 @@ class Widget extends BaseWidget {
       currentValue => currentValue.geometry
     )
     var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters") as Polygon[];
-    var pointBuffersSimplified = pointBuffers.map(buffer => geometryEngine.generalize(buffer, 500));
+    var pointBuffersSimplified = pointBuffers.map(buffer => geometryEngine.buffer);
 
     var symbol = new SimpleFillSymbol();
     symbol.setColor(new Color([100,100,100,0.25]));
@@ -84,7 +84,6 @@ class Widget extends BaseWidget {
         "category": "buffer"
       }))
     );
-    //console.log('map.graphics', this.map.graphics);
   }
 
   resetBuffers() {
@@ -93,18 +92,6 @@ class Widget extends BaseWidget {
     });
     graphicsToRemove.map(graphic => this.map.graphics.remove(graphic));
   }
-
-/*  storeBuffers() {
-    var polygonLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
-    var graphicsToAdd = this.map.graphics.graphics.filter(function(graphic) {
-        return graphic.attributes && graphic.attributes.category==="buffer";
-    });
-    if (graphicsToAdd.length>0) {
-      polygonLayer.applyEdits(graphicsToAdd);
-      this.resetBuffers();
-    }
-    this.initEditing(polygonLayer);
-  }*/
 
   editPolygons() {
     var layer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;

@@ -48,7 +48,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var pointSelection = pointLayer.getSelectedFeatures();
             var pointGeometries = pointSelection.map(function (currentValue) { return currentValue.geometry; });
             var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters");
-            var pointBuffersSimplified = pointBuffers.map(function (buffer) { return geometryEngine.generalize(buffer, 500); });
+            var pointBuffersSimplified = pointBuffers.map(function (buffer) { return geometryEngine.buffer; });
             var symbol = new SimpleFillSymbol();
             symbol.setColor(new Color([100, 100, 100, 0.25]));
             symbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color('#000'), 1));
@@ -58,7 +58,6 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 "pointidentifier": pointSelection[pointIndex].attributes.pointidentifier,
                 "category": "buffer"
             })); });
-            //console.log('map.graphics', this.map.graphics);
         };
         Widget.prototype.resetBuffers = function () {
             var _this = this;
@@ -67,17 +66,6 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             });
             graphicsToRemove.map(function (graphic) { return _this.map.graphics.remove(graphic); });
         };
-        /*  storeBuffers() {
-            var polygonLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
-            var graphicsToAdd = this.map.graphics.graphics.filter(function(graphic) {
-                return graphic.attributes && graphic.attributes.category==="buffer";
-            });
-            if (graphicsToAdd.length>0) {
-              polygonLayer.applyEdits(graphicsToAdd);
-              this.resetBuffers();
-            }
-            this.initEditing(polygonLayer);
-          }*/
         Widget.prototype.editPolygons = function () {
             var layer = this.map.getLayer(this.config.polygonLayerId);
             var editToolbar = new Edit(this.map);
