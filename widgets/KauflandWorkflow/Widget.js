@@ -19,13 +19,12 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         }
         Widget.prototype.startup = function () {
             console.log('startup', this.config, this.map);
-            this.map.on("update-end", this.initEditing);
         };
         Widget.prototype.postCreate = function () {
             console.log('postCreate', this.config);
         };
         Widget.prototype.onOpen = function () {
-            console.log('onOpen');
+            console.log('onOpen lala popo fifi mumu kaka');
         };
         Widget.prototype.onClose = function () {
             console.log('onClose');
@@ -49,6 +48,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var pointSelection = pointLayer.getSelectedFeatures();
             var pointGeometries = pointSelection.map(function (currentValue) { return currentValue.geometry; });
             var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters");
+            //var pointBuffersSimplified = pointBuffers.map(buffer => geometryEngine.simplify(buffer));
             var symbol = new SimpleFillSymbol();
             symbol.setColor(new Color([100, 100, 100, 0.25]));
             symbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color('#000'), 1));
@@ -72,42 +72,38 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var graphicsToAdd = this.map.graphics.graphics.filter(function (graphic) {
                 return graphic.attributes && graphic.attributes.category === "buffer";
             });
-            polygonLayer.applyEdits(graphicsToAdd);
-            this.resetBuffers();
+            if (graphicsToAdd.length > 0) {
+                polygonLayer.applyEdits(graphicsToAdd);
+                this.resetBuffers();
+            }
+            this.initEditing(polygonLayer);
         };
-        Widget.prototype.initEditing = function (evt) {
-            console.log("initEditing", evt);
-            // var map = this;
-            var currentLayer = null;
-            var layers = evt.layers.map(function (result) { return result.layer; });
-            console.log("layers", layers);
+        Widget.prototype.initEditing = function (layer) {
             var editToolbar = new Edit(this.map);
             editToolbar.on("deactivate", function (evt) {
-                currentLayer.applyEdits(null, [evt.graphic], null);
+                layer.applyEdits(null, [evt.graphic], null);
             });
-            layers.map(function (layer) {
-                var editingEnabled = false;
-                layer.on("dbl-click", function (evt) {
-                    event.stop(evt);
-                    if (editingEnabled === false) {
-                        editingEnabled = true;
-                        editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic);
-                    }
-                    else {
-                        currentLayer = this;
-                        editToolbar.deactivate();
-                        editingEnabled = false;
-                    }
-                });
-                layer.on("click", function (evt) {
-                    event.stop(evt);
-                    if (evt.ctrlKey === true || evt.metaKey === true) {
-                        layer.applyEdits(null, null, [evt.graphic]);
-                        currentLayer = this;
-                        editToolbar.deactivate();
-                        editingEnabled = false;
-                    }
-                });
+            var editingEnabled = false;
+            layer.on("dbl-click", function (evt) {
+                event.stop(evt);
+                if (editingEnabled === false) {
+                    editingEnabled = true;
+                    editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic.geometry);
+                }
+                else {
+                    layer = this;
+                    editToolbar.deactivate();
+                    editingEnabled = false;
+                }
+            });
+            layer.on("click", function (evt) {
+                event.stop(evt);
+                if (evt.ctrlKey === true || evt.metaKey === true) {
+                    layer.applyEdits(null, null, [evt.graphic]);
+                    layer = this;
+                    editToolbar.deactivate();
+                    editingEnabled = false;
+                }
             });
         };
         return Widget;
