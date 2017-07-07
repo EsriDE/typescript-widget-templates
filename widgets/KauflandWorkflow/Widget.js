@@ -48,12 +48,11 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var pointSelection = pointLayer.getSelectedFeatures();
             var pointGeometries = pointSelection.map(function (currentValue) { return currentValue.geometry; });
             var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters");
-            var pointBuffersSimplified = pointBuffers.map(function (buffer) { return geometryEngine.buffer; });
             var symbol = new SimpleFillSymbol();
             symbol.setColor(new Color([100, 100, 100, 0.25]));
             symbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color('#000'), 1));
             // add buffers to map default graphic layer with attributes from original points
-            pointBuffersSimplified.map(function (pointBuffer, pointIndex) { return _this.map.graphics.add(new Graphic(pointBuffer, symbol, {
+            pointBuffers.map(function (pointBuffer, pointIndex) { return _this.map.graphics.add(new Graphic(pointBuffer, symbol, {
                 "title": pointSelection[pointIndex].attributes.title,
                 "pointidentifier": pointSelection[pointIndex].attributes.pointidentifier,
                 "category": "buffer"

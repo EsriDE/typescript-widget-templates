@@ -66,7 +66,6 @@ class Widget extends BaseWidget {
       currentValue => currentValue.geometry
     )
     var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters") as Polygon[];
-    var pointBuffersSimplified = pointBuffers.map(buffer => geometryEngine.buffer);
 
     var symbol = new SimpleFillSymbol();
     symbol.setColor(new Color([100,100,100,0.25]));
@@ -77,7 +76,7 @@ class Widget extends BaseWidget {
           ));
 
     // add buffers to map default graphic layer with attributes from original points
-    pointBuffersSimplified.map(
+    pointBuffers.map(
       (pointBuffer, pointIndex) => this.map.graphics.add(new Graphic(pointBuffer,symbol,{
         "title": pointSelection[pointIndex].attributes.title,
         "pointidentifier": pointSelection[pointIndex].attributes.pointidentifier,
