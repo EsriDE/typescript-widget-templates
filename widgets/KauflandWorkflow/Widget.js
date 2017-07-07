@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit"], function (require, exports, BaseWidget, lang, event, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit) {
+define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker"], function (require, exports, BaseWidget, lang, event, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -67,18 +67,19 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             });
             graphicsToRemove.map(function (graphic) { return _this.map.graphics.remove(graphic); });
         };
-        Widget.prototype.storeBuffers = function () {
-            var polygonLayer = this.map.getLayer(this.config.polygonLayerId);
-            var graphicsToAdd = this.map.graphics.graphics.filter(function (graphic) {
-                return graphic.attributes && graphic.attributes.category === "buffer";
+        /*  storeBuffers() {
+            var polygonLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
+            var graphicsToAdd = this.map.graphics.graphics.filter(function(graphic) {
+                return graphic.attributes && graphic.attributes.category==="buffer";
             });
-            if (graphicsToAdd.length > 0) {
-                polygonLayer.applyEdits(graphicsToAdd);
-                this.resetBuffers();
+            if (graphicsToAdd.length>0) {
+              polygonLayer.applyEdits(graphicsToAdd);
+              this.resetBuffers();
             }
             this.initEditing(polygonLayer);
-        };
-        Widget.prototype.initEditing = function (layer) {
+          }*/
+        Widget.prototype.editPolygons = function () {
+            var layer = this.map.getLayer(this.config.polygonLayerId);
             var editToolbar = new Edit(this.map);
             editToolbar.on("deactivate", function (evt) {
                 layer.applyEdits(null, [evt.graphic], null);
@@ -104,6 +105,41 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                     editToolbar.deactivate();
                     editingEnabled = false;
                 }
+            });
+            var layers = [];
+            layers.push(layer);
+            var templatePicker = new TemplatePicker({
+                featureLayers: layers,
+                rows: "auto",
+                columns: "auto",
+                grouping: true,
+                style: "height: auto; overflow: auto;"
+            }, "templatePickerDiv");
+            templatePicker.startup();
+            var drawToolbar = new Draw(this.map);
+            var selectedTemplate;
+            templatePicker.on("selection-change", function () {
+                if (templatePicker.getSelected()) {
+                    selectedTemplate = templatePicker.getSelected();
+                }
+                switch (selectedTemplate.featureLayer.geometryType) {
+                    case "esriGeometryPoint":
+                        drawToolbar.activate(Draw.POINT);
+                        break;
+                    case "esriGeometryPolyline":
+                        drawToolbar.activate(Draw.POLYLINE);
+                        break;
+                    case "esriGeometryPolygon":
+                        drawToolbar.activate(Draw.POLYGON);
+                        break;
+                }
+            });
+            drawToolbar.on("draw-end", function (evt) {
+                drawToolbar.deactivate();
+                editToolbar.deactivate();
+                var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
+                var newGraphic = new Graphic(evt.geometry, null, newAttributes);
+                selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
             });
         };
         return Widget;

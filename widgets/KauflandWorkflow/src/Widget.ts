@@ -11,6 +11,8 @@ import SimpleLineSymbol = require("esri/symbols/SimpleLineSymbol");
 import Color = require("esri/Color");
 import Polygon = require("esri/geometry/Polygon");
 import Edit = require("esri/toolbars/edit");
+import Draw = require("esri/toolbars/draw");
+import TemplatePicker = require("esri/dijit/editing/TemplatePicker");
 
 class Widget extends BaseWidget {
 
@@ -92,7 +94,7 @@ class Widget extends BaseWidget {
     graphicsToRemove.map(graphic => this.map.graphics.remove(graphic));
   }
 
-  storeBuffers() {
+/*  storeBuffers() {
     var polygonLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
     var graphicsToAdd = this.map.graphics.graphics.filter(function(graphic) {
         return graphic.attributes && graphic.attributes.category==="buffer";
@@ -102,9 +104,11 @@ class Widget extends BaseWidget {
       this.resetBuffers();
     }
     this.initEditing(polygonLayer);
-  }
+  }*/
 
-  initEditing(layer) {
+  editPolygons() {
+    var layer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
+
     var editToolbar = new Edit(this.map);
     editToolbar.on("deactivate", function(evt) {
       layer.applyEdits(null, [evt.graphic], null);
@@ -131,6 +135,46 @@ class Widget extends BaseWidget {
         editToolbar.deactivate();
         editingEnabled=false;
       }
+    });
+
+    var layers = [];
+    layers.push(layer);
+    var templatePicker = new TemplatePicker({
+      featureLayers: layers,
+      rows: "auto",
+      columns: "auto",
+      grouping: true,
+      style: "height: auto; overflow: auto;"
+    }, "templatePickerDiv");
+
+    templatePicker.startup();
+
+    var drawToolbar = new Draw(this.map);
+
+    var selectedTemplate;
+    templatePicker.on("selection-change", function() {
+      if( templatePicker.getSelected() ) {
+        selectedTemplate = templatePicker.getSelected();
+      }
+      switch (selectedTemplate.featureLayer.geometryType) {
+        case "esriGeometryPoint":
+          drawToolbar.activate(Draw.POINT);
+          break;
+        case "esriGeometryPolyline":
+          drawToolbar.activate(Draw.POLYLINE);
+          break;
+        case "esriGeometryPolygon":
+          drawToolbar.activate(Draw.POLYGON);
+          break;
+      }
+    });
+
+    drawToolbar.on("draw-end", function(evt) {
+      drawToolbar.deactivate();
+      editToolbar.deactivate();
+      var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
+      var newGraphic = new Graphic(evt.geometry, null, newAttributes);
+      selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
     });
   }
 
