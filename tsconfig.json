@@ -4,6 +4,9 @@
     "target": "es5",
     "module": "amd",
     "sourceMap": true,
-    "watch": true
-  }
+    "watch": true,
+    "rootDir": "widgets/KauflandWorkflow/src",
+    "outDir": "widgets/KauflandWorkflow"
+  },
+  "exclude" : ["node_modules"]
 }
