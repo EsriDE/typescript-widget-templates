@@ -48,12 +48,12 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var pointSelection = pointLayer.getSelectedFeatures();
             var pointGeometries = pointSelection.map(function (currentValue) { return currentValue.geometry; });
             var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters");
-            //var pointBuffersSimplified = pointBuffers.map(buffer => geometryEngine.simplify(buffer));
+            var pointBuffersSimplified = pointBuffers.map(function (buffer) { return geometryEngine.generalize(buffer, 500); });
             var symbol = new SimpleFillSymbol();
             symbol.setColor(new Color([100, 100, 100, 0.25]));
             symbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color('#000'), 1));
             // add buffers to map default graphic layer with attributes from original points
-            pointBuffers.map(function (pointBuffer, pointIndex) { return _this.map.graphics.add(new Graphic(pointBuffer, symbol, {
+            pointBuffersSimplified.map(function (pointBuffer, pointIndex) { return _this.map.graphics.add(new Graphic(pointBuffer, symbol, {
                 "title": pointSelection[pointIndex].attributes.title,
                 "pointidentifier": pointSelection[pointIndex].attributes.pointidentifier,
                 "category": "buffer"
@@ -88,7 +88,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 event.stop(evt);
                 if (editingEnabled === false) {
                     editingEnabled = true;
-                    editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic.geometry);
+                    editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic);
                 }
                 else {
                     layer = this;
