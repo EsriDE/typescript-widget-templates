@@ -13,6 +13,7 @@ import Polygon = require("esri/geometry/Polygon");
 import Edit = require("esri/toolbars/edit");
 import Draw = require("esri/toolbars/draw");
 import TemplatePicker = require("esri/dijit/editing/TemplatePicker");
+import AttributeInspector = require("esri/dijit/AttributeInspector");
 
 class Widget extends BaseWidget {
 
@@ -93,38 +94,38 @@ class Widget extends BaseWidget {
   }
 
   editPolygons() {
-    var layer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
+    var editLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
 
     var editToolbar = new Edit(this.map);
     editToolbar.on("deactivate", function(evt) {
-      layer.applyEdits(null, [evt.graphic], null);
+      editLayer.applyEdits(null, [evt.graphic], null);
     });
 
     var editingEnabled = false;
-    layer.on("dbl-click", function(evt) {
+    editLayer.on("dbl-click", function(evt) {
       event.stop(evt);
       if (editingEnabled === false) {
         editingEnabled = true;
         editToolbar.activate(Edit.EDIT_VERTICES , evt.graphic);
       } else {
-        layer = this;
+        editLayer = this;
         editToolbar.deactivate();
         editingEnabled = false;
       }
     });
 
-    layer.on("click", function(evt) {
+    editLayer.on("click", function(evt) {
       event.stop(evt);
       if (evt.ctrlKey === true || evt.metaKey === true) {  //delete feature if ctrl key is depressed
-        layer.applyEdits(null,null,[evt.graphic]);
-        layer = this;
+        editLayer.applyEdits(null,null,[evt.graphic]);
+        editLayer = this;
         editToolbar.deactivate();
         editingEnabled=false;
       }
     });
 
     var layers = [];
-    layers.push(layer);
+    layers.push(editLayer);
     var templatePicker = new TemplatePicker({
       featureLayers: layers,
       rows: "auto",
