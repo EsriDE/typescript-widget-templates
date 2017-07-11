@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker"], function (require, exports, BaseWidget, lang, event, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker) {
+define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "dojo/dom-construct", "dijit/form/Button", "esri/layers/FeatureLayer", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker", "esri/dijit/AttributeInspector", "esri/tasks/query"], function (require, exports, BaseWidget, lang, event, domConstruct, Button, FeatureLayer, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker, AttributeInspector, Query) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -66,35 +66,39 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             graphicsToRemove.map(function (graphic) { return _this.map.graphics.remove(graphic); });
         };
         Widget.prototype.editPolygons = function () {
-            var layer = this.map.getLayer(this.config.polygonLayerId);
+            var editLayer = this.map.getLayer(this.config.polygonLayerId);
             var editToolbar = new Edit(this.map);
             editToolbar.on("deactivate", function (evt) {
-                layer.applyEdits(null, [evt.graphic], null);
+                editLayer.applyEdits(null, [evt.graphic], null);
             });
             var editingEnabled = false;
-            layer.on("dbl-click", function (evt) {
+            editLayer.on("dbl-click", function (evt) {
                 event.stop(evt);
                 if (editingEnabled === false) {
                     editingEnabled = true;
                     editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic);
                 }
                 else {
-                    layer = this;
+                    editLayer = this;
                     editToolbar.deactivate();
                     editingEnabled = false;
                 }
             });
-            layer.on("click", function (evt) {
-                event.stop(evt);
-                if (evt.ctrlKey === true || evt.metaKey === true) {
-                    layer.applyEdits(null, null, [evt.graphic]);
-                    layer = this;
+            /*    editLayer.on("click", function(evt) {
+                  event.stop(evt);
+                  if (evt.ctrlKey === true || evt.metaKey === true) {  //delete feature if ctrl key is depressed
+                    editLayer.applyEdits(null,null,[evt.graphic]);
+                    editLayer = this;
                     editToolbar.deactivate();
-                    editingEnabled = false;
-                }
-            });
+                    editingEnabled=false;
+                  }
+                });*/
+            this.initializeTemplatePicker(editLayer, editToolbar);
+            this.initializeAttributeInspector(editLayer);
+        };
+        Widget.prototype.initializeTemplatePicker = function (editLayer, editToolbar) {
             var layers = [];
-            layers.push(layer);
+            layers.push(editLayer);
             var templatePicker = new TemplatePicker({
                 featureLayers: layers,
                 rows: "auto",
@@ -127,6 +131,105 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
                 var newGraphic = new Graphic(evt.geometry, null, newAttributes);
                 selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
+            });
+        };
+        Widget.prototype.initializeAttributeInspector = function (editLayer) {
+            var layerInfos = [
+                {
+                    'featureLayer': editLayer,
+                    'showAttachments': false,
+                    'showDeleteButton': true,
+                    'isEditable': true,
+                    'fieldInfos': [
+                        {
+                            "fieldName": "title",
+                            "isEditable": true,
+                            "tooltip": "Title",
+                            "label": "Title:"
+                        },
+                        {
+                            "fieldName": "description",
+                            "isEditable": true,
+                            "tooltip": "Description",
+                            "label": "Description:"
+                        },
+                        {
+                            "fieldName": "date",
+                            "isEditable": false,
+                            "tooltip": "Date",
+                            "label": "Date:"
+                        },
+                        {
+                            "fieldName": "typeid",
+                            "isEditable": false,
+                            "tooltip": "TypeID",
+                            "label": "TypeID:"
+                        },
+                        {
+                            "fieldName": "pointidentifier",
+                            "isEditable": true,
+                            "tooltip": "Unique Point Identifier",
+                            "label": "Unique Point Identifier:"
+                        }
+                    ]
+                }
+            ];
+            //Initialize Attribute Inspector
+            this.attInspector = new AttributeInspector({
+                layerInfos: layerInfos
+            }, domConstruct.create("div"));
+            //add a save button next to the delete button
+            var saveButton = new Button({ label: "Save", "class": "saveButton" }, domConstruct.create("div"));
+            domConstruct.place(saveButton.domNode, this.attInspector.deleteBtn.domNode, "after");
+            var updateFeature;
+            saveButton.on("click", function () {
+                updateFeature.getLayer().applyEdits(null, [updateFeature], null);
+            });
+            this.attInspector.on("attribute-change", function (evt) {
+                //store the updates to apply when the save button is clicked
+                updateFeature.attributes[evt.fieldName] = evt.fieldValue;
+            });
+            this.attInspector.on("next", function (evt) {
+                updateFeature = evt.feature;
+                console.log("Next " + updateFeature.attributes.OBJECTID);
+            });
+            this.attInspector.on("delete", function (evt) {
+                evt.feature.getLayer().applyEdits(null, null, [evt.feature]);
+                this.map.infoWindow.hide();
+            });
+            /*    var infoTemplate = editLayer.infoTemplate;
+                  infoTemplate.setTitle("Population");
+                  infoTemplate.setContent("<b>2007 :D: </b>${objectid}<br/>" +
+                                          "<b>2007 density: </b>${ruleid}<br/>" +
+                                          "<b>2000: </b>${name}");
+                editLayer.setInfoTemplate(infoTemplate);*/
+            /*    var infoTemplate = new InfoTemplate(); //editLayer.infoTemplate;
+                infoTemplate.setContent(attInspector.domNode);
+                editLayer.setInfoTemplate(infoTemplate);*/
+            /*    this.map.infoWindow.setContent(attInspector.domNode);
+                this.map.infoWindow.resize(350, 240);*/
+            var selectQuery = new Query();
+            this.map.on("click", lang.hitch(this, function (evt) {
+                selectQuery.geometry = evt.mapPoint;
+                /*      selectQuery.distance = 50;
+                      selectQuery.units = "miles"*/
+                selectQuery.returnGeometry = true;
+                editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function (features) {
+                    if (features.length > 0) {
+                        //store the current feature
+                        updateFeature = features[0];
+                        this.map.infoWindow.setTitle(features[0].getLayer().name);
+                        this.map.infoWindow.setContent(this.attInspector.domNode);
+                        editLayer.infoTemplate.setContent(this.attInspector.domNode);
+                        //this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
+                    }
+                    else {
+                        this.map.infoWindow.hide();
+                    }
+                }));
+            }));
+            this.map.infoWindow.on("hide", function () {
+                editLayer.clearSelection();
             });
         };
         return Widget;

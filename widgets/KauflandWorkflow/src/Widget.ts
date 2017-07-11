@@ -3,6 +3,8 @@ import lang = require("dojo/_base/lang");
 import array = require("dojo/_base/array");
 import event = require("dojo/_base/event");
 import json = require('dojo/_base/json');
+import domConstruct = require("dojo/dom-construct");
+import Button = require("dijit/form/Button");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import geometryEngine = require("esri/geometry/geometryEngine");
 import Graphic = require("esri/graphic");
@@ -14,12 +16,15 @@ import Edit = require("esri/toolbars/edit");
 import Draw = require("esri/toolbars/draw");
 import TemplatePicker = require("esri/dijit/editing/TemplatePicker");
 import AttributeInspector = require("esri/dijit/AttributeInspector");
+import Query = require("esri/tasks/query");
+import Point = require("esri/geometry/Point");
+import InfoTemplate = require("esri/InfoTemplate");
 
 class Widget extends BaseWidget {
 
   public baseClass: string = "jimu-widget-kauflandworkflow";
   public config: SpecificWidgetConfig;
-
+  private attInspector : AttributeInspector;
   private subnode: HTMLElement;
 
   constructor(args?) {
@@ -114,7 +119,7 @@ class Widget extends BaseWidget {
       }
     });
 
-    editLayer.on("click", function(evt) {
+/*    editLayer.on("click", function(evt) {
       event.stop(evt);
       if (evt.ctrlKey === true || evt.metaKey === true) {  //delete feature if ctrl key is depressed
         editLayer.applyEdits(null,null,[evt.graphic]);
@@ -122,8 +127,14 @@ class Widget extends BaseWidget {
         editToolbar.deactivate();
         editingEnabled=false;
       }
-    });
+    });*/
 
+    this.initializeTemplatePicker(editLayer, editToolbar);
+
+    this.initializeAttributeInspector(editLayer);
+  }
+
+  initializeTemplatePicker(editLayer: FeatureLayer, editToolbar: Edit) {
     var layers = [];
     layers.push(editLayer);
     var templatePicker = new TemplatePicker({
@@ -163,6 +174,121 @@ class Widget extends BaseWidget {
       var newGraphic = new Graphic(evt.geometry, null, newAttributes);
       selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
     });
+  }
+
+  initializeAttributeInspector(editLayer: FeatureLayer) {
+    var layerInfos = [
+      {
+        'featureLayer': editLayer,
+        'showAttachments': false,
+        'showDeleteButton': true,
+        'isEditable': true,
+        'fieldInfos': [
+          {
+            "fieldName": "title",
+            "isEditable": true,
+            "tooltip": "Title",
+            "label": "Title:"
+          },
+          {
+            "fieldName": "description",
+            "isEditable": true,
+            "tooltip": "Description",
+            "label": "Description:"
+          },
+          {
+            "fieldName": "date",
+            "isEditable": false,
+            "tooltip": "Date",
+            "label": "Date:"
+          },
+          {
+            "fieldName": "typeid",
+            "isEditable": false,
+            "tooltip": "TypeID",
+            "label": "TypeID:"
+          },
+          {
+            "fieldName": "pointidentifier",
+            "isEditable": true,
+            "tooltip": "Unique Point Identifier",
+            "label": "Unique Point Identifier:"
+          }
+        ]
+      }
+    ];
+
+    //Initialize Attribute Inspector
+    this.attInspector = new AttributeInspector({
+      layerInfos: layerInfos
+    }, domConstruct.create("div"));
+
+    //add a save button next to the delete button
+    var saveButton = new Button({ label: "Save", "class": "saveButton"},domConstruct.create("div"));
+    domConstruct.place(saveButton.domNode, this.attInspector.deleteBtn.domNode, "after");
+
+    var updateFeature : Graphic;
+
+    saveButton.on("click", function() {
+      updateFeature.getLayer().applyEdits(null, [updateFeature], null);
+    });
+
+    this.attInspector.on("attribute-change", function(evt) {
+      //store the updates to apply when the save button is clicked
+      updateFeature.attributes[evt.fieldName] = evt.fieldValue;
+    });
+
+    this.attInspector.on("next", function(evt) {
+      updateFeature = evt.feature;
+      console.log("Next " + updateFeature.attributes.OBJECTID);
+    });
+
+    this.attInspector.on("delete", function(evt) {
+      evt.feature.getLayer().applyEdits(null, null, [evt.feature]);
+      this.map.infoWindow.hide();
+    });
+
+
+/*    var infoTemplate = editLayer.infoTemplate;
+      infoTemplate.setTitle("Population");
+      infoTemplate.setContent("<b>2007 :D: </b>${objectid}<br/>" +
+                              "<b>2007 density: </b>${ruleid}<br/>" +
+                              "<b>2000: </b>${name}");
+    editLayer.setInfoTemplate(infoTemplate);*/
+
+/*    var infoTemplate = new InfoTemplate(); //editLayer.infoTemplate;
+    infoTemplate.setContent(attInspector.domNode);
+    editLayer.setInfoTemplate(infoTemplate);*/
+
+    
+/*    this.map.infoWindow.setContent(attInspector.domNode);
+    this.map.infoWindow.resize(350, 240);*/
+
+    var selectQuery = new Query();
+    this.map.on("click", lang.hitch(this, function(evt) {
+      selectQuery.geometry = evt.mapPoint;
+/*      selectQuery.distance = 50;
+      selectQuery.units = "miles"*/
+      selectQuery.returnGeometry = true;
+      editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function(features) {
+        if (features.length > 0) {
+          //store the current feature
+          updateFeature = features[0];
+          this.map.infoWindow.setTitle(features[0].getLayer().name);
+          this.map.infoWindow.setContent(this.attInspector.domNode);
+          editLayer.infoTemplate.setContent(this.attInspector.domNode);
+          //this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
+        }
+        else {
+          this.map.infoWindow.hide();
+        }
+      }));
+    }));
+
+    this.map.infoWindow.on("hide", function() {
+      editLayer.clearSelection();
+    });
+
   }
 
 }
