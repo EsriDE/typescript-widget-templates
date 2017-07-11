@@ -132,6 +132,7 @@ class Widget extends BaseWidget {
     this.initializeTemplatePicker(editLayer, editToolbar);
 
     this.initializeAttributeInspector(editLayer);
+
   }
 
   initializeTemplatePicker(editLayer: FeatureLayer, editToolbar: Edit) {
@@ -219,65 +220,47 @@ class Widget extends BaseWidget {
     ];
 
     //Initialize Attribute Inspector
-    this.attInspector = new AttributeInspector({
+    let attributeInspector = new AttributeInspector({
       layerInfos: layerInfos
     }, domConstruct.create("div"));
 
     //add a save button next to the delete button
     var saveButton = new Button({ label: "Save", "class": "saveButton"},domConstruct.create("div"));
-    domConstruct.place(saveButton.domNode, this.attInspector.deleteBtn.domNode, "after");
+    domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
 
-    var updateFeature : Graphic;
+    let updateFeature : Graphic;
 
     saveButton.on("click", function() {
-      updateFeature.getLayer().applyEdits(null, [updateFeature], null);
+      let updateFeatureLayer = updateFeature.getLayer() as FeatureLayer;
+      updateFeatureLayer.applyEdits(null, [updateFeature], null);
     });
 
-    this.attInspector.on("attribute-change", function(evt) {
+    attributeInspector.on("attribute-change", function(evt) {
       //store the updates to apply when the save button is clicked
       updateFeature.attributes[evt.fieldName] = evt.fieldValue;
     });
 
-    this.attInspector.on("next", function(evt) {
+    attributeInspector.on("next", function(evt) {
       updateFeature = evt.feature;
       console.log("Next " + updateFeature.attributes.OBJECTID);
     });
 
-    this.attInspector.on("delete", function(evt) {
-      evt.feature.getLayer().applyEdits(null, null, [evt.feature]);
+    attributeInspector.on("delete", function(evt) {
+      let updateFeatureLayer = updateFeature.getLayer() as FeatureLayer;
+      updateFeatureLayer.applyEdits(null, null, [evt.feature]);
       this.map.infoWindow.hide();
     });
-
-
-/*    var infoTemplate = editLayer.infoTemplate;
-      infoTemplate.setTitle("Population");
-      infoTemplate.setContent("<b>2007 :D: </b>${objectid}<br/>" +
-                              "<b>2007 density: </b>${ruleid}<br/>" +
-                              "<b>2000: </b>${name}");
-    editLayer.setInfoTemplate(infoTemplate);*/
-
-/*    var infoTemplate = new InfoTemplate(); //editLayer.infoTemplate;
-    infoTemplate.setContent(attInspector.domNode);
-    editLayer.setInfoTemplate(infoTemplate);*/
-
-    
-/*    this.map.infoWindow.setContent(attInspector.domNode);
-    this.map.infoWindow.resize(350, 240);*/
 
     var selectQuery = new Query();
     this.map.on("click", lang.hitch(this, function(evt) {
       selectQuery.geometry = evt.mapPoint;
-/*      selectQuery.distance = 50;
-      selectQuery.units = "miles"*/
       selectQuery.returnGeometry = true;
       editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function(features) {
         if (features.length > 0) {
           //store the current feature
           updateFeature = features[0];
           this.map.infoWindow.setTitle(features[0].getLayer().name);
-          this.map.infoWindow.setContent(this.attInspector.domNode);
-          editLayer.infoTemplate.setContent(this.attInspector.domNode);
-          //this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
+          this.map.infoWindow.setContent(attributeInspector.domNode);
         }
         else {
           this.map.infoWindow.hide();
@@ -288,7 +271,6 @@ class Widget extends BaseWidget {
     this.map.infoWindow.on("hide", function() {
       editLayer.clearSelection();
     });
-
   }
 
 }
