@@ -134,17 +134,18 @@ class Widget extends BaseWidget {
     //this.initializeAttributeInspector(editLayer);
     
     var selectQuery = new Query();
-    this.map.on("click", lang.hitch(this, function(evt) {
-      selectQuery.geometry = evt.mapPoint;
-      selectQuery.returnGeometry = true;
+    editLayer.on("click", lang.hitch(this, function(evt) {
+/*      selectQuery.geometry = evt.mapPoint;
+      selectQuery.returnGeometry = true;*/
+      selectQuery.objectIds = [evt.graphic.attributes.objectid];
       editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function(features) {
         if (features.length > 0) {
           //store the current feature
           this.updateFeature = features[0];
           let attributeInspector = this.initializeAttributeInspector(editLayer);
-          this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
           this.map.infoWindow.setTitle(features[0].getLayer().name);
           this.map.infoWindow.setContent(attributeInspector.domNode);
+          this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
         }
         else {
           this.map.infoWindow.hide();
