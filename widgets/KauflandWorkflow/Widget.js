@@ -199,9 +199,9 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             //Initialize Attribute Inspector
             var attributeInspector = new AttributeInspector({
                 layerInfos: layerInfos
-            }, "attributeInspectorDiv"); //domConstruct.create("div"));
+            }, "attributeInspectorDiv");
             //add a save button next to the delete button
-            var saveButton = new Button({ label: "Save", "class": "saveButton" }, domConstruct.create("div"));
+            var saveButton = new Button({ label: "Save", "class": "attributeInspectorSaveButton" }, domConstruct.create("div"));
             domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
             saveButton.on("click", function () {
                 var updateFeatureLayer = this.updateFeature.getLayer();
