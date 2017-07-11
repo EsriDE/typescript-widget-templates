@@ -92,7 +92,7 @@ class Widget extends BaseWidget {
   }
 
   resetBuffers() {
-    var graphicsToRemove = this.map.graphics.graphics.filter(function(graphic) {
+    var graphicsToRemove = this.map.graphics.graphics.filter(graphic => {
         return graphic.attributes && graphic.attributes.category==="buffer";
     });
     graphicsToRemove.map(graphic => this.map.graphics.remove(graphic));
@@ -102,18 +102,17 @@ class Widget extends BaseWidget {
     var editLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
 
     var editToolbar = new Edit(this.map);
-    editToolbar.on("deactivate", function(evt) {
+    editToolbar.on("deactivate", evt => {
       editLayer.applyEdits(null, [evt.graphic], null);
     });
 
     var editingEnabled = false;
-    editLayer.on("dbl-click", function(evt) {
+    editLayer.on("dbl-click", evt => {
       event.stop(evt);
       if (editingEnabled === false) {
         editingEnabled = true;
         editToolbar.activate(Edit.EDIT_VERTICES , evt.graphic);
       } else {
-        editLayer = this;
         editToolbar.deactivate();
         editingEnabled = false;
       }
@@ -124,9 +123,9 @@ class Widget extends BaseWidget {
     let attributeInspector = this.initializeAttributeInspector(editLayer);
 
     var selectQuery = new Query();
-    editLayer.on("click", lang.hitch(this, function(evt) {
+    editLayer.on("click", evt => {
       selectQuery.objectIds = [evt.graphic.attributes.objectid];
-      editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function(features) {
+      editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, features => {
         if (features.length > 0) {
           this.updateFeature = features[0];
           this.map.infoWindow.setTitle(features[0].getLayer().name);
@@ -134,10 +133,10 @@ class Widget extends BaseWidget {
         else {
           this.map.infoWindow.hide();
         }
-      }));
-    }));
+      });
+    });
 
-    this.map.infoWindow.on("hide", function() {
+    this.map.infoWindow.on("hide", evt => {
       editLayer.clearSelection();
     });
 
@@ -159,7 +158,7 @@ class Widget extends BaseWidget {
     var drawToolbar = new Draw(this.map);
 
     var selectedTemplate;
-    templatePicker.on("selection-change", function() {
+    templatePicker.on("selection-change", evt => {
       if( templatePicker.getSelected() ) {
         selectedTemplate = templatePicker.getSelected();
       }
@@ -176,7 +175,7 @@ class Widget extends BaseWidget {
       }
     });
 
-    drawToolbar.on("draw-end", function(evt) {
+    drawToolbar.on("draw-end", evt => {
       drawToolbar.deactivate();
       editToolbar.deactivate();
       var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);

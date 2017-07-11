@@ -66,6 +66,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             graphicsToRemove.map(function (graphic) { return _this.map.graphics.remove(graphic); });
         };
         Widget.prototype.editPolygons = function () {
+            var _this = this;
             var editLayer = this.map.getLayer(this.config.polygonLayerId);
             var editToolbar = new Edit(this.map);
             editToolbar.on("deactivate", function (evt) {
@@ -79,7 +80,6 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                     editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic);
                 }
                 else {
-                    editLayer = this;
                     editToolbar.deactivate();
                     editingEnabled = false;
                 }
@@ -87,19 +87,19 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             this.initializeTemplatePicker(editLayer, editToolbar);
             var attributeInspector = this.initializeAttributeInspector(editLayer);
             var selectQuery = new Query();
-            editLayer.on("click", lang.hitch(this, function (evt) {
+            editLayer.on("click", function (evt) {
                 selectQuery.objectIds = [evt.graphic.attributes.objectid];
-                editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function (features) {
+                editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function (features) {
                     if (features.length > 0) {
-                        this.updateFeature = features[0];
-                        this.map.infoWindow.setTitle(features[0].getLayer().name);
+                        _this.updateFeature = features[0];
+                        _this.map.infoWindow.setTitle(features[0].getLayer().name);
                     }
                     else {
-                        this.map.infoWindow.hide();
+                        _this.map.infoWindow.hide();
                     }
-                }));
-            }));
-            this.map.infoWindow.on("hide", function () {
+                });
+            });
+            this.map.infoWindow.on("hide", function (evt) {
                 editLayer.clearSelection();
             });
         };
@@ -116,7 +116,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             templatePicker.startup();
             var drawToolbar = new Draw(this.map);
             var selectedTemplate;
-            templatePicker.on("selection-change", function () {
+            templatePicker.on("selection-change", function (evt) {
                 if (templatePicker.getSelected()) {
                     selectedTemplate = templatePicker.getSelected();
                 }
