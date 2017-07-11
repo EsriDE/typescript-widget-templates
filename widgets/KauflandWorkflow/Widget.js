@@ -181,24 +181,24 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             //add a save button next to the delete button
             var saveButton = new Button({ label: "Save", "class": "saveButton" }, domConstruct.create("div"));
             domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
-            var updateFeature;
             saveButton.on("click", function () {
-                var updateFeatureLayer = updateFeature.getLayer();
-                updateFeatureLayer.applyEdits(null, [updateFeature], null);
+                var updateFeatureLayer = this.updateFeature.getLayer();
+                updateFeatureLayer.applyEdits(null, [this.updateFeature], null);
             });
             attributeInspector.on("attribute-change", function (evt) {
                 //store the updates to apply when the save button is clicked
-                updateFeature.attributes[evt.fieldName] = evt.fieldValue;
+                this.updateFeature.attributes[evt.fieldName] = evt.fieldValue;
             });
             attributeInspector.on("next", function (evt) {
-                updateFeature = evt.feature;
-                console.log("Next " + updateFeature.attributes.OBJECTID);
+                this.updateFeature = evt.feature;
+                console.log("Next " + this.updateFeature.attributes.OBJECTID);
             });
             attributeInspector.on("delete", function (evt) {
-                var updateFeatureLayer = updateFeature.getLayer();
+                var updateFeatureLayer = this.updateFeature.getLayer();
                 updateFeatureLayer.applyEdits(null, null, [evt.feature]);
                 this.map.infoWindow.hide();
             });
+            //this.map.infoWindow.setContent(attributeInspector.domNode);
             var selectQuery = new Query();
             this.map.on("click", lang.hitch(this, function (evt) {
                 selectQuery.geometry = evt.mapPoint;
@@ -206,7 +206,8 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function (features) {
                     if (features.length > 0) {
                         //store the current feature
-                        updateFeature = features[0];
+                        this.updateFeature = features[0];
+                        this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
                         this.map.infoWindow.setTitle(features[0].getLayer().name);
                         this.map.infoWindow.setContent(attributeInspector.domNode);
                     }

@@ -24,7 +24,7 @@ class Widget extends BaseWidget {
 
   public baseClass: string = "jimu-widget-kauflandworkflow";
   public config: SpecificWidgetConfig;
-  private attInspector : AttributeInspector;
+  private updateFeature : Graphic;
   private subnode: HTMLElement;
 
   constructor(args?) {
@@ -228,28 +228,28 @@ class Widget extends BaseWidget {
     var saveButton = new Button({ label: "Save", "class": "saveButton"},domConstruct.create("div"));
     domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
 
-    let updateFeature : Graphic;
-
     saveButton.on("click", function() {
-      let updateFeatureLayer = updateFeature.getLayer() as FeatureLayer;
-      updateFeatureLayer.applyEdits(null, [updateFeature], null);
+      let updateFeatureLayer = this.updateFeature.getLayer() as FeatureLayer;
+      updateFeatureLayer.applyEdits(null, [this.updateFeature], null);
     });
 
     attributeInspector.on("attribute-change", function(evt) {
       //store the updates to apply when the save button is clicked
-      updateFeature.attributes[evt.fieldName] = evt.fieldValue;
+      this.updateFeature.attributes[evt.fieldName] = evt.fieldValue;
     });
 
     attributeInspector.on("next", function(evt) {
-      updateFeature = evt.feature;
-      console.log("Next " + updateFeature.attributes.OBJECTID);
+      this.updateFeature = evt.feature;
+      console.log("Next " + this.updateFeature.attributes.OBJECTID);
     });
 
     attributeInspector.on("delete", function(evt) {
-      let updateFeatureLayer = updateFeature.getLayer() as FeatureLayer;
+      let updateFeatureLayer = this.updateFeature.getLayer() as FeatureLayer;
       updateFeatureLayer.applyEdits(null, null, [evt.feature]);
       this.map.infoWindow.hide();
     });
+    
+    //this.map.infoWindow.setContent(attributeInspector.domNode);
 
     var selectQuery = new Query();
     this.map.on("click", lang.hitch(this, function(evt) {
@@ -258,7 +258,8 @@ class Widget extends BaseWidget {
       editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function(features) {
         if (features.length > 0) {
           //store the current feature
-          updateFeature = features[0];
+          this.updateFeature = features[0];
+          this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
           this.map.infoWindow.setTitle(features[0].getLayer().name);
           this.map.infoWindow.setContent(attributeInspector.domNode);
         }
