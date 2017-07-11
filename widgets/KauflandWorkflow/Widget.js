@@ -95,6 +95,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 });*/
             this.initializeTemplatePicker(editLayer, editToolbar);
             //this.initializeAttributeInspector(editLayer);
+            var attributeInspector = this.initializeAttributeInspector(editLayer);
             var selectQuery = new Query();
             editLayer.on("click", lang.hitch(this, function (evt) {
                 /*      selectQuery.geometry = evt.mapPoint;
@@ -104,10 +105,9 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                     if (features.length > 0) {
                         //store the current feature
                         this.updateFeature = features[0];
-                        var attributeInspector = this.initializeAttributeInspector(editLayer);
                         this.map.infoWindow.setTitle(features[0].getLayer().name);
-                        this.map.infoWindow.setContent(attributeInspector.domNode);
-                        this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
+                        /*          this.map.infoWindow.setContent(attributeInspector.domNode);
+                                  this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));*/
                     }
                     else {
                         this.map.infoWindow.hide();
@@ -199,7 +199,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             //Initialize Attribute Inspector
             var attributeInspector = new AttributeInspector({
                 layerInfos: layerInfos
-            }, domConstruct.create("div"));
+            }, "attributeInspectorDiv"); //domConstruct.create("div"));
             //add a save button next to the delete button
             var saveButton = new Button({ label: "Save", "class": "saveButton" }, domConstruct.create("div"));
             domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");

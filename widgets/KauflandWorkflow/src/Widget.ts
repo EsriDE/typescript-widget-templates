@@ -133,6 +133,8 @@ class Widget extends BaseWidget {
 
     //this.initializeAttributeInspector(editLayer);
     
+    let attributeInspector = this.initializeAttributeInspector(editLayer);
+
     var selectQuery = new Query();
     editLayer.on("click", lang.hitch(this, function(evt) {
 /*      selectQuery.geometry = evt.mapPoint;
@@ -142,10 +144,9 @@ class Widget extends BaseWidget {
         if (features.length > 0) {
           //store the current feature
           this.updateFeature = features[0];
-          let attributeInspector = this.initializeAttributeInspector(editLayer);
           this.map.infoWindow.setTitle(features[0].getLayer().name);
-          this.map.infoWindow.setContent(attributeInspector.domNode);
-          this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
+/*          this.map.infoWindow.setContent(attributeInspector.domNode);
+          this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));*/
         }
         else {
           this.map.infoWindow.hide();
@@ -246,7 +247,7 @@ class Widget extends BaseWidget {
     //Initialize Attribute Inspector
     let attributeInspector = new AttributeInspector({
       layerInfos: layerInfos
-    }, domConstruct.create("div"));
+    }, "attributeInspectorDiv"); //domConstruct.create("div"));
 
     //add a save button next to the delete button
     var saveButton = new Button({ label: "Save", "class": "saveButton"},domConstruct.create("div"));
