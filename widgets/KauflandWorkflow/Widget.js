@@ -84,30 +84,15 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                     editingEnabled = false;
                 }
             });
-            /*    editLayer.on("click", function(evt) {
-                  event.stop(evt);
-                  if (evt.ctrlKey === true || evt.metaKey === true) {  //delete feature if ctrl key is depressed
-                    editLayer.applyEdits(null,null,[evt.graphic]);
-                    editLayer = this;
-                    editToolbar.deactivate();
-                    editingEnabled=false;
-                  }
-                });*/
             this.initializeTemplatePicker(editLayer, editToolbar);
-            //this.initializeAttributeInspector(editLayer);
             var attributeInspector = this.initializeAttributeInspector(editLayer);
             var selectQuery = new Query();
             editLayer.on("click", lang.hitch(this, function (evt) {
-                /*      selectQuery.geometry = evt.mapPoint;
-                      selectQuery.returnGeometry = true;*/
                 selectQuery.objectIds = [evt.graphic.attributes.objectid];
                 editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function (features) {
                     if (features.length > 0) {
-                        //store the current feature
                         this.updateFeature = features[0];
                         this.map.infoWindow.setTitle(features[0].getLayer().name);
-                        /*          this.map.infoWindow.setContent(attributeInspector.domNode);
-                                  this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));*/
                     }
                     else {
                         this.map.infoWindow.hide();
@@ -160,48 +145,14 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var layerInfos = [
                 {
                     'featureLayer': editLayer,
-                    'showAttachments': false,
+                    'showAttachments': true,
                     'showDeleteButton': true,
-                    'isEditable': true,
-                    'fieldInfos': [
-                        {
-                            "fieldName": "title",
-                            "isEditable": true,
-                            "tooltip": "Title",
-                            "label": "Title:"
-                        },
-                        {
-                            "fieldName": "description",
-                            "isEditable": true,
-                            "tooltip": "Description",
-                            "label": "Description:"
-                        },
-                        {
-                            "fieldName": "date",
-                            "isEditable": false,
-                            "tooltip": "Date",
-                            "label": "Date:"
-                        },
-                        {
-                            "fieldName": "typeid",
-                            "isEditable": false,
-                            "tooltip": "TypeID",
-                            "label": "TypeID:"
-                        },
-                        {
-                            "fieldName": "pointidentifier",
-                            "isEditable": true,
-                            "tooltip": "Unique Point Identifier",
-                            "label": "Unique Point Identifier:"
-                        }
-                    ]
+                    'isEditable': true
                 }
             ];
-            //Initialize Attribute Inspector
             var attributeInspector = new AttributeInspector({
                 layerInfos: layerInfos
             }, "attributeInspectorDiv");
-            //add a save button next to the delete button
             var saveButton = new Button({ label: "Save", "class": "attributeInspectorSaveButton" }, domConstruct.create("div"));
             domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
             saveButton.on("click", function (evt) {
@@ -209,19 +160,16 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 updateFeatureLayer.applyEdits(null, [_this.updateFeature], null);
             });
             attributeInspector.on("attribute-change", function (evt) {
-                //store the updates to apply when the save button is clicked
-                this.updateFeature.attributes[evt.fieldName] = evt.fieldValue;
+                _this.updateFeature.attributes[evt.fieldName] = evt.fieldValue;
             });
             attributeInspector.on("next", function (evt) {
-                this.updateFeature = evt.feature;
-                console.log("Next " + this.updateFeature.attributes.OBJECTID);
+                _this.updateFeature = evt.feature;
+                console.log("Next " + _this.updateFeature.attributes.OBJECTID);
             });
             attributeInspector.on("delete", function (evt) {
-                var updateFeatureLayer = this.updateFeature.getLayer();
+                var updateFeatureLayer = _this.updateFeature.getLayer();
                 updateFeatureLayer.applyEdits(null, null, [evt.feature]);
-                this.map.infoWindow.hide();
             });
-            //this.map.infoWindow.setContent(attributeInspector.domNode);
             return attributeInspector;
         };
         return Widget;
