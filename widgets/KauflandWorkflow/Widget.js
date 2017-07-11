@@ -156,6 +156,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             });
         };
         Widget.prototype.initializeAttributeInspector = function (editLayer) {
+            var _this = this;
             var layerInfos = [
                 {
                     'featureLayer': editLayer,
@@ -203,9 +204,9 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             //add a save button next to the delete button
             var saveButton = new Button({ label: "Save", "class": "attributeInspectorSaveButton" }, domConstruct.create("div"));
             domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
-            saveButton.on("click", function () {
-                var updateFeatureLayer = this.updateFeature.getLayer();
-                updateFeatureLayer.applyEdits(null, [this.updateFeature], null);
+            saveButton.on("click", function (evt) {
+                var updateFeatureLayer = _this.updateFeature.getLayer();
+                updateFeatureLayer.applyEdits(null, [_this.updateFeature], null);
             });
             attributeInspector.on("attribute-change", function (evt) {
                 //store the updates to apply when the save button is clicked

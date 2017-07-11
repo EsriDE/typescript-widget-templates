@@ -253,7 +253,7 @@ class Widget extends BaseWidget {
     var saveButton = new Button({ label: "Save", "class": "attributeInspectorSaveButton"}, domConstruct.create("div"));
     domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
 
-    saveButton.on("click", function() {
+    saveButton.on("click", evt => {
       let updateFeatureLayer = this.updateFeature.getLayer() as FeatureLayer;
       updateFeatureLayer.applyEdits(null, [this.updateFeature], null);
     });
