@@ -94,7 +94,28 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                   }
                 });*/
             this.initializeTemplatePicker(editLayer, editToolbar);
-            this.initializeAttributeInspector(editLayer);
+            //this.initializeAttributeInspector(editLayer);
+            var selectQuery = new Query();
+            this.map.on("click", lang.hitch(this, function (evt) {
+                selectQuery.geometry = evt.mapPoint;
+                selectQuery.returnGeometry = true;
+                editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function (features) {
+                    if (features.length > 0) {
+                        //store the current feature
+                        this.updateFeature = features[0];
+                        var attributeInspector = this.initializeAttributeInspector(editLayer);
+                        this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
+                        this.map.infoWindow.setTitle(features[0].getLayer().name);
+                        this.map.infoWindow.setContent(attributeInspector.domNode);
+                    }
+                    else {
+                        this.map.infoWindow.hide();
+                    }
+                }));
+            }));
+            this.map.infoWindow.on("hide", function () {
+                editLayer.clearSelection();
+            });
         };
         Widget.prototype.initializeTemplatePicker = function (editLayer, editToolbar) {
             var layers = [];
@@ -199,26 +220,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 this.map.infoWindow.hide();
             });
             //this.map.infoWindow.setContent(attributeInspector.domNode);
-            var selectQuery = new Query();
-            this.map.on("click", lang.hitch(this, function (evt) {
-                selectQuery.geometry = evt.mapPoint;
-                selectQuery.returnGeometry = true;
-                editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, lang.hitch(this, function (features) {
-                    if (features.length > 0) {
-                        //store the current feature
-                        this.updateFeature = features[0];
-                        this.map.infoWindow.show(evt.screenPoint, this.map.getInfoWindowAnchor(evt.screenPoint));
-                        this.map.infoWindow.setTitle(features[0].getLayer().name);
-                        this.map.infoWindow.setContent(attributeInspector.domNode);
-                    }
-                    else {
-                        this.map.infoWindow.hide();
-                    }
-                }));
-            }));
-            this.map.infoWindow.on("hide", function () {
-                editLayer.clearSelection();
-            });
+            return attributeInspector;
         };
         return Widget;
     }(BaseWidget));
