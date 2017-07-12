@@ -6,6 +6,7 @@
         bufferResetButton: "Reset buffers",
         bufferStoreButton: "Store buffers",
         editPolygons: "Edit polygons",
+        newFeature: "New feature",
         _widgetLabel: "Kaufland Workflow NLS"
     },
     "de": true 

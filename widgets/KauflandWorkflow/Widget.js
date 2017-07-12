@@ -85,14 +85,19 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 }
             });
             this.initializeTemplatePicker(editLayer, editToolbar);
-            var attributeInspector = this.initializeAttributeInspector(editLayer);
+            this.attributeInspector = this.initializeAttributeInspector(editLayer);
             var selectQuery = new Query();
             editLayer.on("click", function (evt) {
                 selectQuery.objectIds = [evt.graphic.attributes.objectid];
                 editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function (features) {
                     if (features.length > 0) {
                         _this.updateFeature = features[0];
-                        _this.map.infoWindow.setTitle(features[0].getLayer().name);
+                        if (_this.updateFeature.attributes && _this.updateFeature.attributes.title) {
+                            _this.attributeInspector.layerName.innerText = _this.updateFeature.attributes.title;
+                        }
+                        else {
+                            _this.attributeInspector.layerName.innerText = _this.nls.newFeature;
+                        }
                     }
                     else {
                         _this.map.infoWindow.hide();

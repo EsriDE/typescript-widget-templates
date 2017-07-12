@@ -24,7 +24,8 @@ class Widget extends BaseWidget {
 
   public baseClass: string = "jimu-widget-kauflandworkflow";
   public config: SpecificWidgetConfig;
-  private updateFeature : Graphic;
+  private updateFeature: Graphic;
+  private attributeInspector: AttributeInspector;
   private subnode: HTMLElement;
 
   constructor(args?) {
@@ -120,7 +121,7 @@ class Widget extends BaseWidget {
 
     this.initializeTemplatePicker(editLayer, editToolbar);
     
-    let attributeInspector = this.initializeAttributeInspector(editLayer);
+    this.attributeInspector = this.initializeAttributeInspector(editLayer);
 
     var selectQuery = new Query();
     editLayer.on("click", evt => {
@@ -128,7 +129,12 @@ class Widget extends BaseWidget {
       editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, features => {
         if (features.length > 0) {
           this.updateFeature = features[0];
-          this.map.infoWindow.setTitle(features[0].getLayer().name);
+          if (this.updateFeature.attributes && this.updateFeature.attributes.title) {
+            this.attributeInspector.layerName.innerText = this.updateFeature.attributes.title;
+          }
+          else {
+            this.attributeInspector.layerName.innerText = this.nls.newFeature;
+          }
         }
         else {
           this.map.infoWindow.hide();
