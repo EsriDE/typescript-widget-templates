@@ -15,6 +15,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         function Widget(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-kauflandworkflow" }, args)) || this;
             _this.baseClass = "jimu-widget-kauflandworkflow";
+            _this.firstEditorInit = true;
             return _this;
         }
         Widget.prototype.startup = function () {
@@ -28,8 +29,15 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         };
         Widget.prototype.onClose = function () {
             console.log('onClose');
-            this.templatePicker.destroy();
-            this.attributeInspector.destroy();
+            if (this.templatePicker)
+                this.templatePicker.destroy();
+            if (this.attributeInspector)
+                this.attributeInspector.destroy();
+            if (this.editToolbar) {
+                this.editToolbar.deactivate();
+                this.editToolbar = null;
+            }
+            this.editLayerOnDblClickEventHandler = function (evt) { console.log("double click deactivated"); };
         };
         Widget.prototype.onMinimize = function () {
             console.log('onMinimize');
@@ -69,55 +77,63 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         };
         Widget.prototype.editPolygons = function () {
             var _this = this;
-            var editLayer = this.map.getLayer(this.config.polygonLayerId);
-            this.editToolbar = this.initializeEditToolbar(editLayer);
-            this.templatePicker = this.initializeTemplatePicker(editLayer);
+            this.editLayer = this.map.getLayer(this.config.polygonLayerId);
+            this.editToolbar = this.initializeEditToolbar();
+            this.templatePicker = this.initializeTemplatePicker();
             this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
-            this.attributeInspector = this.initializeAttributeInspector(editLayer);
-            var selectQuery = new Query();
-            editLayer.on("click", function (evt) {
-                selectQuery.objectIds = [evt.graphic.attributes.objectid];
-                editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function (features) {
-                    if (features.length > 0) {
-                        _this.updateFeature = features[0];
-                        if (_this.updateFeature.attributes && _this.updateFeature.attributes.title) {
-                            _this.attributeInspector.layerName.innerText = _this.updateFeature.attributes.title;
+            this.attributeInspector = this.initializeAttributeInspector();
+            if (this.firstEditorInit) {
+                var selectQuery = new Query();
+                this.editLayer.on("click", function (evt) {
+                    selectQuery.objectIds = [evt.graphic.attributes.objectid];
+                    _this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function (features) {
+                        if (features.length > 0) {
+                            _this.updateFeature = features[0];
+                            if (_this.updateFeature.attributes && _this.updateFeature.attributes.title) {
+                                _this.attributeInspector.layerName.innerText = _this.updateFeature.attributes.title;
+                            }
+                            else {
+                                _this.attributeInspector.layerName.innerText = _this.nls.newFeature;
+                            }
                         }
                         else {
-                            _this.attributeInspector.layerName.innerText = _this.nls.newFeature;
+                            _this.map.infoWindow.hide();
                         }
-                    }
-                    else {
-                        _this.map.infoWindow.hide();
-                    }
+                    });
                 });
-            });
-            this.map.infoWindow.on("hide", function (evt) {
-                editLayer.clearSelection();
-            });
+                this.map.infoWindow.on("hide", function (evt) {
+                    _this.editLayer.clearSelection();
+                });
+            }
+            this.firstEditorInit = false;
         };
-        Widget.prototype.initializeEditToolbar = function (editLayer) {
+        Widget.prototype.initializeEditToolbar = function () {
+            var _this = this;
             var editToolbar = new Edit(this.map);
             editToolbar.on("deactivate", function (evt) {
-                editLayer.applyEdits(null, [evt.graphic], null);
+                _this.editLayer.applyEdits(null, [evt.graphic], null);
             });
             var editingEnabled = false;
-            editLayer.on("dbl-click", function (evt) {
+            this.editLayerOnDblClickEventHandler = function (evt) {
                 event.stop(evt);
                 if (editingEnabled === false) {
                     editingEnabled = true;
-                    editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic);
+                    var enabledFunctions = Edit.EDIT_VERTICES | Edit.MOVE | Edit.EDIT_VERTICES | Edit.SCALE | Edit.ROTATE | Edit.EDIT_TEXT;
+                    editToolbar.activate(enabledFunctions, evt.graphic);
                 }
                 else {
                     editToolbar.deactivate();
                     editingEnabled = false;
                 }
-            });
+            };
+            if (this.firstEditorInit) {
+                this.editLayer.on("dbl-click", function (evt) { return _this.editLayerOnDblClickEventHandler(evt); });
+            }
             return editToolbar;
         };
-        Widget.prototype.initializeTemplatePicker = function (editLayer) {
+        Widget.prototype.initializeTemplatePicker = function () {
             var layers = [];
-            layers.push(editLayer);
+            layers.push(this.editLayer);
             var templatePicker = new TemplatePicker({
                 featureLayers: layers,
                 rows: "auto",
@@ -158,11 +174,11 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             });
             return drawToolbar;
         };
-        Widget.prototype.initializeAttributeInspector = function (editLayer) {
+        Widget.prototype.initializeAttributeInspector = function () {
             var _this = this;
             var layerInfos = [
                 {
-                    'featureLayer': editLayer,
+                    'featureLayer': this.editLayer,
                     'showAttachments': true,
                     'showDeleteButton': true,
                     'isEditable': true

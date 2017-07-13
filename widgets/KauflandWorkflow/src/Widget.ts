@@ -24,15 +24,19 @@ class Widget extends BaseWidget {
 
   public baseClass: string = "jimu-widget-kauflandworkflow";
   public config: SpecificWidgetConfig;
+  private editLayer: FeatureLayer;
+  private editLayerOnDblClickEventHandler;
   private updateFeature: Graphic;
   private attributeInspector: AttributeInspector;
   private editToolbar: Edit;
   private drawToolbar: Draw;
   private templatePicker: TemplatePicker;
   private subnode: HTMLElement;
+  private firstEditorInit: Boolean;
 
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));  // replaces "this.inherited(args)" from Esri tutorials
+    this.firstEditorInit = true;
   }
 
   startup() {
@@ -49,8 +53,13 @@ class Widget extends BaseWidget {
 
   onClose() {
     console.log('onClose');
-    this.templatePicker.destroy();
-    this.attributeInspector.destroy();
+    if (this.templatePicker) this.templatePicker.destroy();
+    if (this.attributeInspector) this.attributeInspector.destroy();
+    if (this.editToolbar) {
+      this.editToolbar.deactivate();
+      this.editToolbar = null;
+    }
+    this.editLayerOnDblClickEventHandler = function(evt){console.log("double click deactivated")};
   }
 
   onMinimize() {
@@ -105,60 +114,69 @@ class Widget extends BaseWidget {
   }
 
   editPolygons() {
-    var editLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
-    this.editToolbar = this.initializeEditToolbar(editLayer);
-    this.templatePicker = this.initializeTemplatePicker(editLayer);
+    this.editLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
+    this.editToolbar = this.initializeEditToolbar();
+    this.templatePicker = this.initializeTemplatePicker();
     this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
-    this.attributeInspector = this.initializeAttributeInspector(editLayer);
+    this.attributeInspector = this.initializeAttributeInspector();
 
-    var selectQuery = new Query();
-    editLayer.on("click", evt => {
-      selectQuery.objectIds = [evt.graphic.attributes.objectid];
-      editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, features => {
-        if (features.length > 0) {
-          this.updateFeature = features[0];
-          if (this.updateFeature.attributes && this.updateFeature.attributes.title) {
-            this.attributeInspector.layerName.innerText = this.updateFeature.attributes.title;
+    if (this.firstEditorInit) { // only add layer and map events once per widget instance
+      var selectQuery = new Query();
+      this.editLayer.on("click", evt => {
+        selectQuery.objectIds = [evt.graphic.attributes.objectid];
+        this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, features => {
+          if (features.length > 0) {
+            this.updateFeature = features[0];
+            if (this.updateFeature.attributes && this.updateFeature.attributes.title) {
+              this.attributeInspector.layerName.innerText = this.updateFeature.attributes.title;
+            }
+            else {
+              this.attributeInspector.layerName.innerText = this.nls.newFeature;
+            }
           }
           else {
-            this.attributeInspector.layerName.innerText = this.nls.newFeature;
+            this.map.infoWindow.hide();
           }
-        }
-        else {
-          this.map.infoWindow.hide();
-        }
+        });
       });
-    });
 
-    this.map.infoWindow.on("hide", evt => {
-      editLayer.clearSelection();
-    });
+      this.map.infoWindow.on("hide", evt => {
+        this.editLayer.clearSelection();
+      });
+    }
+
+    this.firstEditorInit = false;
   }
 
-  initializeEditToolbar(editLayer: FeatureLayer): Edit {
+  initializeEditToolbar(): Edit {
     let editToolbar = new Edit(this.map);
     editToolbar.on("deactivate", evt => {
-      editLayer.applyEdits(null, [evt.graphic], null);
+      this.editLayer.applyEdits(null, [evt.graphic], null);
     });
 
-    var editingEnabled = false;
-    editLayer.on("dbl-click", evt => {
+    let editingEnabled = false;
+    this.editLayerOnDblClickEventHandler = function(evt){
       event.stop(evt);
       if (editingEnabled === false) {
         editingEnabled = true;
-        editToolbar.activate(Edit.EDIT_VERTICES , evt.graphic);
+        let enabledFunctions =  Edit.EDIT_VERTICES | Edit.MOVE | Edit.EDIT_VERTICES | Edit.SCALE | Edit.ROTATE | Edit.EDIT_TEXT;
+        editToolbar.activate(enabledFunctions , evt.graphic);
       } else {
         editToolbar.deactivate();
         editingEnabled = false;
       }
-    });
+    };
+
+    if (this.firstEditorInit) { // only add layer and map events once per widget instance
+      this.editLayer.on("dbl-click", evt => this.editLayerOnDblClickEventHandler(evt));
+    }
 
     return editToolbar;
   }
 
-  initializeTemplatePicker(editLayer: FeatureLayer): TemplatePicker {
+  initializeTemplatePicker(): TemplatePicker {
     var layers = [];
-    layers.push(editLayer);
+    layers.push(this.editLayer);
     let templatePicker = new TemplatePicker({
       featureLayers: layers,
       rows: "auto",
@@ -204,10 +222,10 @@ class Widget extends BaseWidget {
     return drawToolbar;
   }
 
-  initializeAttributeInspector(editLayer: FeatureLayer): AttributeInspector {
+  initializeAttributeInspector(): AttributeInspector {
     var layerInfos = [
       {
-        'featureLayer': editLayer,
+        'featureLayer': this.editLayer,
         'showAttachments': true,
         'showDeleteButton': true,
         'isEditable': true
