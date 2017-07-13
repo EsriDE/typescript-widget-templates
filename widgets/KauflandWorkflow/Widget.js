@@ -70,23 +70,9 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         Widget.prototype.editPolygons = function () {
             var _this = this;
             var editLayer = this.map.getLayer(this.config.polygonLayerId);
-            this.editToolbar = new Edit(this.map);
-            this.editToolbar.on("deactivate", function (evt) {
-                editLayer.applyEdits(null, [evt.graphic], null);
-            });
-            var editingEnabled = false;
-            editLayer.on("dbl-click", function (evt) {
-                event.stop(evt);
-                if (editingEnabled === false) {
-                    editingEnabled = true;
-                    _this.editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic);
-                }
-                else {
-                    _this.editToolbar.deactivate();
-                    editingEnabled = false;
-                }
-            });
-            this.templatePicker = this.initializeTemplatePicker(editLayer, this.editToolbar);
+            this.editToolbar = this.initializeEditToolbar(editLayer);
+            this.templatePicker = this.initializeTemplatePicker(editLayer);
+            this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
             this.attributeInspector = this.initializeAttributeInspector(editLayer);
             var selectQuery = new Query();
             editLayer.on("click", function (evt) {
@@ -110,8 +96,26 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 editLayer.clearSelection();
             });
         };
-        Widget.prototype.initializeTemplatePicker = function (editLayer, editToolbar) {
-            var _this = this;
+        Widget.prototype.initializeEditToolbar = function (editLayer) {
+            var editToolbar = new Edit(this.map);
+            editToolbar.on("deactivate", function (evt) {
+                editLayer.applyEdits(null, [evt.graphic], null);
+            });
+            var editingEnabled = false;
+            editLayer.on("dbl-click", function (evt) {
+                event.stop(evt);
+                if (editingEnabled === false) {
+                    editingEnabled = true;
+                    editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic);
+                }
+                else {
+                    editToolbar.deactivate();
+                    editingEnabled = false;
+                }
+            });
+            return editToolbar;
+        };
+        Widget.prototype.initializeTemplatePicker = function (editLayer) {
             var layers = [];
             layers.push(editLayer);
             var templatePicker = new TemplatePicker({
@@ -123,7 +127,11 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             }, domConstruct.create("div"));
             domConstruct.place(templatePicker.domNode, this.config.templatePickerDiv, "only");
             templatePicker.startup();
-            this.drawToolbar = new Draw(this.map);
+            return templatePicker;
+        };
+        Widget.prototype.initializeDrawToolbar = function (templatePicker) {
+            var _this = this;
+            var drawToolbar = new Draw(this.map);
             var selectedTemplate;
             templatePicker.on("selection-change", function (evt) {
                 if (templatePicker.getSelected()) {
@@ -131,24 +139,24 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 }
                 switch (selectedTemplate.featureLayer.geometryType) {
                     case "esriGeometryPoint":
-                        _this.drawToolbar.activate(Draw.POINT);
+                        drawToolbar.activate(Draw.POINT);
                         break;
                     case "esriGeometryPolyline":
-                        _this.drawToolbar.activate(Draw.POLYLINE);
+                        drawToolbar.activate(Draw.POLYLINE);
                         break;
                     case "esriGeometryPolygon":
-                        _this.drawToolbar.activate(Draw.POLYGON);
+                        drawToolbar.activate(Draw.POLYGON);
                         break;
                 }
             });
-            this.drawToolbar.on("draw-end", function (evt) {
-                _this.drawToolbar.deactivate();
+            drawToolbar.on("draw-end", function (evt) {
+                drawToolbar.deactivate();
                 _this.editToolbar.deactivate();
                 var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
                 var newGraphic = new Graphic(evt.geometry, null, newAttributes);
                 selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
             });
-            return templatePicker;
+            return drawToolbar;
         };
         Widget.prototype.initializeAttributeInspector = function (editLayer) {
             var _this = this;

@@ -106,26 +106,9 @@ class Widget extends BaseWidget {
 
   editPolygons() {
     var editLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
-
-    this.editToolbar = new Edit(this.map);
-    this.editToolbar.on("deactivate", evt => {
-      editLayer.applyEdits(null, [evt.graphic], null);
-    });
-
-    var editingEnabled = false;
-    editLayer.on("dbl-click", evt => {
-      event.stop(evt);
-      if (editingEnabled === false) {
-        editingEnabled = true;
-        this.editToolbar.activate(Edit.EDIT_VERTICES , evt.graphic);
-      } else {
-        this.editToolbar.deactivate();
-        editingEnabled = false;
-      }
-    });
-
-    this.templatePicker = this.initializeTemplatePicker(editLayer, this.editToolbar);
-    
+    this.editToolbar = this.initializeEditToolbar(editLayer);
+    this.templatePicker = this.initializeTemplatePicker(editLayer);
+    this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
     this.attributeInspector = this.initializeAttributeInspector(editLayer);
 
     var selectQuery = new Query();
@@ -150,10 +133,30 @@ class Widget extends BaseWidget {
     this.map.infoWindow.on("hide", evt => {
       editLayer.clearSelection();
     });
-
   }
 
-  initializeTemplatePicker(editLayer: FeatureLayer, editToolbar: Edit): TemplatePicker {
+  initializeEditToolbar(editLayer: FeatureLayer): Edit {
+    let editToolbar = new Edit(this.map);
+    editToolbar.on("deactivate", evt => {
+      editLayer.applyEdits(null, [evt.graphic], null);
+    });
+
+    var editingEnabled = false;
+    editLayer.on("dbl-click", evt => {
+      event.stop(evt);
+      if (editingEnabled === false) {
+        editingEnabled = true;
+        editToolbar.activate(Edit.EDIT_VERTICES , evt.graphic);
+      } else {
+        editToolbar.deactivate();
+        editingEnabled = false;
+      }
+    });
+
+    return editToolbar;
+  }
+
+  initializeTemplatePicker(editLayer: FeatureLayer): TemplatePicker {
     var layers = [];
     layers.push(editLayer);
     let templatePicker = new TemplatePicker({
@@ -166,8 +169,11 @@ class Widget extends BaseWidget {
     domConstruct.place(templatePicker.domNode, this.config.templatePickerDiv, "only");
 
     templatePicker.startup();
+    return templatePicker;
+  }
 
-    this.drawToolbar = new Draw(this.map);
+  initializeDrawToolbar(templatePicker: TemplatePicker): Draw {
+    let drawToolbar = new Draw(this.map);
 
     var selectedTemplate;
     templatePicker.on("selection-change", evt => {
@@ -176,26 +182,26 @@ class Widget extends BaseWidget {
       }
       switch (selectedTemplate.featureLayer.geometryType) {
         case "esriGeometryPoint":
-          this.drawToolbar.activate(Draw.POINT);
+          drawToolbar.activate(Draw.POINT);
           break;
         case "esriGeometryPolyline":
-          this.drawToolbar.activate(Draw.POLYLINE);
+          drawToolbar.activate(Draw.POLYLINE);
           break;
         case "esriGeometryPolygon":
-          this.drawToolbar.activate(Draw.POLYGON);
+          drawToolbar.activate(Draw.POLYGON);
           break;
       }
     });
 
-    this.drawToolbar.on("draw-end", evt => {
-      this.drawToolbar.deactivate();
+    drawToolbar.on("draw-end", evt => {
+      drawToolbar.deactivate();
       this.editToolbar.deactivate();
       var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
       var newGraphic = new Graphic(evt.geometry, null, newAttributes);
       selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
     });
 
-    return templatePicker;
+    return drawToolbar;
   }
 
   initializeAttributeInspector(editLayer: FeatureLayer): AttributeInspector {
