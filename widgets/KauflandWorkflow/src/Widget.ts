@@ -26,6 +26,9 @@ class Widget extends BaseWidget {
   public config: SpecificWidgetConfig;
   private updateFeature: Graphic;
   private attributeInspector: AttributeInspector;
+  private editToolbar: Edit;
+  private drawToolbar: Draw;
+  private templatePicker: TemplatePicker;
   private subnode: HTMLElement;
 
   constructor(args?) {
@@ -46,6 +49,8 @@ class Widget extends BaseWidget {
 
   onClose() {
     console.log('onClose');
+    this.templatePicker.destroy();
+    this.attributeInspector.destroy();
   }
 
   onMinimize() {
@@ -102,8 +107,8 @@ class Widget extends BaseWidget {
   editPolygons() {
     var editLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
 
-    var editToolbar = new Edit(this.map);
-    editToolbar.on("deactivate", evt => {
+    this.editToolbar = new Edit(this.map);
+    this.editToolbar.on("deactivate", evt => {
       editLayer.applyEdits(null, [evt.graphic], null);
     });
 
@@ -112,14 +117,14 @@ class Widget extends BaseWidget {
       event.stop(evt);
       if (editingEnabled === false) {
         editingEnabled = true;
-        editToolbar.activate(Edit.EDIT_VERTICES , evt.graphic);
+        this.editToolbar.activate(Edit.EDIT_VERTICES , evt.graphic);
       } else {
-        editToolbar.deactivate();
+        this.editToolbar.deactivate();
         editingEnabled = false;
       }
     });
 
-    this.initializeTemplatePicker(editLayer, editToolbar);
+    this.initializeTemplatePicker(editLayer, this.editToolbar);
     
     this.attributeInspector = this.initializeAttributeInspector(editLayer, this.config.attributeInspectorDiv);
 
@@ -151,39 +156,40 @@ class Widget extends BaseWidget {
   initializeTemplatePicker(editLayer: FeatureLayer, editToolbar: Edit) {
     var layers = [];
     layers.push(editLayer);
-    var templatePicker = new TemplatePicker({
+    this.templatePicker = new TemplatePicker({
       featureLayers: layers,
       rows: "auto",
       columns: "auto",
       grouping: true,
       style: "height: auto; overflow: auto;"
-    }, this.config.templatePickerDiv);
+    }, domConstruct.create("div"));
+    domConstruct.place(this.templatePicker.domNode, this.config.templatePickerDiv, "only");
 
-    templatePicker.startup();
+    this.templatePicker.startup();
 
-    var drawToolbar = new Draw(this.map);
+    this.drawToolbar = new Draw(this.map);
 
     var selectedTemplate;
-    templatePicker.on("selection-change", evt => {
-      if( templatePicker.getSelected() ) {
-        selectedTemplate = templatePicker.getSelected();
+    this.templatePicker.on("selection-change", evt => {
+      if( this.templatePicker.getSelected() ) {
+        selectedTemplate = this.templatePicker.getSelected();
       }
       switch (selectedTemplate.featureLayer.geometryType) {
         case "esriGeometryPoint":
-          drawToolbar.activate(Draw.POINT);
+          this.drawToolbar.activate(Draw.POINT);
           break;
         case "esriGeometryPolyline":
-          drawToolbar.activate(Draw.POLYLINE);
+          this.drawToolbar.activate(Draw.POLYLINE);
           break;
         case "esriGeometryPolygon":
-          drawToolbar.activate(Draw.POLYGON);
+          this.drawToolbar.activate(Draw.POLYGON);
           break;
       }
     });
 
-    drawToolbar.on("draw-end", evt => {
-      drawToolbar.deactivate();
-      editToolbar.deactivate();
+    this.drawToolbar.on("draw-end", evt => {
+      this.drawToolbar.deactivate();
+      this.editToolbar.deactivate();
       var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
       var newGraphic = new Graphic(evt.geometry, null, newAttributes);
       selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
@@ -202,7 +208,8 @@ class Widget extends BaseWidget {
 
     let attributeInspector = new AttributeInspector({
       layerInfos: layerInfos
-    }, attributeInspectorDiv);
+    }, domConstruct.create("div"));
+    domConstruct.place(attributeInspector.domNode, attributeInspectorDiv, "only");
 
     var saveButton = new Button({ label: "Save", "class": "attributeInspectorSaveButton"}, domConstruct.create("div"));
     domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");

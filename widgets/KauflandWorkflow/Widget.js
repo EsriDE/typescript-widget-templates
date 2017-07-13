@@ -28,6 +28,8 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         };
         Widget.prototype.onClose = function () {
             console.log('onClose');
+            this.templatePicker.destroy();
+            this.attributeInspector.destroy();
         };
         Widget.prototype.onMinimize = function () {
             console.log('onMinimize');
@@ -68,8 +70,8 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         Widget.prototype.editPolygons = function () {
             var _this = this;
             var editLayer = this.map.getLayer(this.config.polygonLayerId);
-            var editToolbar = new Edit(this.map);
-            editToolbar.on("deactivate", function (evt) {
+            this.editToolbar = new Edit(this.map);
+            this.editToolbar.on("deactivate", function (evt) {
                 editLayer.applyEdits(null, [evt.graphic], null);
             });
             var editingEnabled = false;
@@ -77,14 +79,14 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 event.stop(evt);
                 if (editingEnabled === false) {
                     editingEnabled = true;
-                    editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic);
+                    _this.editToolbar.activate(Edit.EDIT_VERTICES, evt.graphic);
                 }
                 else {
-                    editToolbar.deactivate();
+                    _this.editToolbar.deactivate();
                     editingEnabled = false;
                 }
             });
-            this.initializeTemplatePicker(editLayer, editToolbar);
+            this.initializeTemplatePicker(editLayer, this.editToolbar);
             this.attributeInspector = this.initializeAttributeInspector(editLayer, this.config.attributeInspectorDiv);
             var selectQuery = new Query();
             editLayer.on("click", function (evt) {
@@ -109,37 +111,39 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             });
         };
         Widget.prototype.initializeTemplatePicker = function (editLayer, editToolbar) {
+            var _this = this;
             var layers = [];
             layers.push(editLayer);
-            var templatePicker = new TemplatePicker({
+            this.templatePicker = new TemplatePicker({
                 featureLayers: layers,
                 rows: "auto",
                 columns: "auto",
                 grouping: true,
                 style: "height: auto; overflow: auto;"
-            }, this.config.templatePickerDiv);
-            templatePicker.startup();
-            var drawToolbar = new Draw(this.map);
+            }, domConstruct.create("div"));
+            domConstruct.place(this.templatePicker.domNode, this.config.templatePickerDiv, "only");
+            this.templatePicker.startup();
+            this.drawToolbar = new Draw(this.map);
             var selectedTemplate;
-            templatePicker.on("selection-change", function (evt) {
-                if (templatePicker.getSelected()) {
-                    selectedTemplate = templatePicker.getSelected();
+            this.templatePicker.on("selection-change", function (evt) {
+                if (_this.templatePicker.getSelected()) {
+                    selectedTemplate = _this.templatePicker.getSelected();
                 }
                 switch (selectedTemplate.featureLayer.geometryType) {
                     case "esriGeometryPoint":
-                        drawToolbar.activate(Draw.POINT);
+                        _this.drawToolbar.activate(Draw.POINT);
                         break;
                     case "esriGeometryPolyline":
-                        drawToolbar.activate(Draw.POLYLINE);
+                        _this.drawToolbar.activate(Draw.POLYLINE);
                         break;
                     case "esriGeometryPolygon":
-                        drawToolbar.activate(Draw.POLYGON);
+                        _this.drawToolbar.activate(Draw.POLYGON);
                         break;
                 }
             });
-            drawToolbar.on("draw-end", function (evt) {
-                drawToolbar.deactivate();
-                editToolbar.deactivate();
+            this.drawToolbar.on("draw-end", function (evt) {
+                _this.drawToolbar.deactivate();
+                _this.editToolbar.deactivate();
                 var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
                 var newGraphic = new Graphic(evt.geometry, null, newAttributes);
                 selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
@@ -157,7 +161,8 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             ];
             var attributeInspector = new AttributeInspector({
                 layerInfos: layerInfos
-            }, attributeInspectorDiv);
+            }, domConstruct.create("div"));
+            domConstruct.place(attributeInspector.domNode, attributeInspectorDiv, "only");
             var saveButton = new Button({ label: "Save", "class": "attributeInspectorSaveButton" }, domConstruct.create("div"));
             domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
             saveButton.on("click", function (evt) {
