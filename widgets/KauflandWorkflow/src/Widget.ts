@@ -126,7 +126,7 @@ class Widget extends BaseWidget {
 
     this.templatePicker = this.initializeTemplatePicker(editLayer, this.editToolbar);
     
-    this.attributeInspector = this.initializeAttributeInspector(editLayer, this.config.attributeInspectorDiv);
+    this.attributeInspector = this.initializeAttributeInspector(editLayer);
 
     var selectQuery = new Query();
     editLayer.on("click", evt => {
@@ -198,7 +198,7 @@ class Widget extends BaseWidget {
     return templatePicker;
   }
 
-  initializeAttributeInspector(editLayer: FeatureLayer, attributeInspectorDiv: string): AttributeInspector {
+  initializeAttributeInspector(editLayer: FeatureLayer): AttributeInspector {
     var layerInfos = [
       {
         'featureLayer': editLayer,
@@ -211,7 +211,7 @@ class Widget extends BaseWidget {
     let attributeInspector = new AttributeInspector({
       layerInfos: layerInfos
     }, domConstruct.create("div"));
-    domConstruct.place(attributeInspector.domNode, attributeInspectorDiv, "only");
+    domConstruct.place(attributeInspector.domNode, this.config.attributeInspectorDiv, "only");
 
     var saveButton = new Button({ label: "Save", "class": "attributeInspectorSaveButton"}, domConstruct.create("div"));
     domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");

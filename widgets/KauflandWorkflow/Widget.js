@@ -87,7 +87,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 }
             });
             this.templatePicker = this.initializeTemplatePicker(editLayer, this.editToolbar);
-            this.attributeInspector = this.initializeAttributeInspector(editLayer, this.config.attributeInspectorDiv);
+            this.attributeInspector = this.initializeAttributeInspector(editLayer);
             var selectQuery = new Query();
             editLayer.on("click", function (evt) {
                 selectQuery.objectIds = [evt.graphic.attributes.objectid];
@@ -150,7 +150,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             });
             return templatePicker;
         };
-        Widget.prototype.initializeAttributeInspector = function (editLayer, attributeInspectorDiv) {
+        Widget.prototype.initializeAttributeInspector = function (editLayer) {
             var _this = this;
             var layerInfos = [
                 {
@@ -163,7 +163,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var attributeInspector = new AttributeInspector({
                 layerInfos: layerInfos
             }, domConstruct.create("div"));
-            domConstruct.place(attributeInspector.domNode, attributeInspectorDiv, "only");
+            domConstruct.place(attributeInspector.domNode, this.config.attributeInspectorDiv, "only");
             var saveButton = new Button({ label: "Save", "class": "attributeInspectorSaveButton" }, domConstruct.create("div"));
             domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
             saveButton.on("click", function (evt) {
