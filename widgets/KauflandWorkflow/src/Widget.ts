@@ -157,7 +157,7 @@ class Widget extends BaseWidget {
       columns: "auto",
       grouping: true,
       style: "height: auto; overflow: auto;"
-    }, "templatePickerDiv");
+    }, this.config.templatePickerDiv);
 
     templatePicker.startup();
 
