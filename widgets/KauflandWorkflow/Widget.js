@@ -86,7 +86,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                     editingEnabled = false;
                 }
             });
-            this.initializeTemplatePicker(editLayer, this.editToolbar);
+            this.templatePicker = this.initializeTemplatePicker(editLayer, this.editToolbar);
             this.attributeInspector = this.initializeAttributeInspector(editLayer, this.config.attributeInspectorDiv);
             var selectQuery = new Query();
             editLayer.on("click", function (evt) {
@@ -114,20 +114,20 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var _this = this;
             var layers = [];
             layers.push(editLayer);
-            this.templatePicker = new TemplatePicker({
+            var templatePicker = new TemplatePicker({
                 featureLayers: layers,
                 rows: "auto",
                 columns: "auto",
                 grouping: true,
                 style: "height: auto; overflow: auto;"
             }, domConstruct.create("div"));
-            domConstruct.place(this.templatePicker.domNode, this.config.templatePickerDiv, "only");
-            this.templatePicker.startup();
+            domConstruct.place(templatePicker.domNode, this.config.templatePickerDiv, "only");
+            templatePicker.startup();
             this.drawToolbar = new Draw(this.map);
             var selectedTemplate;
-            this.templatePicker.on("selection-change", function (evt) {
-                if (_this.templatePicker.getSelected()) {
-                    selectedTemplate = _this.templatePicker.getSelected();
+            templatePicker.on("selection-change", function (evt) {
+                if (templatePicker.getSelected()) {
+                    selectedTemplate = templatePicker.getSelected();
                 }
                 switch (selectedTemplate.featureLayer.geometryType) {
                     case "esriGeometryPoint":
@@ -148,6 +148,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 var newGraphic = new Graphic(evt.geometry, null, newAttributes);
                 selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
             });
+            return templatePicker;
         };
         Widget.prototype.initializeAttributeInspector = function (editLayer, attributeInspectorDiv) {
             var _this = this;

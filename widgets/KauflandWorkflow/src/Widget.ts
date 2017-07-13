@@ -124,7 +124,7 @@ class Widget extends BaseWidget {
       }
     });
 
-    this.initializeTemplatePicker(editLayer, this.editToolbar);
+    this.templatePicker = this.initializeTemplatePicker(editLayer, this.editToolbar);
     
     this.attributeInspector = this.initializeAttributeInspector(editLayer, this.config.attributeInspectorDiv);
 
@@ -153,26 +153,26 @@ class Widget extends BaseWidget {
 
   }
 
-  initializeTemplatePicker(editLayer: FeatureLayer, editToolbar: Edit) {
+  initializeTemplatePicker(editLayer: FeatureLayer, editToolbar: Edit): TemplatePicker {
     var layers = [];
     layers.push(editLayer);
-    this.templatePicker = new TemplatePicker({
+    let templatePicker = new TemplatePicker({
       featureLayers: layers,
       rows: "auto",
       columns: "auto",
       grouping: true,
       style: "height: auto; overflow: auto;"
     }, domConstruct.create("div"));
-    domConstruct.place(this.templatePicker.domNode, this.config.templatePickerDiv, "only");
+    domConstruct.place(templatePicker.domNode, this.config.templatePickerDiv, "only");
 
-    this.templatePicker.startup();
+    templatePicker.startup();
 
     this.drawToolbar = new Draw(this.map);
 
     var selectedTemplate;
-    this.templatePicker.on("selection-change", evt => {
-      if( this.templatePicker.getSelected() ) {
-        selectedTemplate = this.templatePicker.getSelected();
+    templatePicker.on("selection-change", evt => {
+      if( templatePicker.getSelected() ) {
+        selectedTemplate = templatePicker.getSelected();
       }
       switch (selectedTemplate.featureLayer.geometryType) {
         case "esriGeometryPoint":
@@ -194,6 +194,8 @@ class Widget extends BaseWidget {
       var newGraphic = new Graphic(evt.geometry, null, newAttributes);
       selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
     });
+
+    return templatePicker;
   }
 
   initializeAttributeInspector(editLayer: FeatureLayer, attributeInspectorDiv: string): AttributeInspector {
