@@ -78,15 +78,20 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         Widget.prototype.editPolygons = function () {
             var _this = this;
             this.editLayer = this.map.getLayer(this.config.polygonLayerId);
+            var selectionSymbol = new SimpleFillSymbol();
+            selectionSymbol.setColor(new Color([0, 255, 255, 77]));
+            selectionSymbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([0, 255, 255, 255]), 1));
+            this.editLayer.setSelectionSymbol(selectionSymbol);
             this.editToolbar = this.initializeEditToolbar();
             this.templatePicker = this.initializeTemplatePicker();
             this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
             this.attributeInspector = this.initializeAttributeInspector();
             if (this.firstEditorInit) {
                 var selectQuery = new Query();
-                this.editLayer.on("click", function (evt) {
+                this.editLayer.on("click", lang.hitch(this, function (evt) {
+                    var _this = this;
                     selectQuery.objectIds = [evt.graphic.attributes.objectid];
-                    _this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function (features) {
+                    this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function (features) {
                         if (features.length > 0) {
                             _this.updateFeature = features[0];
                             if (_this.updateFeature.attributes && _this.updateFeature.attributes.title) {
@@ -100,7 +105,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                             _this.map.infoWindow.hide();
                         }
                     });
-                });
+                }));
                 this.map.infoWindow.on("hide", function (evt) {
                     _this.editLayer.clearSelection();
                 });
@@ -113,22 +118,6 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             editToolbar.on("deactivate", function (evt) {
                 _this.editLayer.applyEdits(null, [evt.graphic], null);
             });
-            var editingEnabled = false;
-            this.editLayerOnDblClickEventHandler = function (evt) {
-                event.stop(evt);
-                if (editingEnabled === false) {
-                    editingEnabled = true;
-                    var enabledFunctions = Edit.EDIT_VERTICES | Edit.MOVE | Edit.EDIT_VERTICES | Edit.SCALE | Edit.ROTATE | Edit.EDIT_TEXT;
-                    editToolbar.activate(enabledFunctions, evt.graphic);
-                }
-                else {
-                    editToolbar.deactivate();
-                    editingEnabled = false;
-                }
-            };
-            if (this.firstEditorInit) {
-                this.editLayer.on("dbl-click", function (evt) { return _this.editLayerOnDblClickEventHandler(evt); });
-            }
             return editToolbar;
         };
         Widget.prototype.initializeTemplatePicker = function () {
@@ -188,12 +177,31 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 layerInfos: layerInfos
             }, domConstruct.create("div"));
             domConstruct.place(attributeInspector.domNode, this.config.attributeInspectorDiv, "only");
-            var saveButton = new Button({ label: "Save", "class": "attributeInspectorSaveButton" }, domConstruct.create("div"));
+            var saveButton = new Button({ label: this.nls.save, "class": "attributeInspectorSaveButton" }, domConstruct.create("div"));
             domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
+            var editButton = new Button({ label: this.nls.edit, "class": "attributeInspectorEditButton" }, domConstruct.create("div"));
+            domConstruct.place(editButton.domNode, attributeInspector.deleteBtn.domNode, "after");
             saveButton.on("click", function (evt) {
                 var updateFeatureLayer = _this.updateFeature.getLayer();
                 updateFeatureLayer.applyEdits(null, [_this.updateFeature], null);
+                if (editingEnabled === true) {
+                    _this.editToolbar.deactivate();
+                    editingEnabled = false;
+                }
             });
+            var editingEnabled = false;
+            editButton.on("click", lang.hitch(this, function (evt) {
+                event.stop(evt);
+                if (editingEnabled === false) {
+                    editingEnabled = true;
+                    var enabledFunctions = Edit.EDIT_VERTICES | Edit.MOVE | Edit.EDIT_VERTICES | Edit.SCALE | Edit.ROTATE | Edit.EDIT_TEXT;
+                    this.editToolbar.activate(enabledFunctions, new Graphic(this.editLayer.getSelectedFeatures()[0].geometry));
+                }
+                else {
+                    this.editToolbar.deactivate();
+                    editingEnabled = false;
+                }
+            }));
             attributeInspector.on("attribute-change", function (evt) {
                 _this.updateFeature.attributes[evt.fieldName] = evt.fieldValue;
             });

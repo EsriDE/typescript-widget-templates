@@ -7,6 +7,8 @@
         bufferStoreButton: "Store buffers",
         editPolygons: "Edit polygons",
         newFeature: "New feature",
+        save: "Save",
+        edit: "Edit",
         _widgetLabel: "Kaufland Workflow NLS"
     },
     "de": true 

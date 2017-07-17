@@ -115,6 +115,16 @@ class Widget extends BaseWidget {
 
   editPolygons() {
     this.editLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
+
+    let selectionSymbol = new SimpleFillSymbol();
+    selectionSymbol.setColor(new Color([0,255,255,77]));
+    selectionSymbol.setOutline(new SimpleLineSymbol(
+            SimpleLineSymbol.STYLE_SOLID,
+            new Color([0,255,255,255]), 
+            1
+          ));
+    this.editLayer.setSelectionSymbol(selectionSymbol);
+
     this.editToolbar = this.initializeEditToolbar();
     this.templatePicker = this.initializeTemplatePicker();
     this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
@@ -122,7 +132,7 @@ class Widget extends BaseWidget {
 
     if (this.firstEditorInit) { // only add layer and map events once per widget instance
       var selectQuery = new Query();
-      this.editLayer.on("click", evt => {
+      this.editLayer.on("click", lang.hitch(this, function(evt) {
         selectQuery.objectIds = [evt.graphic.attributes.objectid];
         this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, features => {
           if (features.length > 0) {
@@ -138,7 +148,7 @@ class Widget extends BaseWidget {
             this.map.infoWindow.hide();
           }
         });
-      });
+      }));
 
       this.map.infoWindow.on("hide", evt => {
         this.editLayer.clearSelection();
@@ -153,23 +163,6 @@ class Widget extends BaseWidget {
     editToolbar.on("deactivate", evt => {
       this.editLayer.applyEdits(null, [evt.graphic], null);
     });
-
-    let editingEnabled = false;
-    this.editLayerOnDblClickEventHandler = function(evt){
-      event.stop(evt);
-      if (editingEnabled === false) {
-        editingEnabled = true;
-        let enabledFunctions =  Edit.EDIT_VERTICES | Edit.MOVE | Edit.EDIT_VERTICES | Edit.SCALE | Edit.ROTATE | Edit.EDIT_TEXT;
-        editToolbar.activate(enabledFunctions , evt.graphic);
-      } else {
-        editToolbar.deactivate();
-        editingEnabled = false;
-      }
-    };
-
-    if (this.firstEditorInit) { // only add layer and map events once per widget instance
-      this.editLayer.on("dbl-click", evt => this.editLayerOnDblClickEventHandler(evt));
-    }
 
     return editToolbar;
   }
@@ -237,13 +230,33 @@ class Widget extends BaseWidget {
     }, domConstruct.create("div"));
     domConstruct.place(attributeInspector.domNode, this.config.attributeInspectorDiv, "only");
 
-    var saveButton = new Button({ label: "Save", "class": "attributeInspectorSaveButton"}, domConstruct.create("div"));
+    var saveButton = new Button({ label: this.nls.save, "class": "attributeInspectorSaveButton"}, domConstruct.create("div"));
     domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
+
+    var editButton = new Button({ label: this.nls.edit, "class": "attributeInspectorEditButton"}, domConstruct.create("div"));
+    domConstruct.place(editButton.domNode, attributeInspector.deleteBtn.domNode, "after");
 
     saveButton.on("click", evt => {
       let updateFeatureLayer = this.updateFeature.getLayer() as FeatureLayer;
       updateFeatureLayer.applyEdits(null, [this.updateFeature], null);
+      if (editingEnabled === true) {
+        this.editToolbar.deactivate();
+        editingEnabled = false;
+      }
     });
+
+    let editingEnabled = false;
+    editButton.on("click", lang.hitch(this, function(evt) {
+      event.stop(evt);
+      if (editingEnabled === false) {
+        editingEnabled = true;
+        let enabledFunctions = Edit.EDIT_VERTICES | Edit.MOVE | Edit.EDIT_VERTICES | Edit.SCALE | Edit.ROTATE | Edit.EDIT_TEXT;
+        this.editToolbar.activate(enabledFunctions, new Graphic(this.editLayer.getSelectedFeatures()[0].geometry));
+      } else {
+        this.editToolbar.deactivate();
+        editingEnabled = false;
+      }
+    }));
 
     attributeInspector.on("attribute-change", evt => {
       this.updateFeature.attributes[evt.fieldName] = evt.fieldValue;
