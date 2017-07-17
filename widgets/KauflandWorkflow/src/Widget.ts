@@ -107,13 +107,13 @@ class Widget extends BaseWidget {
       "Feature_Class": this.selectedFeatureSet
     };
 
-    // Wo ist der verdammte Unterschied!?
+    // new FeatureSet();
     var params1 = {
       "Feature_Class": {
         features: this.editLayer.getSelectedFeatures()
       }
     };
-    console.log("performAggregation", params, params1, params===params1);
+    console.log("performAggregation", params, params1, params==params1);
 
     this.geoprocessor.execute(params);
   }
