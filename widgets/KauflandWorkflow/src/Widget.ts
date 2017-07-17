@@ -19,24 +19,30 @@ import AttributeInspector = require("esri/dijit/AttributeInspector");
 import Query = require("esri/tasks/query");
 import Point = require("esri/geometry/Point");
 import InfoTemplate = require("esri/InfoTemplate");
+import Geoprocessor = require("esri/tasks/Geoprocessor");
+import SpatialReference = require("esri/SpatialReference");
+import FeatureSet = require("esri/tasks/FeatureSet");
 
 class Widget extends BaseWidget {
 
   public baseClass: string = "jimu-widget-kauflandworkflow";
   public config: SpecificWidgetConfig;
   private editLayer: FeatureLayer;
+  private selectedFeatureSet: FeatureSet;
   private editLayerOnDblClickEventHandler;
   private updateFeature: Graphic;
   private attributeInspector: AttributeInspector;
   private editToolbar: Edit;
   private drawToolbar: Draw;
   private templatePicker: TemplatePicker;
+  private geoprocessor: Geoprocessor;
   private subnode: HTMLElement;
   private firstEditorInit: Boolean;
 
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));  // replaces "this.inherited(args)" from Esri tutorials
     this.firstEditorInit = true;
+    this.initGeoprocessor();
   }
 
   startup() {
@@ -48,7 +54,7 @@ class Widget extends BaseWidget {
   }
 
   onOpen() {
-    console.log('onOpen lala popo fifi mumu kaka');
+    console.log('onOpen lala popo fifi mumu kaka ');
   }
 
   onClose() {
@@ -77,6 +83,39 @@ class Widget extends BaseWidget {
 
   onSignOut() {
     console.log('onSignOut');
+  }
+
+  initGeoprocessor() {
+    this.geoprocessor = new Geoprocessor(this.config.geoprocessorUrl);
+    this.geoprocessor.setOutSpatialReference({
+      wkid: 102100
+    } as SpatialReference);
+    this.geoprocessor.on("execute-complete", lang.hitch(this, function(evt) {
+      (this.map.getLayer(this.config.customDistrictsLayerId) as FeatureLayer).refresh();
+      (this.map.getLayer(this.config.customDistrictsLayerId) as FeatureLayer).redraw();
+      this.editLayer.clearSelection();
+    }));
+  }
+
+  performAggregation() {
+    var selectQuery = new Query();
+    selectQuery.objectIds = [this.editLayer.getSelectedFeatures()[0].attributes.objectid];
+    this.editLayer.queryFeatures(selectQuery, evt => {
+      this.selectedFeatureSet = evt;
+    });
+    var params = {
+      "Feature_Class": this.selectedFeatureSet
+    };
+
+    // Wo ist der verdammte Unterschied!?
+    var params1 = {
+      "Feature_Class": {
+        features: this.editLayer.getSelectedFeatures()
+      }
+    };
+    console.log("performAggregation", params, params1, params===params1);
+
+    this.geoprocessor.execute(params);
   }
 
   generateBufferAroundPointSelection() {

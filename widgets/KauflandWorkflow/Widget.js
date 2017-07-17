@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "dojo/dom-construct", "dijit/form/Button", "esri/layers/FeatureLayer", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker", "esri/dijit/AttributeInspector", "esri/tasks/query"], function (require, exports, BaseWidget, lang, event, domConstruct, Button, FeatureLayer, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker, AttributeInspector, Query) {
+define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "dojo/dom-construct", "dijit/form/Button", "esri/layers/FeatureLayer", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker", "esri/dijit/AttributeInspector", "esri/tasks/query", "esri/tasks/Geoprocessor"], function (require, exports, BaseWidget, lang, event, domConstruct, Button, FeatureLayer, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker, AttributeInspector, Query, Geoprocessor) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -16,6 +16,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-kauflandworkflow" }, args)) || this;
             _this.baseClass = "jimu-widget-kauflandworkflow";
             _this.firstEditorInit = true;
+            _this.initGeoprocessor();
             return _this;
         }
         Widget.prototype.startup = function () {
@@ -25,7 +26,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             console.log('postCreate', this.config);
         };
         Widget.prototype.onOpen = function () {
-            console.log('onOpen lala popo fifi mumu kaka');
+            console.log('onOpen lala popo fifi mumu kaka ');
         };
         Widget.prototype.onClose = function () {
             console.log('onClose');
@@ -51,6 +52,36 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         };
         Widget.prototype.onSignOut = function () {
             console.log('onSignOut');
+        };
+        Widget.prototype.initGeoprocessor = function () {
+            this.geoprocessor = new Geoprocessor(this.config.geoprocessorUrl);
+            this.geoprocessor.setOutSpatialReference({
+                wkid: 102100
+            });
+            this.geoprocessor.on("execute-complete", lang.hitch(this, function (evt) {
+                this.map.getLayer(this.config.customDistrictsLayerId).refresh();
+                this.map.getLayer(this.config.customDistrictsLayerId).redraw();
+                this.editLayer.clearSelection();
+            }));
+        };
+        Widget.prototype.performAggregation = function () {
+            var _this = this;
+            var selectQuery = new Query();
+            selectQuery.objectIds = [this.editLayer.getSelectedFeatures()[0].attributes.objectid];
+            this.editLayer.queryFeatures(selectQuery, function (evt) {
+                _this.selectedFeatureSet = evt;
+            });
+            var params = {
+                "Feature_Class": this.selectedFeatureSet
+            };
+            // Wo ist der verdammte Unterschied!?
+            var params1 = {
+                "Feature_Class": {
+                    features: this.editLayer.getSelectedFeatures()
+                }
+            };
+            console.log("performAggregation", params, params1, params === params1);
+            this.geoprocessor.execute(params);
         };
         Widget.prototype.generateBufferAroundPointSelection = function () {
             var _this = this;

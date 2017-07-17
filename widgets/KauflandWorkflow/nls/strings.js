@@ -9,6 +9,7 @@
         newFeature: "New feature",
         save: "Save",
         edit: "Edit",
+        performAggregation: "Perform data aggregation",
         _widgetLabel: "Kaufland Workflow NLS"
     },
     "de": true 
