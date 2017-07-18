@@ -4,6 +4,8 @@ import array = require("dojo/_base/array");
 import event = require("dojo/_base/event");
 import json = require('dojo/_base/json');
 import domConstruct = require("dojo/dom-construct");
+import domStyle = require("dojo/dom-style");
+import domGeometry = require("dojo/dom-geometry");
 import Button = require("dijit/form/Button");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import geometryEngine = require("esri/geometry/geometryEngine");
@@ -91,7 +93,6 @@ class Widget extends BaseWidget {
       wkid: 102100
     } as SpatialReference);
     this.geoprocessor.on("execute-complete", lang.hitch(this, function(evt) {
-
       let updateAttributes = {};
       evt.results.forEach(result => {
         updateAttributes[result.paramName] = result.value;
@@ -100,7 +101,9 @@ class Widget extends BaseWidget {
       let updates = [{"attributes":updateAttributes}];
       this.editLayer.applyEdits(null, updates).then(value => {
         this.attributeInspector.refresh();
-      });
+      });    
+      domStyle.set(this.loadingIndicatorContainer, "visibility", "hidden");
+      domStyle.set(this.editPolygonsContainer, "background", "#fff");
     }));
   }
 
@@ -111,6 +114,10 @@ class Widget extends BaseWidget {
       "Feature_Class": paramsFeatureSet
     };
     this.geoprocessor.execute(params);
+
+    // show loader
+    domStyle.set(this.loadingIndicatorContainer, "visibility", "visible");
+    domStyle.set(this.editPolygonsContainer, "background", "#ccc");
   }
 
   generateBufferAroundPointSelection() {
@@ -171,8 +178,8 @@ class Widget extends BaseWidget {
         this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, features => {
           if (features.length > 0) {
             this.updateFeature = features[0];
-            if (this.updateFeature.attributes && this.updateFeature.attributes.title) {
-              this.attributeInspector.layerName.innerText = this.updateFeature.attributes.title;
+            if (this.updateFeature.attributes && this.updateFeature.attributes[this.config.polygonLayerFieldNames.title]) {
+              this.attributeInspector.layerName.innerText = this.updateFeature.attributes[this.config.polygonLayerFieldNames.title];
             }
             else {
               this.attributeInspector.layerName.innerText = this.nls.newFeature;
