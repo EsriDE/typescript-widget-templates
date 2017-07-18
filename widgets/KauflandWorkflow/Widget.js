@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "dojo/dom-construct", "dijit/form/Button", "esri/layers/FeatureLayer", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker", "esri/dijit/AttributeInspector", "esri/tasks/query", "esri/tasks/Geoprocessor"], function (require, exports, BaseWidget, lang, event, domConstruct, Button, FeatureLayer, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker, AttributeInspector, Query, Geoprocessor) {
+define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "dojo/dom-construct", "dijit/form/Button", "esri/layers/FeatureLayer", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker", "esri/dijit/AttributeInspector", "esri/tasks/query", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, lang, event, domConstruct, Button, FeatureLayer, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker, AttributeInspector, Query, Geoprocessor, FeatureSet) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -72,22 +72,11 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             }));
         };
         Widget.prototype.performAggregation = function () {
-            var _this = this;
-            var selectQuery = new Query();
-            selectQuery.objectIds = [this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId]];
-            this.editLayer.queryFeatures(selectQuery, function (evt) {
-                _this.selectedFeatureSet = evt;
-            });
+            var paramsFeatureSet = new FeatureSet();
+            paramsFeatureSet.features = this.editLayer.getSelectedFeatures();
             var params = {
-                "Feature_Class": this.selectedFeatureSet
+                "Feature_Class": paramsFeatureSet
             };
-            // new FeatureSet();
-            var params1 = {
-                "Feature_Class": {
-                    features: this.editLayer.getSelectedFeatures()
-                }
-            };
-            console.log("performAggregation", params, params1, params == params1);
             this.geoprocessor.execute(params);
         };
         Widget.prototype.generateBufferAroundPointSelection = function () {

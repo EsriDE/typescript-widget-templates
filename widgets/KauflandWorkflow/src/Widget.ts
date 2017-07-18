@@ -105,23 +105,11 @@ class Widget extends BaseWidget {
   }
 
   performAggregation() {
-    var selectQuery = new Query();
-    selectQuery.objectIds = [this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId]];
-    this.editLayer.queryFeatures(selectQuery, evt => {
-      this.selectedFeatureSet = evt;
-    });
+    var paramsFeatureSet = new FeatureSet();
+    paramsFeatureSet.features = this.editLayer.getSelectedFeatures();
     var params = {
-      "Feature_Class": this.selectedFeatureSet
+      "Feature_Class": paramsFeatureSet
     };
-
-    // new FeatureSet();
-    var params1 = {
-      "Feature_Class": {
-        features: this.editLayer.getSelectedFeatures()
-      }
-    };
-    console.log("performAggregation", params, params1, params==params1);
-
     this.geoprocessor.execute(params);
   }
 
