@@ -42,6 +42,9 @@ class Widget extends BaseWidget {
 
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));  // replaces "this.inherited(args)" from Esri tutorials
+    if (this.config.generateBuffers!==true) {
+      domStyle.set(this.generateBuffersContainer, "display", "none");
+    }
     this.firstEditorInit = true;
     this.initGeoprocessor();
   }
@@ -55,7 +58,7 @@ class Widget extends BaseWidget {
   }
 
   onOpen() {
-    console.log('onOpen lala popo fifi mumu kaka ');
+    console.log('onOpen');
   }
 
   onClose() {

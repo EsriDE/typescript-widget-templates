@@ -15,6 +15,9 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         function Widget(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-kauflandworkflow" }, args)) || this;
             _this.baseClass = "jimu-widget-kauflandworkflow";
+            if (_this.config.generateBuffers !== true) {
+                domStyle.set(_this.generateBuffersContainer, "display", "none");
+            }
             _this.firstEditorInit = true;
             _this.initGeoprocessor();
             return _this;
@@ -26,7 +29,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             console.log('postCreate', this.config);
         };
         Widget.prototype.onOpen = function () {
-            console.log('onOpen lala popo fifi mumu kaka ');
+            console.log('onOpen');
         };
         Widget.prototype.onClose = function () {
             console.log('onClose');
