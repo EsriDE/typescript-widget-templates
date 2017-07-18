@@ -59,15 +59,22 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 wkid: 102100
             });
             this.geoprocessor.on("execute-complete", lang.hitch(this, function (evt) {
-                this.map.getLayer(this.config.customDistrictsLayerId).refresh();
-                this.map.getLayer(this.config.customDistrictsLayerId).redraw();
-                this.editLayer.clearSelection();
+                var _this = this;
+                var updateAttributes = {};
+                evt.results.forEach(function (result) {
+                    updateAttributes[result.paramName] = result.value;
+                });
+                updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId];
+                var updates = [{ "attributes": updateAttributes }];
+                this.editLayer.applyEdits(null, updates).then(function (value) {
+                    _this.attributeInspector.refresh();
+                });
             }));
         };
         Widget.prototype.performAggregation = function () {
             var _this = this;
             var selectQuery = new Query();
-            selectQuery.objectIds = [this.editLayer.getSelectedFeatures()[0].attributes.objectid];
+            selectQuery.objectIds = [this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId]];
             this.editLayer.queryFeatures(selectQuery, function (evt) {
                 _this.selectedFeatureSet = evt;
             });
@@ -121,7 +128,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 var selectQuery = new Query();
                 this.editLayer.on("click", lang.hitch(this, function (evt) {
                     var _this = this;
-                    selectQuery.objectIds = [evt.graphic.attributes.objectid];
+                    selectQuery.objectIds = [evt.graphic.attributes[this.config.polygonLayerFieldNames.objectId]];
                     this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function (features) {
                         if (features.length > 0) {
                             _this.updateFeature = features[0];

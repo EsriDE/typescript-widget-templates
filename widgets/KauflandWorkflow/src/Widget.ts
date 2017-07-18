@@ -91,15 +91,22 @@ class Widget extends BaseWidget {
       wkid: 102100
     } as SpatialReference);
     this.geoprocessor.on("execute-complete", lang.hitch(this, function(evt) {
-      (this.map.getLayer(this.config.customDistrictsLayerId) as FeatureLayer).refresh();
-      (this.map.getLayer(this.config.customDistrictsLayerId) as FeatureLayer).redraw();
-      this.editLayer.clearSelection();
+
+      let updateAttributes = {};
+      evt.results.forEach(result => {
+        updateAttributes[result.paramName] = result.value;
+      });
+      updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId];
+      let updates = [{"attributes":updateAttributes}];
+      this.editLayer.applyEdits(null, updates).then(value => {
+        this.attributeInspector.refresh();
+      });
     }));
   }
 
   performAggregation() {
     var selectQuery = new Query();
-    selectQuery.objectIds = [this.editLayer.getSelectedFeatures()[0].attributes.objectid];
+    selectQuery.objectIds = [this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId]];
     this.editLayer.queryFeatures(selectQuery, evt => {
       this.selectedFeatureSet = evt;
     });
@@ -172,7 +179,7 @@ class Widget extends BaseWidget {
     if (this.firstEditorInit) { // only add layer and map events once per widget instance
       var selectQuery = new Query();
       this.editLayer.on("click", lang.hitch(this, function(evt) {
-        selectQuery.objectIds = [evt.graphic.attributes.objectid];
+        selectQuery.objectIds = [evt.graphic.attributes[this.config.polygonLayerFieldNames.objectId]];
         this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, features => {
           if (features.length > 0) {
             this.updateFeature = features[0];

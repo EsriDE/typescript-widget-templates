@@ -8,3 +8,6 @@
 .attributeInspectorEditButton {
     float:right;
 }
+#catchmentAreaAttributeInspectorDiv {
+    margin-bottom: 30px;
+}
