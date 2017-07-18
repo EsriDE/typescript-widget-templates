@@ -8,19 +8,18 @@
 .attributeInspectorEditButton {
     float:right;
 }
-#catchmentAreaAttributeInspectorDiv {
-    margin-bottom: 30px;
-}
 .jimu-widget-kauflandworkflow {
     width:100%;
     height:100%;
 }
 
-
 .kauflandContainer {
     background: #efefef;
     padding: 5px;
     margin: 2px 0px 10px 0px;
+}
+#editPolygonsContainer {
+    padding-bottom: 30px;
 }
 #loadingIndicatorContainer {
     position:absolute;
@@ -43,4 +42,8 @@
 }
 #loadingImage {
     margin:6px;
+}
+
+#performAggregationButton {
+    margin-bottom:20px;
 }

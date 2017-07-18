@@ -1,4 +1,5 @@
 {
+    "generateBuffers": true,
     "attributeInspectorDiv": "catchmentAreaAttributeInspectorDiv",
     "templatePickerDiv": "catchmentAreaTemplatePickerDiv",
     "workflowTitle": "Kaufland Catchment Area Generation",

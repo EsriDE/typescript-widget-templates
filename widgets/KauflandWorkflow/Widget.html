@@ -2,8 +2,8 @@
     <div if="generateBuffersContainer" class="kauflandContainer">
         <div>${nls.bufferLabel}</div>
         <div>${nls.bufferRadius}<input type="number" alt="${nls.bufferRadius}" data-dojo-attach-point="bufferRadiusMeters" value="5000"></div>
-        <div><input type="button" value="${nls.bufferGenerateButton}" data-dojo-attach-event="onclick:generateBufferAroundPointSelection"></div>
-        <div><input type="button" value="${nls.bufferResetButton}" data-dojo-attach-event="onclick:resetBuffers"></div>
+        <input type="button" value="${nls.bufferGenerateButton}" data-dojo-attach-event="onclick:generateBufferAroundPointSelection">
+        <input type="button" value="${nls.bufferResetButton}" data-dojo-attach-event="onclick:resetBuffers">
     </div>
 
     <div id="editPolygonsContainer" class="kauflandContainer" data-dojo-attach-point="editPolygonsContainer">
@@ -14,5 +14,5 @@
         <div id="${config.templatePickerDiv}"></div>
         <div id="${config.attributeInspectorDiv}" data-dojo-attach-point="attributeInspectorContainer"></div>
     </div>
-    <div><input type="button" value="${nls.performAggregation}" data-dojo-attach-event="onclick:performAggregation"></div>
+    <input type="button" id="performAggregationButton" value="${nls.performAggregation}" data-dojo-attach-event="onclick:performAggregation">
 </div>

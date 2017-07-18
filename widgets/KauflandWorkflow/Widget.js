@@ -38,7 +38,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 this.editToolbar.deactivate();
                 this.editToolbar = null;
             }
-            this.editLayerOnDblClickEventHandler = function (evt) { console.log("double click deactivated"); };
+            this.editLayer.setSelectionSymbol(undefined);
         };
         Widget.prototype.onMinimize = function () {
             console.log('onMinimize');
@@ -69,8 +69,9 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 this.editLayer.applyEdits(null, updates).then(function (value) {
                     _this.attributeInspector.refresh();
                 });
+                // hide loader
                 domStyle.set(this.loadingIndicatorContainer, "visibility", "hidden");
-                domStyle.set(this.editPolygonsContainer, "background", "#fff");
+                domStyle.set(this.editPolygonsContainer, "background", "#efefef");
             }));
         };
         Widget.prototype.performAggregation = function () {

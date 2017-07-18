@@ -31,7 +31,6 @@ class Widget extends BaseWidget {
   public config: SpecificWidgetConfig;
   private editLayer: FeatureLayer;
   private selectedFeatureSet: FeatureSet;
-  private editLayerOnDblClickEventHandler;
   private updateFeature: Graphic;
   private attributeInspector: AttributeInspector;
   private editToolbar: Edit;
@@ -67,7 +66,7 @@ class Widget extends BaseWidget {
       this.editToolbar.deactivate();
       this.editToolbar = null;
     }
-    this.editLayerOnDblClickEventHandler = function(evt){console.log("double click deactivated")};
+    this.editLayer.setSelectionSymbol(undefined);
   }
 
   onMinimize() {
@@ -101,9 +100,10 @@ class Widget extends BaseWidget {
       let updates = [{"attributes":updateAttributes}];
       this.editLayer.applyEdits(null, updates).then(value => {
         this.attributeInspector.refresh();
-      });    
+      }); 
+      // hide loader
       domStyle.set(this.loadingIndicatorContainer, "visibility", "hidden");
-      domStyle.set(this.editPolygonsContainer, "background", "#fff");
+      domStyle.set(this.editPolygonsContainer, "background", "#efefef");
     }));
   }
 
