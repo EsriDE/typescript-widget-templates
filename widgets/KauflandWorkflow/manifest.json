@@ -3,10 +3,10 @@
   "2D": true,
   "3D": false,
   "platform": "HTML",
-  "version": "2.4",
+  "version": "0.1",
   "wabVersion": "2.4",
   "author": "Niklas Köhn, Esri Deutschland GmbH",
-  "description": "Kaufland Australia workflow for catchment area generation",
+  "description": "Kaufland Australia workflow",
   "copyright": "Esri Deutschland GmbH 2017",
   "license": "",
   "properties": {
