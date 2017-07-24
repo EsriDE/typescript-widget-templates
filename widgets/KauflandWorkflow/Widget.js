@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "dojo/dom-construct", "dojo/dom-style", "dijit/form/Button", "esri/layers/FeatureLayer", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker", "esri/dijit/AttributeInspector", "esri/tasks/query", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, lang, event, domConstruct, domStyle, Button, FeatureLayer, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker, AttributeInspector, Query, Geoprocessor, FeatureSet) {
+define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "dojo/dom-construct", "dojo/dom-style", "dojo/dom-attr", "dijit/form/Button", "esri/layers/FeatureLayer", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker", "esri/dijit/AttributeInspector", "esri/tasks/query", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, lang, event, domConstruct, domStyle, domAttr, Button, FeatureLayer, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker, AttributeInspector, Query, Geoprocessor, FeatureSet) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -30,6 +30,22 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         };
         Widget.prototype.onOpen = function () {
             console.log('onOpen');
+            if (this.editLayer) {
+                var selectedFeatures = this.editLayer.getSelectedFeatures();
+                if (selectedFeatures.length == 1) {
+                    domAttr.set(this.performAggregationButton, "disabled", false);
+                }
+                else if (selectedFeatures.length > 1) {
+                    domAttr.set(this.performAggregationButton, "disabled", true);
+                    domAttr.set(this.messageContainer, "style", "display:block;");
+                    this.messageContainer.innerText = this.nls.performAggregationTooManyFeaturesSelected;
+                }
+                else {
+                    domAttr.set(this.performAggregationButton, "disabled", true);
+                    domAttr.set(this.messageContainer, "style", "display:block;");
+                    this.messageContainer.innerText = this.nls.performAggregationNoFeatureSelected;
+                }
+            }
         };
         Widget.prototype.onClose = function () {
             console.log('onClose');
@@ -56,6 +72,9 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         Widget.prototype.onSignOut = function () {
             console.log('onSignOut');
         };
+        Widget.prototype.hideMessageContainer = function () {
+            domAttr.set(this.messageContainer, "style", "display:none;");
+        };
         Widget.prototype.initGeoprocessor = function () {
             this.geoprocessor = new Geoprocessor(this.config.geoprocessorUrl);
             this.geoprocessor.setOutSpatialReference({
@@ -80,10 +99,12 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         Widget.prototype.performAggregation = function () {
             var paramsFeatureSet = new FeatureSet();
             paramsFeatureSet.features = this.editLayer.getSelectedFeatures();
-            var params = {
-                "Feature_Class": paramsFeatureSet
-            };
-            this.geoprocessor.execute(params);
+            if (paramsFeatureSet.features.length > 0) {
+                var params = {
+                    "Feature_Class": paramsFeatureSet
+                };
+                this.geoprocessor.execute(params);
+            }
             // show loader
             domStyle.set(this.loadingIndicatorContainer, "visibility", "visible");
             domStyle.set(this.editPolygonsContainer, "background", "#ccc");
@@ -138,11 +159,16 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                             else {
                                 _this.attributeInspector.layerName.innerText = _this.nls.newFeature;
                             }
+                            domAttr.set(_this.performAggregationButton, "disabled", false);
                         }
                         else {
                             _this.map.infoWindow.hide();
+                            domAttr.set(_this.performAggregationButton, "disabled", true);
                         }
                     });
+                }));
+                this.editLayer.on("selection-clear", lang.hitch(this, function (evt) {
+                    domAttr.set(this.performAggregationButton, "disabled", false);
                 }));
                 this.map.infoWindow.on("hide", function (evt) {
                     _this.editLayer.clearSelection();

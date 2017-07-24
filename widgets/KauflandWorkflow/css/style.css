@@ -18,7 +18,7 @@
     padding: 5px;
     margin: 2px 0px 10px 0px;
 }
-#editPolygonsContainer {
+.atiButtons {
     padding-bottom: 30px;
 }
 #loadingIndicatorContainer {
@@ -47,6 +47,9 @@
 #performAggregationButton {
     margin-bottom:20px;
 }
+#messageContainer {
+    color: #f00;
+}
 
 .clarofake {
     font-family: "Avenir Light", Verdana, Geneva, sans-serif;
@@ -54,7 +57,7 @@
     padding: 0 0.3em;
     border: 1px solid #759dc0;
     padding: 2px 4px 4px 4px;
-    margin: 5px 5px 0px 0px;
+    margin: 5px 5px 5px 0px;
     color: #000000;
     border-radius: 4px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
@@ -68,9 +71,12 @@
     padding: 0 0.3em;
     border: 1px solid #759dc0;
     padding: 2px 4px 4px 4px;
-    margin: 5px 5px 0px 0px;
+    margin: 5px 5px 5px 0px;
     color: #000000;
     border-radius: 4px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
 }
 
+input:disabled {
+    background-color: rgb(235, 235, 228);
+}

@@ -1,4 +1,6 @@
 <div>
+    <div id="messageContainer" class="kauflandContainer" data-dojo-attach-point="messageContainer" data-dojo-attach-event="onclick:hideMessageContainer" style="display:none;"></div>
+
     <div id="generateBuffersContainer" class="kauflandContainer" data-dojo-attach-point="generateBuffersContainer">
         <div>${nls.bufferLabel}</div>
         <div>${nls.bufferRadius}<input type="number" class="clarofakeinput" alt="${nls.bufferRadius}" data-dojo-attach-point="bufferRadiusMeters" value="5000"></div>
@@ -14,5 +16,8 @@
         <div id="${config.templatePickerDiv}"></div>
         <div id="${config.attributeInspectorDiv}" data-dojo-attach-point="attributeInspectorContainer"></div>
     </div>
-    <input type="button" id="performAggregationButton" class="clarofake" value="${nls.performAggregation}" data-dojo-attach-event="onclick:performAggregation">
+    
+    <div id="performAggregationContainer" class="kauflandContainer" data-dojo-attach-point="performAggregationContainer">
+        <input type="button" id="performAggregationButton" class="clarofake" value="${nls.performAggregation}" data-dojo-attach-event="onclick:performAggregation" data-dojo-attach-point="performAggregationButton" disabled>
+    </div>
 </div>

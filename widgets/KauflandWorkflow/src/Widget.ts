@@ -5,6 +5,7 @@ import event = require("dojo/_base/event");
 import json = require('dojo/_base/json');
 import domConstruct = require("dojo/dom-construct");
 import domStyle = require("dojo/dom-style");
+import domAttr = require("dojo/dom-attr");
 import domGeometry = require("dojo/dom-geometry");
 import Button = require("dijit/form/Button");
 import FeatureLayer = require("esri/layers/FeatureLayer");
@@ -59,6 +60,22 @@ class Widget extends BaseWidget {
 
   onOpen() {
     console.log('onOpen');
+    if (this.editLayer) {
+      let selectedFeatures = this.editLayer.getSelectedFeatures();
+      if (selectedFeatures.length==1) {
+        domAttr.set(this.performAggregationButton, "disabled", false);
+      }
+      else if (selectedFeatures.length>1) {
+        domAttr.set(this.performAggregationButton, "disabled", true);
+        domAttr.set(this.messageContainer, "style", "display:block;");
+        this.messageContainer.innerText = this.nls.performAggregationTooManyFeaturesSelected;
+      }
+      else {
+        domAttr.set(this.performAggregationButton, "disabled", true);
+        domAttr.set(this.messageContainer, "style", "display:block;");
+        this.messageContainer.innerText = this.nls.performAggregationNoFeatureSelected;
+      }
+    }
   }
 
   onClose() {
@@ -89,6 +106,10 @@ class Widget extends BaseWidget {
     console.log('onSignOut');
   }
 
+  hideMessageContainer() {
+    domAttr.set(this.messageContainer, "style", "display:none;");
+  }
+
   initGeoprocessor() {
     this.geoprocessor = new Geoprocessor(this.config.geoprocessorUrl);
     this.geoprocessor.setOutSpatialReference({
@@ -113,10 +134,12 @@ class Widget extends BaseWidget {
   performAggregation() {
     var paramsFeatureSet = new FeatureSet();
     paramsFeatureSet.features = this.editLayer.getSelectedFeatures();
-    var params = {
-      "Feature_Class": paramsFeatureSet
-    };
-    this.geoprocessor.execute(params);
+    if (paramsFeatureSet.features.length>0) {
+      var params = {
+        "Feature_Class": paramsFeatureSet
+      };
+      this.geoprocessor.execute(params);
+    }
 
     // show loader
     domStyle.set(this.loadingIndicatorContainer, "visibility", "visible");
@@ -189,11 +212,17 @@ class Widget extends BaseWidget {
             else {
               this.attributeInspector.layerName.innerText = this.nls.newFeature;
             }
+            domAttr.set(this.performAggregationButton, "disabled", false);
           }
           else {
             this.map.infoWindow.hide();
+            domAttr.set(this.performAggregationButton, "disabled", true);
           }
         });
+      }));
+
+      this.editLayer.on("selection-clear", lang.hitch(this, function(evt) {
+        domAttr.set(this.performAggregationButton, "disabled", false);
       }));
 
       this.map.infoWindow.on("hide", evt => {
