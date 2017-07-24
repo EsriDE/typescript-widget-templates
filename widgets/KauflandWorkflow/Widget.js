@@ -39,11 +39,13 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                     domAttr.set(this.performAggregationButton, "disabled", true);
                     domAttr.set(this.messageContainer, "style", "display:block;");
                     this.messageContainer.innerText = this.nls.performAggregationTooManyFeaturesSelected;
+                    console.warn(this.nls.performAggregationTooManyFeaturesSelected);
                 }
                 else {
                     domAttr.set(this.performAggregationButton, "disabled", true);
                     domAttr.set(this.messageContainer, "style", "display:block;");
                     this.messageContainer.innerText = this.nls.performAggregationNoFeatureSelected;
+                    console.warn(this.nls.performAggregationNoFeatureSelected);
                 }
             }
         };
@@ -160,6 +162,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                                 _this.attributeInspector.layerName.innerText = _this.nls.newFeature;
                             }
                             domAttr.set(_this.performAggregationButton, "disabled", false);
+                            domAttr.set(_this.messageContainer, "style", "display:none;");
                         }
                         else {
                             _this.map.infoWindow.hide();
@@ -168,7 +171,8 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                     });
                 }));
                 this.editLayer.on("selection-clear", lang.hitch(this, function (evt) {
-                    domAttr.set(this.performAggregationButton, "disabled", false);
+                    domAttr.set(this.performAggregationButton, "disabled", true);
+                    domAttr.set(this.messageContainer, "style", "display:none;");
                 }));
                 this.map.infoWindow.on("hide", function (evt) {
                     _this.editLayer.clearSelection();
