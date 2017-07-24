@@ -181,11 +181,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             this.firstEditorInit = false;
         };
         Widget.prototype.initializeEditToolbar = function () {
-            var _this = this;
             var editToolbar = new Edit(this.map);
-            editToolbar.on("deactivate", function (evt) {
-                _this.editLayer.applyEdits(null, [evt.graphic], null);
-            });
             return editToolbar;
         };
         Widget.prototype.initializeTemplatePicker = function () {

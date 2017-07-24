@@ -239,10 +239,6 @@ class Widget extends BaseWidget {
 
   initializeEditToolbar(): Edit {
     let editToolbar = new Edit(this.map);
-    editToolbar.on("deactivate", evt => {
-      this.editLayer.applyEdits(null, [evt.graphic], null);
-    });
-
     return editToolbar;
   }
 
