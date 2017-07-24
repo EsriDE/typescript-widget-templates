@@ -10,6 +10,7 @@
         save: "Save",
         edit: "Edit",
         performAggregation: "Perform data aggregation",
+        performingAggregation: "Aggregating data",
         performAggregationTooManyFeaturesSelected: "Data aggregation disabled. More than one features selected.",
         performAggregationNoFeatureSelected: "Data aggregation disabled. No feature selected.",
         _widgetLabel: "Kaufland Workflow NLS"

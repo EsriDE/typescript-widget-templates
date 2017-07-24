@@ -94,8 +94,9 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                     _this.attributeInspector.refresh();
                 });
                 // hide loader
-                domStyle.set(this.loadingIndicatorContainer, "visibility", "hidden");
-                domStyle.set(this.editPolygonsContainer, "background", "#efefef");
+                domConstruct.destroy(this.loadingIndicatorContainer);
+                domConstruct.destroy(this.loadingIndicatorText);
+                domConstruct.destroy(this.loadingIndicatorImage);
             }));
         };
         Widget.prototype.performAggregation = function () {
@@ -108,8 +109,17 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 this.geoprocessor.execute(params);
             }
             // show loader
-            domStyle.set(this.loadingIndicatorContainer, "visibility", "visible");
-            domStyle.set(this.editPolygonsContainer, "background", "#ccc");
+            this.loadingIndicatorContainer = domConstruct.create("div", {
+                id: "loadingIndicatorContainer"
+            }, this.getPanel().domNode);
+            this.loadingIndicatorText = domConstruct.create("div", {
+                id: "loadingIndicatorText",
+                innerHTML: this.nls.performingAggregation
+            }, this.loadingIndicatorContainer);
+            this.loadingIndicatorImage = domConstruct.create("img", {
+                id: "loadingIndicator",
+                src: "https://js.arcgis.com/3.21/esri/dijit/images/ajax-loader-segments-circle-64.gif"
+            }, this.loadingIndicatorContainer);
         };
         Widget.prototype.generateBufferAroundPointSelection = function () {
             var _this = this;
