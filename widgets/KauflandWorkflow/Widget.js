@@ -127,6 +127,8 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 this.editLayer.on("click", lang.hitch(this, function (evt) {
                     var _this = this;
                     selectQuery.objectIds = [evt.graphic.attributes[this.config.polygonLayerFieldNames.objectId]];
+                    selectQuery.distance = 200;
+                    selectQuery.units = "meters";
                     this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function (features) {
                         if (features.length > 0) {
                             _this.updateFeature = features[0];
@@ -218,6 +220,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var editButton = new Button({ label: this.nls.edit, "class": "attributeInspectorEditButton" }, domConstruct.create("div"));
             domConstruct.place(editButton.domNode, attributeInspector.deleteBtn.domNode, "after");
             saveButton.on("click", function (evt) {
+                _this.performAggregation();
                 var updateFeatureLayer = _this.updateFeature.getLayer();
                 updateFeatureLayer.applyEdits(null, [_this.updateFeature], null);
                 if (editingEnabled === true) {

@@ -178,6 +178,8 @@ class Widget extends BaseWidget {
       var selectQuery = new Query();
       this.editLayer.on("click", lang.hitch(this, function(evt) {
         selectQuery.objectIds = [evt.graphic.attributes[this.config.polygonLayerFieldNames.objectId]];
+        selectQuery.distance = 200;
+        selectQuery.units = "meters";
         this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, features => {
           if (features.length > 0) {
             this.updateFeature = features[0];
@@ -281,6 +283,7 @@ class Widget extends BaseWidget {
     domConstruct.place(editButton.domNode, attributeInspector.deleteBtn.domNode, "after");
 
     saveButton.on("click", evt => {
+      this.performAggregation();
       let updateFeatureLayer = this.updateFeature.getLayer() as FeatureLayer;
       updateFeatureLayer.applyEdits(null, [this.updateFeature], null);
       if (editingEnabled === true) {

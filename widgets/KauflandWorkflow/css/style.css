@@ -47,3 +47,30 @@
 #performAggregationButton {
     margin-bottom:20px;
 }
+
+.clarofake {
+    font-family: "Avenir Light", Verdana, Geneva, sans-serif;
+    font-size: 12px;
+    padding: 0 0.3em;
+    border: 1px solid #759dc0;
+    padding: 2px 4px 4px 4px;
+    margin: 5px 5px 0px 0px;
+    color: #000000;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+    background-color: #bcd8f4;
+    background-repeat: repeat-x;
+    background-image: linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+}
+.clarofakeinput {
+    font-family: "Avenir Light", Verdana, Geneva, sans-serif;
+    font-size: 12px;
+    padding: 0 0.3em;
+    border: 1px solid #759dc0;
+    padding: 2px 4px 4px 4px;
+    margin: 5px 5px 0px 0px;
+    color: #000000;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+}
+
