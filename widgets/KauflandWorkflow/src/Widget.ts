@@ -287,10 +287,11 @@ class Widget extends BaseWidget {
   initializeAttributeInspector(): AttributeInspector {
     var layerInfos = [
       {
-        'featureLayer': this.editLayer,
-        'showAttachments': true,
-        'showDeleteButton': true,
-        'isEditable': true
+        featureLayer: this.editLayer,
+        showAttachments: true,
+        showDeleteButton: true,
+        isEditable: true,
+        fieldInfos: this.config.polygonLayerAttributeInspectorFields
       }
     ];
 

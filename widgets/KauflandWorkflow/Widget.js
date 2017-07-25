@@ -223,10 +223,11 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             var _this = this;
             var layerInfos = [
                 {
-                    'featureLayer': this.editLayer,
-                    'showAttachments': true,
-                    'showDeleteButton': true,
-                    'isEditable': true
+                    featureLayer: this.editLayer,
+                    showAttachments: true,
+                    showDeleteButton: true,
+                    isEditable: true,
+                    fieldInfos: this.config.polygonLayerAttributeInspectorFields
                 }
             ];
             var attributeInspector = new AttributeInspector({
