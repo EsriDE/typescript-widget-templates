@@ -3,7 +3,7 @@
   "2D": true,
   "3D": false,
   "platform": "HTML",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "wabVersion": "2.4",
   "author": "Niklas Köhn, Esri Deutschland GmbH",
   "description": "Kaufland Australia workflow",
