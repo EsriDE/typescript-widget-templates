@@ -140,7 +140,7 @@ class Widget extends BaseWidget {
     this.loadingIndicatorImage = domConstruct.create("img", {
       id: "loadingIndicator",
       src: "https://js.arcgis.com/3.21/esri/dijit/images/ajax-loader-segments-circle-64.gif"
-    }, this.loadingIndicatorContainer);
+    }, this.loadingIndicatorText, "first");
   }
 
   generateBufferAroundPointSelection() {

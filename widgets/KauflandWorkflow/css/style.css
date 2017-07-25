@@ -28,18 +28,6 @@
     z-index: 100;
     background: rgba(100,100,100,0.8);
 }
-#loadingIndicator {
-    position: absolute;
-    width: 78px;
-    height: 78px;
-    left: 50%;
-    top: 40%;
-    margin-left: -39px;
-    margin-top: -32px;
-    background-color: #f4f4f4;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
 #loadingIndicatorText {
     color:#fff;
     position: absolute;
@@ -48,6 +36,17 @@
     width: 200px;
     margin-left: -100px;
     text-align: center;
+}
+#loadingIndicator {
+    position: absolute;
+    width: 78px;
+    height: 78px;
+    left: 50%;
+    margin-left: -39px;
+    margin-top: -85px;
+    background-color: #f4f4f4;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
 #messageContainer {
