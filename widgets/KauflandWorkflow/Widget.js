@@ -132,6 +132,8 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         Widget.prototype.editPolygons = function () {
             var _this = this;
             this.editLayer = this.map.getLayer(this.config.polygonLayerId);
+            // put editLayer on top
+            this.map.reorderLayer(this.editLayer, this.map.getLayersVisibleAtScale().length - 1);
             var selectionSymbol = new SimpleFillSymbol();
             selectionSymbol.setColor(new Color([0, 255, 255, 77]));
             selectionSymbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([0, 255, 255, 255]), 1));

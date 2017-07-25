@@ -182,6 +182,9 @@ class Widget extends BaseWidget {
   editPolygons() {
     this.editLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
 
+    // put editLayer on top
+    this.map.reorderLayer(this.editLayer, this.map.getLayersVisibleAtScale().length-1);
+
     let selectionSymbol = new SimpleFillSymbol();
     selectionSymbol.setColor(new Color([0,255,255,77]));
     selectionSymbol.setOutline(new SimpleLineSymbol(
