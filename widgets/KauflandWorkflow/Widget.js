@@ -30,19 +30,15 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         };
         Widget.prototype.onOpen = function () {
             console.log('onOpen');
+            this.editPolygons();
             if (this.editLayer) {
                 var selectedFeatures = this.editLayer.getSelectedFeatures();
-                if (selectedFeatures.length == 1) {
-                    domAttr.set(this.performAggregationButton, "disabled", false);
-                }
-                else if (selectedFeatures.length > 1) {
-                    domAttr.set(this.performAggregationButton, "disabled", true);
+                if (selectedFeatures.length > 1) {
                     domAttr.set(this.messageContainer, "style", "display:block;");
                     this.messageContainer.innerText = this.nls.performAggregationTooManyFeaturesSelected;
                     console.warn(this.nls.performAggregationTooManyFeaturesSelected);
                 }
                 else {
-                    domAttr.set(this.performAggregationButton, "disabled", true);
                     domAttr.set(this.messageContainer, "style", "display:block;");
                     this.messageContainer.innerText = this.nls.performAggregationNoFeatureSelected;
                     console.warn(this.nls.performAggregationNoFeatureSelected);
@@ -171,17 +167,14 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                             else {
                                 _this.attributeInspector.layerName.innerText = _this.nls.newFeature;
                             }
-                            domAttr.set(_this.performAggregationButton, "disabled", false);
                             domAttr.set(_this.messageContainer, "style", "display:none;");
                         }
                         else {
                             _this.map.infoWindow.hide();
-                            domAttr.set(_this.performAggregationButton, "disabled", true);
                         }
                     });
                 }));
                 this.editLayer.on("selection-clear", lang.hitch(this, function (evt) {
-                    domAttr.set(this.performAggregationButton, "disabled", true);
                     domAttr.set(this.messageContainer, "style", "display:none;");
                 }));
                 this.map.infoWindow.on("hide", function (evt) {

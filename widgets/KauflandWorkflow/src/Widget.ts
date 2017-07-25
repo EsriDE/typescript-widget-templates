@@ -63,19 +63,15 @@ class Widget extends BaseWidget {
 
   onOpen() {
     console.log('onOpen');
+    this.editPolygons();
     if (this.editLayer) {
       let selectedFeatures = this.editLayer.getSelectedFeatures();
-      if (selectedFeatures.length==1) {
-        domAttr.set(this.performAggregationButton, "disabled", false);
-      }
-      else if (selectedFeatures.length>1) {
-        domAttr.set(this.performAggregationButton, "disabled", true);
+      if (selectedFeatures.length>1) {
         domAttr.set(this.messageContainer, "style", "display:block;");
         this.messageContainer.innerText = this.nls.performAggregationTooManyFeaturesSelected;
         console.warn(this.nls.performAggregationTooManyFeaturesSelected);
       }
       else {
-        domAttr.set(this.performAggregationButton, "disabled", true);
         domAttr.set(this.messageContainer, "style", "display:block;");
         this.messageContainer.innerText = this.nls.performAggregationNoFeatureSelected;
         console.warn(this.nls.performAggregationNoFeatureSelected);
@@ -227,18 +223,15 @@ class Widget extends BaseWidget {
             else {
               this.attributeInspector.layerName.innerText = this.nls.newFeature;
             }
-            domAttr.set(this.performAggregationButton, "disabled", false);
             domAttr.set(this.messageContainer, "style", "display:none;");
           }
           else {
             this.map.infoWindow.hide();
-            domAttr.set(this.performAggregationButton, "disabled", true);
           }
         });
       }));
 
       this.editLayer.on("selection-clear", lang.hitch(this, function(evt) {
-        domAttr.set(this.performAggregationButton, "disabled", true);
         domAttr.set(this.messageContainer, "style", "display:none;");
       }));
 
