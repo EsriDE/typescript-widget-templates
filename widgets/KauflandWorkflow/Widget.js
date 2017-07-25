@@ -46,6 +46,8 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 this.editToolbar = null;
             }
             this.editLayer.setSelectionSymbol(undefined);
+            this.editLayer.clearSelection();
+            this.editLayer.refresh();
         };
         Widget.prototype.onMinimize = function () {
             console.log('onMinimize');
@@ -135,8 +137,10 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             selectionSymbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([0, 255, 255, 255]), 1));
             this.editLayer.setSelectionSymbol(selectionSymbol);
             this.editToolbar = this.initializeEditToolbar();
-            this.templatePicker = this.initializeTemplatePicker();
-            this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
+            if (this.config.templatePicker === true) {
+                this.templatePicker = this.initializeTemplatePicker();
+                this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
+            }
             this.attributeInspector = this.initializeAttributeInspector();
             if (this.firstEditorInit) {
                 var selectQuery = new Query();

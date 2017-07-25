@@ -78,6 +78,8 @@ class Widget extends BaseWidget {
       this.editToolbar = null;
     }
     this.editLayer.setSelectionSymbol(undefined);
+    this.editLayer.clearSelection();
+    this.editLayer.refresh();
   }
 
   onMinimize() {
@@ -190,8 +192,10 @@ class Widget extends BaseWidget {
     this.editLayer.setSelectionSymbol(selectionSymbol);
 
     this.editToolbar = this.initializeEditToolbar();
-    this.templatePicker = this.initializeTemplatePicker();
-    this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
+    if (this.config.templatePicker===true) {
+      this.templatePicker = this.initializeTemplatePicker();
+      this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
+    }
     this.attributeInspector = this.initializeAttributeInspector();
 
     if (this.firstEditorInit) { // only add layer and map events once per widget instance
