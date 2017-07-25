@@ -3,8 +3,6 @@
   "templatePicker": true,
   "attributeInspectorDiv": "tradeAreaAttributeInspectorDiv",
   "templatePickerDiv": "tradeAreaTemplatePickerDiv",
-  "workflowTitle": "Kaufland Trade Area Generation",
-  "polygonTitle": "Trade Area",
   "pointLayerId": "Test_Standorte_8435",
   "polygonLayerId": "TradeAreas_8872",
   "geoprocessorUrl": "https://vsdev1717.esri-de.com/server/rest/services/GP_TOOLS/useCustomPolygon_mitReply/GPServer/useCustomPolygon_mitReply",

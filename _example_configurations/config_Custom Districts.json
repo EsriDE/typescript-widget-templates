@@ -3,8 +3,6 @@
   "templatePicker": false,
   "attributeInspectorDiv": "customDistrictsAttributeInspectorDiv",
   "templatePickerDiv": "customDistrictsTemplatePickerDiv",
-  "workflowTitle": "Kaufland Custom Districts Generation",
-  "polygonTitle": "Custom Districts",
   "pointLayerId": "Test_Standorte_8435",
   "polygonLayerId": "customDistricts_6344",
   "geoprocessorUrl": "https://vsdev1717.esri-de.com/server/rest/services/GP_TOOLS/useCustomPolygon_mitReply/GPServer/useCustomPolygon_mitReply",

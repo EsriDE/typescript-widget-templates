@@ -3,8 +3,6 @@
     "templatePicker": true,
     "attributeInspectorDiv": "catchmentAreaAttributeInspectorDiv",
     "templatePickerDiv": "catchmentAreaTemplatePickerDiv",
-    "workflowTitle": "Kaufland Catchment Area Generation",
-    "polygonTitle": "Catchment Area",
     "pointLayerId": "Test_Standorte_8435",
     "polygonLayerId": "customDistricts_2009",
     "geoprocessorUrl": "https://vsdev1717.esri-de.com/server/rest/services/GP_TOOLS/useCustomPolygon_mitReply/GPServer/useCustomPolygon_mitReply",
