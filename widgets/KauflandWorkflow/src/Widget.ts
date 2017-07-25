@@ -66,16 +66,6 @@ class Widget extends BaseWidget {
     this.editPolygons();
     if (this.editLayer) {
       let selectedFeatures = this.editLayer.getSelectedFeatures();
-      if (selectedFeatures.length>1) {
-        domAttr.set(this.messageContainer, "style", "display:block;");
-        this.messageContainer.innerText = this.nls.performAggregationTooManyFeaturesSelected;
-        console.warn(this.nls.performAggregationTooManyFeaturesSelected);
-      }
-      else {
-        domAttr.set(this.messageContainer, "style", "display:block;");
-        this.messageContainer.innerText = this.nls.performAggregationNoFeatureSelected;
-        console.warn(this.nls.performAggregationNoFeatureSelected);
-      }
     }
   }
 
@@ -105,10 +95,6 @@ class Widget extends BaseWidget {
 
   onSignOut() {
     console.log('onSignOut');
-  }
-
-  hideMessageContainer() {
-    domAttr.set(this.messageContainer, "style", "display:none;");
   }
 
   initGeoprocessor() {
@@ -223,16 +209,11 @@ class Widget extends BaseWidget {
             else {
               this.attributeInspector.layerName.innerText = this.nls.newFeature;
             }
-            domAttr.set(this.messageContainer, "style", "display:none;");
           }
           else {
             this.map.infoWindow.hide();
           }
         });
-      }));
-
-      this.editLayer.on("selection-clear", lang.hitch(this, function(evt) {
-        domAttr.set(this.messageContainer, "style", "display:none;");
       }));
 
       this.map.infoWindow.on("hide", evt => {
