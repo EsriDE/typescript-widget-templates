@@ -1,0 +1,42 @@
+{
+  "generateBuffers": false,
+  "templatePicker": true,
+  "attributeInspectorDiv": "tradeAreaAttributeInspectorDiv",
+  "templatePickerDiv": "tradeAreaTemplatePickerDiv",
+  "workflowTitle": "Kaufland Trade Area Generation",
+  "polygonTitle": "Trade Area",
+  "pointLayerId": "Test_Standorte_8435",
+  "polygonLayerId": "TradeAreas_8872",
+  "geoprocessorUrl": "https://vsdev1717.esri-de.com/server/rest/services/GP_TOOLS/useCustomPolygon_mitReply/GPServer/useCustomPolygon_mitReply",
+  "polygonLayerFieldNames": {
+    "objectId": "OBJECTID",
+    "title": "NAME"
+  },
+  "polygonLayerAttributeInspectorFields": [
+      {
+          "fieldName": "NAME",
+          "tooltip": "Name",
+          "isEditable": true
+      },
+      {
+          "fieldName": "DESCRIPTION",
+          "tooltip": "Description",
+          "isEditable": true
+      },
+      {
+          "fieldName": "RANKING",
+          "tooltip": "Ranking",
+          "isEditable": false
+      },
+      {
+          "fieldName": "SUM_PP_FOOD_DRINK",
+          "tooltip": "Foods & Drinks",
+          "isEditable": true
+      },
+      {
+          "fieldName": "COMP_IDX",
+          "tooltip": "Computer Index",
+          "isEditable": true
+      }
+  ]
+}
