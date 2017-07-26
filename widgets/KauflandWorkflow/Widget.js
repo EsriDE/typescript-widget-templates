@@ -20,6 +20,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             }
             _this.firstEditorInit = true;
             _this.initGeoprocessor();
+            _this.fetchDataByName("RemoteSelect");
             return _this;
         }
         Widget.prototype.startup = function () {
@@ -64,7 +65,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
             console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
-            if (data.command == "generateBuffers") {
+            if (data.command == "generateBuffers" && this.config.generateBuffers) {
                 var pointLayer = this.map.getLayer(this.config.pointLayerId);
                 var pointSelection = pointLayer.getSelectedFeatures();
                 this.generateBufferAroundPointSelection(pointSelection);

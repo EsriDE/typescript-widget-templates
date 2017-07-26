@@ -51,6 +51,7 @@ class Widget extends BaseWidget {
     }
     this.firstEditorInit = true;
     this.initGeoprocessor();
+    this.fetchDataByName("RemoteSelect");
   }
 
   startup() {
@@ -101,7 +102,7 @@ class Widget extends BaseWidget {
   
   onReceiveData(name, widgetId, data, historyData) {
     console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
-    if (data.command=="generateBuffers") {
+    if (data.command=="generateBuffers" && this.config.generateBuffers) {
       var pointLayer = this.map.getLayer(this.config.pointLayerId) as FeatureLayer;
       var pointSelection = pointLayer.getSelectedFeatures();
       this.generateBufferAroundPointSelection(pointSelection);
