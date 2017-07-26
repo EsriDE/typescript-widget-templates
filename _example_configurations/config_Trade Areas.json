@@ -11,30 +11,30 @@
     "title": "NAME"
   },
   "polygonLayerAttributeInspectorFields": [
-      {
-          "fieldName": "NAME",
-          "tooltip": "Name",
-          "isEditable": true
-      },
-      {
-          "fieldName": "DESCRIPTION",
-          "tooltip": "Description",
-          "isEditable": true
-      },
-      {
-          "fieldName": "RANKING",
-          "tooltip": "Ranking",
-          "isEditable": false
-      },
-      {
-          "fieldName": "SUM_PP_FOOD_DRINK",
-          "tooltip": "Foods & Drinks",
-          "isEditable": true
-      },
-      {
-          "fieldName": "COMP_IDX",
-          "tooltip": "Computer Index",
-          "isEditable": true
-      }
+    {
+      "fieldName": "NAME",
+      "tooltip": "Name",
+      "isEditable": true
+    },
+    {
+      "fieldName": "DESCRIPTION",
+      "tooltip": "Description",
+      "isEditable": true
+    },
+    {
+      "fieldName": "RANKING",
+      "tooltip": "Ranking",
+      "isEditable": false
+    },
+    {
+      "fieldName": "SUM_PP_FOOD_DRINK",
+      "tooltip": "Foods & Drinks",
+      "isEditable": true
+    },
+    {
+      "fieldName": "COMP_IDX",
+      "tooltip": "Computer Index",
+      "isEditable": true
+    }
   ]
 }
