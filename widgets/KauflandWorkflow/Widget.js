@@ -62,6 +62,14 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         Widget.prototype.onSignOut = function () {
             console.log('onSignOut');
         };
+        Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
+            console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+            if (data.command == "generateBuffers") {
+                var pointLayer = this.map.getLayer(this.config.pointLayerId);
+                var pointSelection = pointLayer.getSelectedFeatures();
+                this.generateBufferAroundPointSelection(pointSelection);
+            }
+        };
         Widget.prototype.initGeoprocessor = function () {
             this.geoprocessor = new Geoprocessor(this.config.geoprocessorUrl);
             this.geoprocessor.setOutSpatialReference({
@@ -106,14 +114,21 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
                 src: "https://js.arcgis.com/3.21/esri/dijit/images/ajax-loader-segments-circle-64.gif"
             }, this.loadingIndicatorText, "first");
         };
-        Widget.prototype.generateBufferAroundPointSelection = function () {
-            var _this = this;
+        Widget.prototype.checkPointSelection = function () {
             var pointLayer = this.map.getLayer(this.config.pointLayerId);
-            this.publishData({
-                command: "selectBufferPoint",
-                layer: pointLayer
-            });
             var pointSelection = pointLayer.getSelectedFeatures();
+            if (pointSelection.length == 0) {
+                this.publishData({
+                    command: "selectBufferPoint",
+                    layer: pointLayer
+                });
+            }
+            else {
+                this.generateBufferAroundPointSelection(pointSelection);
+            }
+        };
+        Widget.prototype.generateBufferAroundPointSelection = function (pointSelection) {
+            var _this = this;
             var pointGeometries = pointSelection.map(function (currentValue) { return currentValue.geometry; });
             var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters");
             var symbol = new SimpleFillSymbol();

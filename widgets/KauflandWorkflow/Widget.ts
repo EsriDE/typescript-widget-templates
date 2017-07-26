@@ -98,6 +98,15 @@ class Widget extends BaseWidget {
   onSignOut() {
     console.log('onSignOut');
   }
+  
+  onReceiveData(name, widgetId, data, historyData) {
+    console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+    if (data.command=="generateBuffers") {
+      var pointLayer = this.map.getLayer(this.config.pointLayerId) as FeatureLayer;
+      var pointSelection = pointLayer.getSelectedFeatures();
+      this.generateBufferAroundPointSelection(pointSelection);
+    }
+  }
 
   initGeoprocessor() {
     this.geoprocessor = new Geoprocessor(this.config.geoprocessorUrl);
@@ -145,15 +154,23 @@ class Widget extends BaseWidget {
     }, this.loadingIndicatorText, "first");
   }
 
-  generateBufferAroundPointSelection() {
+  checkPointSelection() {
     var pointLayer = this.map.getLayer(this.config.pointLayerId) as FeatureLayer;
-
-    this.publishData({
-        command: "selectBufferPoint",
-        layer: pointLayer
-    });
-
     var pointSelection = pointLayer.getSelectedFeatures();
+
+    if (pointSelection.length==0) {
+      this.publishData({
+          command: "selectBufferPoint",
+          layer: pointLayer
+      });
+    }
+    else {
+      this.generateBufferAroundPointSelection(pointSelection);
+    }
+  }
+
+
+  generateBufferAroundPointSelection(pointSelection: Graphic[]) {
     var pointGeometries = pointSelection.map(
       currentValue => currentValue.geometry
     )

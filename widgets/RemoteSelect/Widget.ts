@@ -69,9 +69,12 @@ class Widget extends SelectWidget {
       // open RemoteSelect widget
       let ws = WidgetManager.getInstance();
       ws.triggerWidgetOpen(this.id);
-      // after making the selection, return to original widget ("name" parameter)
+      // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
       data.layer.on("selection-complete", selection => {
         if (selection.features.length > 0) {
+          this.publishData({
+              command: "generateBuffers"
+          });
           ws.triggerWidgetOpen(widgetId);
         }
       });
