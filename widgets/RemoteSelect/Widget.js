@@ -53,8 +53,8 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             console.log(this.widgetName + ' onSignOut');
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
-            var _this = this;
             console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+            this.callingWidgetId = widgetId;
             if (data.command == "selectBufferPoint") {
                 // uncheck other layers
                 this.layerItems.map(function (layerItem) {
@@ -65,17 +65,26 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
                 // select layer
                 this.selectDijit.setFeatureLayers([data.layer]);
                 // open RemoteSelect widget
-                var ws_1 = WidgetManager.getInstance();
-                ws_1.triggerWidgetOpen(this.id);
+                var ws = WidgetManager.getInstance();
+                ws.triggerWidgetOpen(this.id);
                 // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
-                data.layer.on("selection-complete", function (selection) {
-                    if (selection.features.length > 0) {
-                        _this.publishData({
-                            command: "generateBuffers"
-                        });
-                        ws_1.triggerWidgetOpen(widgetId);
-                    }
-                });
+                this.selectionCompleteEventHandler = this.selectionCompleteBackToBuffer;
+                data.layer.on("selection-complete", lang.hitch(this, this.selectionCompleteEventHandler));
+            }
+        };
+        Widget.prototype.selectionCompleteBackToBuffer = function (selection) {
+            if (this.callingWidgetId) {
+                if (selection.features.length > 0) {
+                    this.publishData({
+                        command: "generateBuffers"
+                    });
+                    var ws = WidgetManager.getInstance();
+                    ws.triggerWidgetOpen(this.callingWidgetId);
+                    this.selectionCompleteEventHandler = undefined; // DOES NOT REMOVE THE EVENT HANDLER
+                    // KRÜCKE: There is no way to remove the event handler, and it will trigger also when directly using the widget outside the workflow... 
+                    // It won't do anything without a callingWidgetId, but every time the RemoteSelect widget is opened, another event handler is added.. :(
+                    this.callingWidgetId = undefined;
+                }
             }
         };
         return Widget;

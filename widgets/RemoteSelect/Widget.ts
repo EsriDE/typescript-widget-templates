@@ -7,6 +7,8 @@ import SelectWidget = require("./SelectWidget");
 class Widget extends SelectWidget {
 
   private widgetName = "RemoteSelect";
+  private callingWidgetId: String;
+  private selectionCompleteEventHandler;
 
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-select"}, args));  // replaces "this.inherited(args)" from Esri tutorials
@@ -57,6 +59,7 @@ class Widget extends SelectWidget {
 
   onReceiveData(name, widgetId, data, historyData) {
     console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+    this.callingWidgetId = widgetId;
     if (data.command=="selectBufferPoint") {
       // uncheck other layers
       this.layerItems.map(layerItem => {
@@ -70,16 +73,27 @@ class Widget extends SelectWidget {
       let ws = WidgetManager.getInstance();
       ws.triggerWidgetOpen(this.id);
       // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
-      data.layer.on("selection-complete", selection => {
-        if (selection.features.length > 0) {
-          this.publishData({
-              command: "generateBuffers"
-          });
-          ws.triggerWidgetOpen(widgetId);
-        }
-      });
+      this.selectionCompleteEventHandler = this.selectionCompleteBackToBuffer;
+      data.layer.on("selection-complete", lang.hitch(this, this.selectionCompleteEventHandler));
     }
   }
+
+  selectionCompleteBackToBuffer(selection) {
+    if (this.callingWidgetId) {
+      if (selection.features.length > 0) {
+        this.publishData({
+            command: "generateBuffers"
+        });
+        let ws = WidgetManager.getInstance();
+        ws.triggerWidgetOpen(this.callingWidgetId);
+        this.selectionCompleteEventHandler = undefined; // DOES NOT REMOVE THE EVENT HANDLER
+        // KRÜCKE: There is no way to remove the event handler, and it will trigger also when directly using the widget outside the workflow... 
+        // It won't do anything without a callingWidgetId, but every time the RemoteSelect widget is opened, another event handler is added.. :(
+        this.callingWidgetId = undefined;
+      }
+    }
+  }
+
 }
 
 interface SpecificWidgetConfig{
