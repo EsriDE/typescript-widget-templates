@@ -1,3 +1,4 @@
+import WidgetManager = require("jimu/WidgetManager");
 import lang = require("dojo/_base/lang");
 import html = require("dojo/_base/html");
 import FeatureLayer = require("esri/layers/FeatureLayer");
@@ -65,6 +66,9 @@ class Widget extends SelectWidget {
       });
       // select layer
       this.selectDijit.setFeatureLayers([data.layer]);
+      // open RemoteSelect widget
+      let ws = WidgetManager.getInstance();
+      ws.triggerWidgetOpen(this.id);
     }
   }
 }

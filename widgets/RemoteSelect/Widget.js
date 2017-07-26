@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "dojo/_base/lang", "dojo/_base/html", "./SelectWidget"], function (require, exports, lang, html, SelectWidget) {
+define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/html", "./SelectWidget"], function (require, exports, WidgetManager, lang, html, SelectWidget) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -63,6 +63,9 @@ define(["require", "exports", "dojo/_base/lang", "dojo/_base/html", "./SelectWid
                 });
                 // select layer
                 this.selectDijit.setFeatureLayers([data.layer]);
+                // open RemoteSelect widget
+                var ws = WidgetManager.getInstance();
+                ws.triggerWidgetOpen(this.id);
             }
         };
         return Widget;
