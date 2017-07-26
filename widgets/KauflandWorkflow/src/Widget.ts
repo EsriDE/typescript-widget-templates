@@ -25,6 +25,24 @@ import InfoTemplate = require("esri/InfoTemplate");
 import Geoprocessor = require("esri/tasks/Geoprocessor");
 import SpatialReference = require("esri/SpatialReference");
 import FeatureSet = require("esri/tasks/FeatureSet");
+import SelectWidget = require("widgets/Select/Widget");
+
+class RemoteSelectWidget extends SelectWidget {
+  
+  constructor(args?) {
+    super();
+ /*    super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));  // replaces "this.inherited(args)" from Esri tutorials
+    if (this.config.generateBuffers!==true) {
+      domStyle.set(this.generateBuffersContainer, "display", "none");
+    }
+    this.firstEditorInit = true;
+    this.initGeoprocessor();
+
+    let selectWidget = new SelectWidget(); */
+  }
+
+}
+
 
 class Widget extends BaseWidget {
 
@@ -51,6 +69,8 @@ class Widget extends BaseWidget {
     }
     this.firstEditorInit = true;
     this.initGeoprocessor();
+
+    let selectWidget = new SelectWidget();
   }
 
   startup() {
