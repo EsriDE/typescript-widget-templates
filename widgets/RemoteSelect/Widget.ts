@@ -56,7 +56,7 @@ class Widget extends SelectWidget {
   }
 
   onReceiveData(name, widgetId, data, historyData) {
-    console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".")
+    console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
     if (data.command=="selectBufferPoint") {
       // uncheck other layers
       this.layerItems.map(layerItem => {
@@ -69,6 +69,12 @@ class Widget extends SelectWidget {
       // open RemoteSelect widget
       let ws = WidgetManager.getInstance();
       ws.triggerWidgetOpen(this.id);
+      // after making the selection, return to original widget ("name" parameter)
+      data.layer.on("selection-complete", selection => {
+        if (selection.features.length > 0) {
+          ws.triggerWidgetOpen(widgetId);
+        }
+      });
     }
   }
 }

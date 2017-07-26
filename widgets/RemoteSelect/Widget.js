@@ -53,7 +53,7 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             console.log(this.widgetName + ' onSignOut');
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
-            console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".");
+            console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
             if (data.command == "selectBufferPoint") {
                 // uncheck other layers
                 this.layerItems.map(function (layerItem) {
@@ -64,8 +64,14 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
                 // select layer
                 this.selectDijit.setFeatureLayers([data.layer]);
                 // open RemoteSelect widget
-                var ws = WidgetManager.getInstance();
-                ws.triggerWidgetOpen(this.id);
+                var ws_1 = WidgetManager.getInstance();
+                ws_1.triggerWidgetOpen(this.id);
+                // after making the selection, return to original widget ("name" parameter)
+                data.layer.on("selection-complete", function (selection) {
+                    if (selection.features.length > 0) {
+                        ws_1.triggerWidgetOpen(widgetId);
+                    }
+                });
             }
         };
         return Widget;
