@@ -1,4 +1,6 @@
 import lang = require("dojo/_base/lang");
+import html = require("dojo/_base/html");
+import FeatureLayer = require("esri/layers/FeatureLayer");
 import SelectWidget = require("./SelectWidget");
 
 class Widget extends SelectWidget {
@@ -7,6 +9,7 @@ class Widget extends SelectWidget {
 
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-select"}, args));  // replaces "this.inherited(args)" from Esri tutorials
+    this.fetchDataByName(this.config.remoteControlledBy);
     console.log(this.widgetName + ' constructor');
   }
 
@@ -49,6 +52,20 @@ class Widget extends SelectWidget {
   onSignOut() {
     super.onSignOut();
     console.log(this.widgetName + ' onSignOut');
+  }
+
+  onReceiveData(name, widgetId, data, historyData) {
+    console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".")
+    if (data.command=="selectBufferPoint") {
+      // uncheck other layers
+      this.layerItems.map(layerItem => {
+        if (layerItem.featureLayer!==data.layer) {
+          html.removeClass(layerItem.selectableCheckBox, 'checked');
+        }
+      });
+      // select layer
+      this.selectDijit.setFeatureLayers([data.layer]);
+    }
   }
 }
 

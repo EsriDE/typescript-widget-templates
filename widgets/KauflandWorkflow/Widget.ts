@@ -147,8 +147,13 @@ class Widget extends BaseWidget {
 
   generateBufferAroundPointSelection() {
     var pointLayer = this.map.getLayer(this.config.pointLayerId) as FeatureLayer;
-    var pointSelection = pointLayer.getSelectedFeatures();
 
+    this.publishData({
+        command: "selectBufferPoint",
+        layer: pointLayer
+    });
+
+    var pointSelection = pointLayer.getSelectedFeatures();
     var pointGeometries = pointSelection.map(
       currentValue => currentValue.geometry
     )

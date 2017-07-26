@@ -8,13 +8,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "dojo/_base/lang", "./SelectWidget"], function (require, exports, lang, SelectWidget) {
+define(["require", "exports", "dojo/_base/lang", "dojo/_base/html", "./SelectWidget"], function (require, exports, lang, html, SelectWidget) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
         function Widget(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-select" }, args)) || this;
             _this.widgetName = "RemoteSelect";
+            _this.fetchDataByName(_this.config.remoteControlledBy);
             console.log(_this.widgetName + ' constructor');
             return _this;
         }
@@ -50,6 +51,19 @@ define(["require", "exports", "dojo/_base/lang", "./SelectWidget"], function (re
         Widget.prototype.onSignOut = function () {
             _super.prototype.onSignOut.call(this);
             console.log(this.widgetName + ' onSignOut');
+        };
+        Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
+            console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".");
+            if (data.command == "selectBufferPoint") {
+                // uncheck other layers
+                this.layerItems.map(function (layerItem) {
+                    if (layerItem.featureLayer !== data.layer) {
+                        html.removeClass(layerItem.selectableCheckBox, 'checked');
+                    }
+                });
+                // select layer
+                this.selectDijit.setFeatureLayers([data.layer]);
+            }
         };
         return Widget;
     }(SelectWidget));

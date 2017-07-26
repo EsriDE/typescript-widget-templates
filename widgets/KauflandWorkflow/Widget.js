@@ -109,6 +109,10 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
         Widget.prototype.generateBufferAroundPointSelection = function () {
             var _this = this;
             var pointLayer = this.map.getLayer(this.config.pointLayerId);
+            this.publishData({
+                command: "selectBufferPoint",
+                layer: pointLayer
+            });
             var pointSelection = pointLayer.getSelectedFeatures();
             var pointGeometries = pointSelection.map(function (currentValue) { return currentValue.geometry; });
             var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters");

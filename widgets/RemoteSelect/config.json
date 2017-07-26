@@ -1,5 +1,6 @@
 {
   "selectionColor": "#00FFFF",
   "selectionMode": "partial",
-  "allowExport": false
+  "allowExport": false,
+  "remoteControlledBy": "KauflandWorkflow"
 }
