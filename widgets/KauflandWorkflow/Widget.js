@@ -63,7 +63,7 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             console.log('onSignOut');
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
-            console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+            console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
             if (data.command == "generateBuffers") {
                 var pointLayer = this.map.getLayer(this.config.pointLayerId);
                 var pointSelection = pointLayer.getSelectedFeatures();

@@ -6,7 +6,6 @@ import SelectWidget = require("./SelectWidget");
 
 class Widget extends SelectWidget {
 
-  private widgetName = "RemoteSelect";
   private callingWidgetId: String;
   private selectionCompleteEventHandler;
 
@@ -58,7 +57,7 @@ class Widget extends SelectWidget {
   }
 
   onReceiveData(name, widgetId, data, historyData) {
-    console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+    console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
     this.callingWidgetId = widgetId;
     if (data.command=="selectBufferPoint") {
       // uncheck other layers

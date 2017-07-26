@@ -14,7 +14,6 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
         __extends(Widget, _super);
         function Widget(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-select" }, args)) || this;
-            _this.widgetName = "RemoteSelect";
             _this.fetchDataByName(_this.config.remoteControlledBy);
             console.log(_this.widgetName + ' constructor');
             return _this;
@@ -53,7 +52,7 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             console.log(this.widgetName + ' onSignOut');
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
-            console.log(this.widgetName + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+            console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
             this.callingWidgetId = widgetId;
             if (data.command == "selectBufferPoint") {
                 // uncheck other layers
