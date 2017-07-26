@@ -5,8 +5,8 @@
     "module": "amd",
     "sourceMap": true,
     "watch": true,
-    "rootDir": "widgets/KauflandWorkflow/src",
-    "outDir": "widgets/KauflandWorkflow"
+    "rootDir": "",
+    "outDir": ""
   },
   "exclude" : ["node_modules"]
 }
