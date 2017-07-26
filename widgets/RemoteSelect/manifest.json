@@ -1,7 +1,7 @@
 {
   "name": "RemoteSelect",
   "platform": "HTML",
-  "version": "0.1",
+  "version": "0.1.3",
   "wabVersion": "2.4",
   "author": "Niklas Köhn, Esri Deutschland GmbH",
   "description": "",
