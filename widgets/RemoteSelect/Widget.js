@@ -64,26 +64,20 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
                 // select layer
                 this.selectDijit.setFeatureLayers([data.layer]);
                 // open RemoteSelect widget
-                var ws = WidgetManager.getInstance();
-                ws.triggerWidgetOpen(this.id);
+                var ws_1 = WidgetManager.getInstance();
+                ws_1.triggerWidgetOpen(this.id);
                 // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
-                this.selectionCompleteEventHandler = this.selectionCompleteBackToBuffer;
-                data.layer.on("selection-complete", lang.hitch(this, this.selectionCompleteEventHandler));
+                this.selectionCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function (selection) { this.selectionCompleteBackToBuffer(selection, widgetId, ws_1); }));
             }
         };
-        Widget.prototype.selectionCompleteBackToBuffer = function (selection) {
-            if (this.callingWidgetId) {
-                if (selection.features.length > 0) {
-                    this.publishData({
-                        command: "generateBuffers"
-                    });
-                    var ws = WidgetManager.getInstance();
-                    ws.triggerWidgetOpen(this.callingWidgetId);
-                    this.selectionCompleteEventHandler = undefined; // DOES NOT REMOVE THE EVENT HANDLER
-                    // KRÜCKE: There is no way to remove the event handler, and it will trigger also when directly using the widget outside the workflow... 
-                    // It won't do anything without a callingWidgetId, but every time the RemoteSelect widget is opened, another event handler is added.. :(
-                    this.callingWidgetId = undefined;
-                }
+        Widget.prototype.selectionCompleteBackToBuffer = function (selection, callingWidgetId, ws) {
+            if (selection.features.length > 0) {
+                this.publishData({
+                    command: "generateBuffers",
+                    valid: true
+                });
+                ws.triggerWidgetOpen(callingWidgetId);
+                this.selectionCompleteSignal.remove();
             }
         };
         return Widget;

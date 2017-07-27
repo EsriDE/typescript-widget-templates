@@ -102,10 +102,11 @@ class Widget extends BaseWidget {
   
   onReceiveData(name, widgetId, data, historyData) {
     console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
-    if (data.command=="generateBuffers" && this.config.generateBuffers) {
+    if (data.command=="generateBuffers" && data.valid) {
       var pointLayer = this.map.getLayer(this.config.pointLayerId) as FeatureLayer;
       var pointSelection = pointLayer.getSelectedFeatures();
       this.generateBufferAroundPointSelection(pointSelection);
+      data.valid = false;
     }
   }
 

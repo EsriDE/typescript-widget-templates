@@ -7,7 +7,7 @@ import SelectWidget = require("./SelectWidget");
 class Widget extends SelectWidget {
 
   private callingWidgetId: String;
-  private selectionCompleteEventHandler;
+  private selectionCompleteSignal;
 
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-select"}, args));  // replaces "this.inherited(args)" from Esri tutorials
@@ -72,24 +72,18 @@ class Widget extends SelectWidget {
       let ws = WidgetManager.getInstance();
       ws.triggerWidgetOpen(this.id);
       // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
-      this.selectionCompleteEventHandler = this.selectionCompleteBackToBuffer;
-      data.layer.on("selection-complete", lang.hitch(this, this.selectionCompleteEventHandler));
+      this.selectionCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function(selection) {this.selectionCompleteBackToBuffer(selection, widgetId, ws);}));
     }
   }
 
-  selectionCompleteBackToBuffer(selection) {
-    if (this.callingWidgetId) {
-      if (selection.features.length > 0) {
-        this.publishData({
-            command: "generateBuffers"
-        });
-        let ws = WidgetManager.getInstance();
-        ws.triggerWidgetOpen(this.callingWidgetId);
-        this.selectionCompleteEventHandler = undefined; // DOES NOT REMOVE THE EVENT HANDLER
-        // KRÜCKE: There is no way to remove the event handler, and it will trigger also when directly using the widget outside the workflow... 
-        // It won't do anything without a callingWidgetId, but every time the RemoteSelect widget is opened, another event handler is added.. :(
-        this.callingWidgetId = undefined;
-      }
+  selectionCompleteBackToBuffer(selection, callingWidgetId, ws) {
+    if (selection.features.length > 0) {
+      this.publishData({
+          command: "generateBuffers",
+          valid: true
+      });
+      ws.triggerWidgetOpen(callingWidgetId);
+      this.selectionCompleteSignal.remove();
     }
   }
 
