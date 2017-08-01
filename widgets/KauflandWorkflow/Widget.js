@@ -24,20 +24,20 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             return _this;
         }
         Widget.prototype.startup = function () {
-            console.log('startup', this.config, this.map);
+            console.log(this.manifest.name + ' startup', this.config, this.map);
         };
         Widget.prototype.postCreate = function () {
-            console.log('postCreate', this.config);
+            console.log(this.manifest.name + ' postCreate', this.config);
         };
         Widget.prototype.onOpen = function () {
-            console.log('onOpen');
+            console.log(this.manifest.name + ' onOpen');
             this.editPolygons();
             if (this.editLayer) {
                 var selectedFeatures = this.editLayer.getSelectedFeatures();
             }
         };
         Widget.prototype.onClose = function () {
-            console.log('onClose');
+            console.log(this.manifest.name + ' onClose');
             if (this.templatePicker)
                 this.templatePicker.destroy();
             if (this.attributeInspector)
@@ -51,17 +51,17 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             this.editLayer.refresh();
         };
         Widget.prototype.onMinimize = function () {
-            console.log('onMinimize');
+            console.log(this.manifest.name + ' onMinimize');
         };
         Widget.prototype.onMaximize = function () {
-            console.log('onMaximize');
+            console.log(this.manifest.name + ' onMaximize');
         };
         Widget.prototype.onSignIn = function (credential) {
             /* jshint unused:false*/
-            console.log('onSignIn');
+            console.log(this.manifest.name + ' onSignIn');
         };
         Widget.prototype.onSignOut = function () {
-            console.log('onSignOut');
+            console.log(this.manifest.name + ' onSignOut');
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
             console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);

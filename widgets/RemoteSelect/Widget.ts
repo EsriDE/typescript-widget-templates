@@ -1,4 +1,5 @@
 import WidgetManager = require("jimu/WidgetManager");
+import PanelManager = require("jimu/PanelManager");
 import lang = require("dojo/_base/lang");
 import html = require("dojo/_base/html");
 import FeatureLayer = require("esri/layers/FeatureLayer");
@@ -17,43 +18,43 @@ class Widget extends SelectWidget {
 
   startup() {
     super.startup();
-    console.log(this.widgetName + ' startup', this.config, this.map);
+    console.log(this.manifest.name + ' startup', this.config, this.map);
   }
 
   postCreate() {
     super.postCreate();
-    console.log(this.widgetName + ' postCreate', this.config);
+    console.log(this.manifest.name + ' postCreate', this.config);
   }
 
   onOpen() {
     super.onOpen();
-    console.log(this.widgetName + ' onOpen');
+    console.log(this.manifest.name + ' onOpen');
   }
 
   onClose() {
     super.onClose();
-    console.log(this.widgetName + ' onClose');
+    console.log(this.manifest.name + ' onClose');
   }
 
   onMinimize() {
     super.onMinimize();
-    console.log(this.widgetName + ' onMinimize');
+    console.log(this.manifest.name + ' onMinimize');
   }
 
   onMaximize() {
     super.onMaximize();
-    console.log(this.widgetName + ' onMaximize');
+    console.log(this.manifest.name + ' onMaximize');
   }
 
   onSignIn(credential){
     super.onSignIn();
     /* jshint unused:false*/
-    console.log(this.widgetName + ' onSignIn');
+    console.log(this.manifest.name + ' onSignIn');
   }
 
   onSignOut() {
     super.onSignOut();
-    console.log(this.widgetName + ' onSignOut');
+    console.log(this.manifest.name + ' onSignOut');
   }
 
   onReceiveData(name, widgetId, data, historyData) {
@@ -82,7 +83,10 @@ class Widget extends SelectWidget {
           command: "generateBuffers",
           valid: true
       });
+      console.log(ws.getAllWidgets());
       ws.triggerWidgetOpen(callingWidgetId);
+      let ps = PanelManager.getInstance();
+      ps.closePanel(this.id + "_panel");
       this.selectionCompleteSignal.remove();
     }
   }

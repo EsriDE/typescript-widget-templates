@@ -55,15 +55,15 @@ class Widget extends BaseWidget {
   }
 
   startup() {
-    console.log('startup', this.config, this.map);
+    console.log(this.manifest.name + ' startup', this.config, this.map);
   }
 
   postCreate() {
-    console.log('postCreate', this.config);
+    console.log(this.manifest.name + ' postCreate', this.config);
   }
 
   onOpen() {
-    console.log('onOpen');
+    console.log(this.manifest.name + ' onOpen');
     this.editPolygons();
     if (this.editLayer) {
       let selectedFeatures = this.editLayer.getSelectedFeatures();
@@ -71,7 +71,7 @@ class Widget extends BaseWidget {
   }
 
   onClose() {
-    console.log('onClose');
+    console.log(this.manifest.name + ' onClose');
     if (this.templatePicker) this.templatePicker.destroy();
     if (this.attributeInspector) this.attributeInspector.destroy();
     if (this.editToolbar) {
@@ -84,20 +84,20 @@ class Widget extends BaseWidget {
   }
 
   onMinimize() {
-    console.log('onMinimize');
+    console.log(this.manifest.name + ' onMinimize');
   }
 
   onMaximize() {
-    console.log('onMaximize');
+    console.log(this.manifest.name + ' onMaximize');
   }
 
   onSignIn(credential){
     /* jshint unused:false*/
-    console.log('onSignIn');
+    console.log(this.manifest.name + ' onSignIn');
   }
 
   onSignOut() {
-    console.log('onSignOut');
+    console.log(this.manifest.name + ' onSignOut');
   }
   
   onReceiveData(name, widgetId, data, historyData) {
