@@ -1,6 +1,9 @@
 {
   "generateBuffers": true,
   "templatePicker": true,
+  "remotelyControlling": [
+      "RemoteSelect"
+  ],
   "attributeInspectorDiv": "catchmentAreaAttributeInspectorDiv",
   "templatePickerDiv": "catchmentAreaTemplatePickerDiv",
   "pointLayerId": "Test_Standorte_1851",

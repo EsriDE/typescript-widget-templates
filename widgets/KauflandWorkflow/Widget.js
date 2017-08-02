@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/event", "dojo/dom-construct", "dojo/dom-style", "dijit/form/Button", "esri/layers/FeatureLayer", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker", "esri/dijit/AttributeInspector", "esri/tasks/query", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, lang, event, domConstruct, domStyle, Button, FeatureLayer, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker, AttributeInspector, Query, Geoprocessor, FeatureSet) {
+define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/event", "dojox/json/query", "dojo/dom-construct", "dojo/dom-style", "dijit/form/Button", "esri/layers/FeatureLayer", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker", "esri/dijit/AttributeInspector", "esri/tasks/query", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, WidgetManager, lang, event, jsonQuery, domConstruct, domStyle, Button, FeatureLayer, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker, AttributeInspector, Query, Geoprocessor, FeatureSet) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -20,24 +20,36 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             }
             _this.firstEditorInit = true;
             _this.initGeoprocessor();
-            _this.fetchDataByName("RemoteSelect");
+            var ws = WidgetManager.getInstance();
+            _this.config.remotelyControlling.map(function (remotelyControlledWidgetName) {
+                _this.fetchDataByName(remotelyControlledWidgetName);
+                if (ws.getWidgetsByName(remotelyControlledWidgetName).length == 0) {
+                    var remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", _this.appConfig);
+                    if (remoteWidget[0]) {
+                        ws.loadWidget(remoteWidget[0]);
+                    }
+                    else {
+                        console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
+                    }
+                }
+            });
             return _this;
         }
         Widget.prototype.startup = function () {
-            console.log('startup', this.config, this.map);
+            console.log(this.manifest.name + ' startup', this.config, this.map);
         };
         Widget.prototype.postCreate = function () {
-            console.log('postCreate', this.config);
+            console.log(this.manifest.name + ' postCreate', this.config);
         };
         Widget.prototype.onOpen = function () {
-            console.log('onOpen');
+            console.log(this.manifest.name + ' onOpen');
             this.editPolygons();
             if (this.editLayer) {
                 var selectedFeatures = this.editLayer.getSelectedFeatures();
             }
         };
         Widget.prototype.onClose = function () {
-            console.log('onClose');
+            console.log(this.manifest.name + ' onClose');
             if (this.templatePicker)
                 this.templatePicker.destroy();
             if (this.attributeInspector)
@@ -51,17 +63,17 @@ define(["require", "exports", "jimu/BaseWidget", "dojo/_base/lang", "dojo/_base/
             this.editLayer.refresh();
         };
         Widget.prototype.onMinimize = function () {
-            console.log('onMinimize');
+            console.log(this.manifest.name + ' onMinimize');
         };
         Widget.prototype.onMaximize = function () {
-            console.log('onMaximize');
+            console.log(this.manifest.name + ' onMaximize');
         };
         Widget.prototype.onSignIn = function (credential) {
             /* jshint unused:false*/
-            console.log('onSignIn');
+            console.log(this.manifest.name + ' onSignIn');
         };
         Widget.prototype.onSignOut = function () {
-            console.log('onSignOut');
+            console.log(this.manifest.name + ' onSignOut');
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
             console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);

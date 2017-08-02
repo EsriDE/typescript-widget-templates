@@ -1,6 +1,9 @@
 {
   "generateBuffers": false,
   "templatePicker": false,
+  "remotelyControlling": [
+      "RemoteSelect"
+  ],
   "attributeInspectorDiv": "customDistrictsAttributeInspectorDiv",
   "templatePickerDiv": "customDistrictsTemplatePickerDiv",
   "pointLayerId": "Test_Standorte_8435",
