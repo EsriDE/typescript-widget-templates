@@ -1,8 +1,11 @@
 import BaseWidget = require("jimu/BaseWidget");
+import WidgetManager = require("jimu/WidgetManager");
+import PanelManager = require("jimu/PanelManager");
 import lang = require("dojo/_base/lang");
 import array = require("dojo/_base/array");
 import event = require("dojo/_base/event");
-import json = require('dojo/_base/json');
+import json = require('dojo/json');
+import jsonQuery = require("dojox/json/query");
 import domConstruct = require("dojo/dom-construct");
 import domStyle = require("dojo/dom-style");
 import domAttr = require("dojo/dom-attr");
@@ -51,7 +54,12 @@ class Widget extends BaseWidget {
     }
     this.firstEditorInit = true;
     this.initGeoprocessor();
+    
     this.fetchDataByName("RemoteSelect");
+    let ws = WidgetManager.getInstance();
+    let remoteWidget = jsonQuery("$..widgets..[?name='RemoteSelect']", this.appConfig);
+    ws.loadWidget(remoteWidget[0]);
+
   }
 
   startup() {
