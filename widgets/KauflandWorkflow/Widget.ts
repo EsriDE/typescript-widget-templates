@@ -48,18 +48,26 @@ class Widget extends BaseWidget {
   private loadingIndicatorImage;
 
   constructor(args?) {
-    super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));  // replaces "this.inherited(args)" from Esri tutorials
+    super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));
     if (this.config.generateBuffers!==true) {
       domStyle.set(this.generateBuffersContainer, "display", "none");
     }
     this.firstEditorInit = true;
     this.initGeoprocessor();
-    
-    this.fetchDataByName("RemoteSelect");
-    let ws = WidgetManager.getInstance();
-    let remoteWidget = jsonQuery("$..widgets..[?name='RemoteSelect']", this.appConfig);
-    ws.loadWidget(remoteWidget[0]);
 
+    let ws = WidgetManager.getInstance();
+    this.config.remotelyControlling.map(remotelyControlledWidgetName => {
+      this.fetchDataByName(remotelyControlledWidgetName);
+      if (ws.getWidgetsByName(remotelyControlledWidgetName).length==0) {
+        let remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", this.appConfig);
+        if (remoteWidget[0]) {
+          ws.loadWidget(remoteWidget[0]);
+        }
+        else {
+          console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
+        }
+      }
+    });
   }
 
   startup() {

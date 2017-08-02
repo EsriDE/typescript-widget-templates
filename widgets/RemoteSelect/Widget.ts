@@ -11,7 +11,7 @@ class Widget extends SelectWidget {
   private selectionCompleteSignal;
 
   constructor(args?) {
-    super(lang.mixin({baseClass: "jimu-widget-select"}, args));  // replaces "this.inherited(args)" from Esri tutorials
+    super(lang.mixin({baseClass: "jimu-widget-select"}, args));
     this.fetchDataByName(this.config.remoteControlledBy);
     console.log(this.widgetName + ' constructor');
   }

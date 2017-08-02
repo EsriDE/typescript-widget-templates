@@ -1,6 +1,9 @@
 {
   "generateBuffers": false,
   "templatePicker": true,
+  "remotelyControlling": [
+      "RemoteSelect"
+  ],
   "attributeInspectorDiv": "tradeAreaAttributeInspectorDiv",
   "templatePickerDiv": "tradeAreaTemplatePickerDiv",
   "pointLayerId": "Test_Standorte_8435",

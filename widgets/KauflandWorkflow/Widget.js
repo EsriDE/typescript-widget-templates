@@ -20,10 +20,19 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
             }
             _this.firstEditorInit = true;
             _this.initGeoprocessor();
-            _this.fetchDataByName("RemoteSelect");
             var ws = WidgetManager.getInstance();
-            var remoteWidget = jsonQuery("$..widgets..[?name='RemoteSelect']", _this.appConfig);
-            ws.loadWidget(remoteWidget[0]);
+            _this.config.remotelyControlling.map(function (remotelyControlledWidgetName) {
+                _this.fetchDataByName(remotelyControlledWidgetName);
+                if (ws.getWidgetsByName(remotelyControlledWidgetName).length == 0) {
+                    var remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", _this.appConfig);
+                    if (remoteWidget[0]) {
+                        ws.loadWidget(remoteWidget[0]);
+                    }
+                    else {
+                        console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
+                    }
+                }
+            });
             return _this;
         }
         Widget.prototype.startup = function () {
