@@ -80,10 +80,6 @@ class Widget extends BaseWidget {
 
   onOpen() {
     console.log(this.manifest.name + ' onOpen');
-    this.editPolygons();
-    if (this.editLayer) {
-      let selectedFeatures = this.editLayer.getSelectedFeatures();
-    }
   }
 
   onClose() {
@@ -220,6 +216,13 @@ class Widget extends BaseWidget {
   }
 
   editPolygons() {
+    this.publishData({
+      command: "editPolygons"
+    });
+  }
+
+  /* 
+  editPolygons_() {
     this.editLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
 
     // put editLayer on top
@@ -384,7 +387,7 @@ class Widget extends BaseWidget {
     });
     
     return attributeInspector;
-  }
+  } */
 
 }
 

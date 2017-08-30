@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "dojo/_base/lang", "./EditWidget"], function (require, exports, lang, EditWidget) {
+define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "./EditWidget"], function (require, exports, WidgetManager, lang, EditWidget) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -53,6 +53,24 @@ define(["require", "exports", "dojo/_base/lang", "./EditWidget"], function (requ
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
             console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+            this.callingWidgetId = widgetId;
+            if (data.command == "editPolygons") {
+                /*       // uncheck other layers
+                      this.layerItems.map(layerItem => {
+                        if (layerItem.featureLayer!==data.layer) {
+                          html.removeClass(layerItem.selectableCheckBox, 'checked');
+                        }
+                      });
+                      // select layer
+                      this.selectDijit.setFeatureLayers([data.layer]);
+                      */
+                // open RemoteEdit widget
+                var ws = WidgetManager.getInstance();
+                ws.triggerWidgetOpen(this.id);
+                /*
+                    // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
+                    this.selectionCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function(selection) {this.selectionCompleteBackToBuffer(selection, widgetId, ws);})); */
+            }
         };
         return Widget;
     }(EditWidget));

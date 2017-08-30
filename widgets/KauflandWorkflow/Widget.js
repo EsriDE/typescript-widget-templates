@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/event", "dojox/json/query", "dojo/dom-construct", "dojo/dom-style", "dijit/form/Button", "esri/layers/FeatureLayer", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/toolbars/edit", "esri/toolbars/draw", "esri/dijit/editing/TemplatePicker", "esri/dijit/AttributeInspector", "esri/tasks/query", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, WidgetManager, lang, event, jsonQuery, domConstruct, domStyle, Button, FeatureLayer, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Edit, Draw, TemplatePicker, AttributeInspector, Query, Geoprocessor, FeatureSet) {
+define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_base/lang", "dojox/json/query", "dojo/dom-construct", "dojo/dom-style", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, WidgetManager, lang, jsonQuery, domConstruct, domStyle, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Geoprocessor, FeatureSet) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -43,10 +43,6 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
         };
         Widget.prototype.onOpen = function () {
             console.log(this.manifest.name + ' onOpen');
-            this.editPolygons();
-            if (this.editLayer) {
-                var selectedFeatures = this.editLayer.getSelectedFeatures();
-            }
         };
         Widget.prototype.onClose = function () {
             console.log(this.manifest.name + ' onClose');
@@ -163,148 +159,9 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
             graphicsToRemove.map(function (graphic) { return _this.map.graphics.remove(graphic); });
         };
         Widget.prototype.editPolygons = function () {
-            var _this = this;
-            this.editLayer = this.map.getLayer(this.config.polygonLayerId);
-            // put editLayer on top
-            this.map.reorderLayer(this.editLayer, this.map.getLayersVisibleAtScale().length - 1);
-            var selectionSymbol = new SimpleFillSymbol();
-            selectionSymbol.setColor(new Color([0, 255, 255, 77]));
-            selectionSymbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([0, 255, 255, 255]), 1));
-            this.editLayer.setSelectionSymbol(selectionSymbol);
-            this.editToolbar = this.initializeEditToolbar();
-            if (this.config.templatePicker === true) {
-                this.templatePicker = this.initializeTemplatePicker();
-                this.drawToolbar = this.initializeDrawToolbar(this.templatePicker);
-            }
-            this.attributeInspector = this.initializeAttributeInspector();
-            if (this.firstEditorInit) {
-                var selectQuery = new Query();
-                this.editLayer.on("click", lang.hitch(this, function (evt) {
-                    var _this = this;
-                    selectQuery.objectIds = [evt.graphic.attributes[this.config.polygonLayerFieldNames.objectId]];
-                    selectQuery.distance = 200;
-                    selectQuery.units = "meters";
-                    this.editLayer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function (features) {
-                        if (features.length > 0) {
-                            _this.updateFeature = features[0];
-                            if (_this.updateFeature.attributes && _this.updateFeature.attributes[_this.config.polygonLayerFieldNames.title]) {
-                                _this.attributeInspector.layerName.innerText = _this.updateFeature.attributes[_this.config.polygonLayerFieldNames.title];
-                            }
-                            else {
-                                _this.attributeInspector.layerName.innerText = _this.nls.newFeature;
-                            }
-                        }
-                        else {
-                            _this.map.infoWindow.hide();
-                        }
-                    });
-                }));
-                this.map.infoWindow.on("hide", function (evt) {
-                    _this.editLayer.clearSelection();
-                });
-            }
-            this.firstEditorInit = false;
-        };
-        Widget.prototype.initializeEditToolbar = function () {
-            var editToolbar = new Edit(this.map);
-            return editToolbar;
-        };
-        Widget.prototype.initializeTemplatePicker = function () {
-            var layers = [];
-            layers.push(this.editLayer);
-            var templatePicker = new TemplatePicker({
-                featureLayers: layers,
-                rows: "auto",
-                columns: "auto",
-                grouping: true,
-                style: "height: auto; overflow: auto;"
-            }, domConstruct.create("div"));
-            domConstruct.place(templatePicker.domNode, this.config.templatePickerDiv, "only");
-            templatePicker.startup();
-            return templatePicker;
-        };
-        Widget.prototype.initializeDrawToolbar = function (templatePicker) {
-            var _this = this;
-            var drawToolbar = new Draw(this.map);
-            var selectedTemplate;
-            templatePicker.on("selection-change", function (evt) {
-                if (templatePicker.getSelected()) {
-                    selectedTemplate = templatePicker.getSelected();
-                }
-                switch (selectedTemplate.featureLayer.geometryType) {
-                    case "esriGeometryPoint":
-                        drawToolbar.activate(Draw.POINT);
-                        break;
-                    case "esriGeometryPolyline":
-                        drawToolbar.activate(Draw.POLYLINE);
-                        break;
-                    case "esriGeometryPolygon":
-                        drawToolbar.activate(Draw.POLYGON);
-                        break;
-                }
+            this.publishData({
+                command: "editPolygons"
             });
-            drawToolbar.on("draw-end", function (evt) {
-                drawToolbar.deactivate();
-                _this.editToolbar.deactivate();
-                var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
-                var newGraphic = new Graphic(evt.geometry, null, newAttributes);
-                selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
-            });
-            return drawToolbar;
-        };
-        Widget.prototype.initializeAttributeInspector = function () {
-            var _this = this;
-            var layerInfos = [
-                {
-                    featureLayer: this.editLayer,
-                    showAttachments: true,
-                    showDeleteButton: true,
-                    isEditable: true,
-                    fieldInfos: this.config.polygonLayerAttributeInspectorFields
-                }
-            ];
-            var attributeInspector = new AttributeInspector({
-                layerInfos: layerInfos
-            }, domConstruct.create("div"));
-            domConstruct.place(attributeInspector.domNode, this.config.attributeInspectorDiv, "only");
-            var saveButton = new Button({ label: this.nls.save, "class": "attributeInspectorSaveButton" }, domConstruct.create("div"));
-            domConstruct.place(saveButton.domNode, attributeInspector.deleteBtn.domNode, "after");
-            var editButton = new Button({ label: this.nls.edit, "class": "attributeInspectorEditButton" }, domConstruct.create("div"));
-            domConstruct.place(editButton.domNode, attributeInspector.deleteBtn.domNode, "after");
-            saveButton.on("click", function (evt) {
-                _this.performAggregation();
-                var updateFeatureLayer = _this.updateFeature.getLayer();
-                updateFeatureLayer.applyEdits(null, [_this.updateFeature], null);
-                if (editingEnabled === true) {
-                    _this.editToolbar.deactivate();
-                    editingEnabled = false;
-                }
-            });
-            var editingEnabled = false;
-            editButton.on("click", lang.hitch(this, function (evt) {
-                event.stop(evt);
-                if (editingEnabled === false) {
-                    editingEnabled = true;
-                    var enabledFunctions = Edit.EDIT_VERTICES | Edit.MOVE | Edit.EDIT_VERTICES | Edit.SCALE | Edit.ROTATE | Edit.EDIT_TEXT;
-                    this.editToolbar.activate(enabledFunctions, new Graphic(this.editLayer.getSelectedFeatures()[0].geometry));
-                }
-                else {
-                    this.editToolbar.deactivate();
-                    editingEnabled = false;
-                }
-            }));
-            attributeInspector.on("attribute-change", function (evt) {
-                _this.updateFeature.attributes[evt.fieldName] = evt.fieldValue;
-            });
-            attributeInspector.on("next", function (evt) {
-                _this.updateFeature = evt.feature;
-                console.log("Next " + _this.updateFeature.attributes.OBJECTID);
-            });
-            attributeInspector.on("delete", function (evt) {
-                var updateFeatureLayer = _this.updateFeature.getLayer();
-                updateFeatureLayer.applyEdits(null, null, [evt.feature]);
-            });
-            return attributeInspector;
         };
         return Widget;
     }(BaseWidget));

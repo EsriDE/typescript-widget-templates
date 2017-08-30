@@ -59,6 +59,25 @@ class Widget extends EditWidget {
 
   onReceiveData(name, widgetId, data, historyData) {
     console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+    this.callingWidgetId = widgetId;
+    if (data.command=="editPolygons") {
+/*       // uncheck other layers
+      this.layerItems.map(layerItem => {
+        if (layerItem.featureLayer!==data.layer) {
+          html.removeClass(layerItem.selectableCheckBox, 'checked');
+        }
+      });
+      // select layer
+      this.selectDijit.setFeatureLayers([data.layer]);
+      */
+
+      // open RemoteEdit widget
+      let ws = WidgetManager.getInstance();
+      ws.triggerWidgetOpen(this.id);
+  /*
+      // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
+      this.selectionCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function(selection) {this.selectionCompleteBackToBuffer(selection, widgetId, ws);})); */
+    }
   }
 
 /*   selectionCompleteBackToBuffer(selection, callingWidgetId, ws) {
