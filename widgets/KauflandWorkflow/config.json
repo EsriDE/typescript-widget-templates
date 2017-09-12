@@ -2,7 +2,8 @@
     "generateBuffers": true,
     "templatePicker": true,
     "remotelyControlling": [
-        "RemoteSelect"
+        "RemoteSelect",
+        "RemoteEdit"
     ],
     "attributeInspectorDiv": "catchmentAreaAttributeInspectorDiv",
     "templatePickerDiv": "catchmentAreaTemplatePickerDiv",

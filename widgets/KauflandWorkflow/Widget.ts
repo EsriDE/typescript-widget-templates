@@ -55,6 +55,7 @@ class Widget extends BaseWidget {
     this.firstEditorInit = true;
     this.initGeoprocessor();
 
+    // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
     let ws = WidgetManager.getInstance();
     this.config.remotelyControlling.map(remotelyControlledWidgetName => {
       this.fetchDataByName(remotelyControlledWidgetName);
@@ -170,16 +171,21 @@ class Widget extends BaseWidget {
 
   checkPointSelection() {
     var pointLayer = this.map.getLayer(this.config.pointLayerId) as FeatureLayer;
-    var pointSelection = pointLayer.getSelectedFeatures();
-
-    if (pointSelection.length==0) {
-      this.publishData({
-          command: "selectBufferPoint",
-          layer: pointLayer
-      });
+    if (pointLayer) {
+      var pointSelection = pointLayer.getSelectedFeatures();
+  
+      if (pointSelection.length==0) {
+        this.publishData({
+            command: "selectBufferPoint",
+            layer: pointLayer
+        });
+      }
+      else {
+        this.generateBufferAroundPointSelection(pointSelection);
+      }
     }
     else {
-      this.generateBufferAroundPointSelection(pointSelection);
+      console.error("Point layer with ID " + this.config.pointLayerId + " not found in map.");
     }
   }
 

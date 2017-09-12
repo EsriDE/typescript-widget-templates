@@ -20,6 +20,7 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
             }
             _this.firstEditorInit = true;
             _this.initGeoprocessor();
+            // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
             var ws = WidgetManager.getInstance();
             _this.config.remotelyControlling.map(function (remotelyControlledWidgetName) {
                 _this.fetchDataByName(remotelyControlledWidgetName);
@@ -126,15 +127,20 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
         };
         Widget.prototype.checkPointSelection = function () {
             var pointLayer = this.map.getLayer(this.config.pointLayerId);
-            var pointSelection = pointLayer.getSelectedFeatures();
-            if (pointSelection.length == 0) {
-                this.publishData({
-                    command: "selectBufferPoint",
-                    layer: pointLayer
-                });
+            if (pointLayer) {
+                var pointSelection = pointLayer.getSelectedFeatures();
+                if (pointSelection.length == 0) {
+                    this.publishData({
+                        command: "selectBufferPoint",
+                        layer: pointLayer
+                    });
+                }
+                else {
+                    this.generateBufferAroundPointSelection(pointSelection);
+                }
             }
             else {
-                this.generateBufferAroundPointSelection(pointSelection);
+                console.error("Point layer with ID " + this.config.pointLayerId + " not found in map.");
             }
         };
         Widget.prototype.generateBufferAroundPointSelection = function (pointSelection) {
