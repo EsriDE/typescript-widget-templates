@@ -50,14 +50,21 @@ class Widget extends EditWidget {
     super.onSignIn();
     /* jshint unused:false*/
     console.log(this.manifest.name + ' onSignIn');
-    
-  console.log("this._filterEditor", this._filterEditor);
-  //console.log("this._filterEditor.selectDropDown", this._filterEditor.selectDropDown.getOptions(0));
   }
 
   onSignOut() {
     super.onSignOut();
     console.log(this.manifest.name + ' onSignOut');
+  }
+
+  _addFilterEditor(settings) {
+    super._addFilterEditor(settings);
+    console.log(this.manifest.name + ' _addFilterEditor');
+    
+    console.log("this._filterEditor.selectDropDown", this._filterEditor.selectDropDown);
+
+    //ToDo: Evaluate layerIDs and select correct layer
+    this._filterEditor.selectDropDown.selectedIndex = 2; //("customDistricts_6344");
   }
 
   onReceiveData(name, widgetId, data, historyData) {

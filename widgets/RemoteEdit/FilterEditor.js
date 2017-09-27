@@ -74,8 +74,6 @@ define([
           });
           domConstruct.place(option, this.selectDropDown);
         }
-        console.log("FilterEditor._createLayerFilter() manual select");
-        this.selectDropDown.selectedIndex = 2; //("customDistricts_6344");
       },
 
       _createTemplateFilter: function() {

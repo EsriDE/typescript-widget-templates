@@ -46,12 +46,17 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "./EditWi
             _super.prototype.onSignIn.call(this);
             /* jshint unused:false*/
             console.log(this.manifest.name + ' onSignIn');
-            console.log("this._filterEditor", this._filterEditor);
-            //console.log("this._filterEditor.selectDropDown", this._filterEditor.selectDropDown.getOptions(0));
         };
         Widget.prototype.onSignOut = function () {
             _super.prototype.onSignOut.call(this);
             console.log(this.manifest.name + ' onSignOut');
+        };
+        Widget.prototype._addFilterEditor = function (settings) {
+            _super.prototype._addFilterEditor.call(this, settings);
+            console.log(this.manifest.name + ' _addFilterEditor');
+            console.log("this._filterEditor.selectDropDown", this._filterEditor.selectDropDown);
+            //ToDo: Evaluate layerIDs and select correct layer
+            this._filterEditor.selectDropDown.selectedIndex = 2; //("customDistricts_6344");
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
             console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning polygon layer " + data.layer.id + ".", widgetId, historyData);

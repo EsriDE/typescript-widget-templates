@@ -675,7 +675,6 @@ define([
             _settings: settings,
             _editWidget: this
           }, html.create("div", {}, this.domNode));
-          console.log("FilterEditor created");
         }
       },
 
