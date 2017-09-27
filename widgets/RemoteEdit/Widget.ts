@@ -50,6 +50,9 @@ class Widget extends EditWidget {
     super.onSignIn();
     /* jshint unused:false*/
     console.log(this.manifest.name + ' onSignIn');
+    
+  console.log("this._filterEditor", this._filterEditor);
+  //console.log("this._filterEditor.selectDropDown", this._filterEditor.selectDropDown.getOptions(0));
   }
 
   onSignOut() {
@@ -58,9 +61,12 @@ class Widget extends EditWidget {
   }
 
   onReceiveData(name, widgetId, data, historyData) {
-    console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+    console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning polygon layer " + data.layer.id + ".", widgetId, historyData);
     this.callingWidgetId = widgetId;
-    if (data.command=="editPolygons") {
+    if (name===this.config.remoteControlledBy && data.command=="editPolygons") {
+      console.log("this Edit", this);
+      //this._filterEditor.selectDropDown.set("", true)
+
 /*       // uncheck other layers
       this.layerItems.map(layerItem => {
         if (layerItem.featureLayer!==data.layer) {
@@ -74,9 +80,13 @@ class Widget extends EditWidget {
       // open RemoteEdit widget
       let ws = WidgetManager.getInstance();
       ws.triggerWidgetOpen(this.id);
+  
   /*
       // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
       this.selectionCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function(selection) {this.selectionCompleteBackToBuffer(selection, widgetId, ws);})); */
+    }
+    else {
+      console.log(this.manifest.name + " ignoring command.");
     }
   }
 

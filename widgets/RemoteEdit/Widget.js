@@ -46,15 +46,19 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "./EditWi
             _super.prototype.onSignIn.call(this);
             /* jshint unused:false*/
             console.log(this.manifest.name + ' onSignIn');
+            console.log("this._filterEditor", this._filterEditor);
+            //console.log("this._filterEditor.selectDropDown", this._filterEditor.selectDropDown.getOptions(0));
         };
         Widget.prototype.onSignOut = function () {
             _super.prototype.onSignOut.call(this);
             console.log(this.manifest.name + ' onSignOut');
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
-            console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+            console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning polygon layer " + data.layer.id + ".", widgetId, historyData);
             this.callingWidgetId = widgetId;
-            if (data.command == "editPolygons") {
+            if (name === this.config.remoteControlledBy && data.command == "editPolygons") {
+                console.log("this Edit", this);
+                //this._filterEditor.selectDropDown.set("", true)
                 /*       // uncheck other layers
                       this.layerItems.map(layerItem => {
                         if (layerItem.featureLayer!==data.layer) {
@@ -70,6 +74,9 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "./EditWi
                 /*
                     // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
                     this.selectionCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function(selection) {this.selectionCompleteBackToBuffer(selection, widgetId, ws);})); */
+            }
+            else {
+                console.log(this.manifest.name + " ignoring command.");
             }
         };
         return Widget;

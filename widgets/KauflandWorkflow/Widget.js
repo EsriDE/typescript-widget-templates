@@ -165,9 +165,13 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
             graphicsToRemove.map(function (graphic) { return _this.map.graphics.remove(graphic); });
         };
         Widget.prototype.editPolygons = function () {
-            this.publishData({
-                command: "editPolygons"
-            });
+            var polygonLayer = this.map.getLayer(this.config.polygonLayerId);
+            if (polygonLayer) {
+                this.publishData({
+                    command: "editPolygons",
+                    layer: polygonLayer
+                });
+            }
         };
         return Widget;
     }(BaseWidget));

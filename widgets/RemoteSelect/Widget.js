@@ -52,9 +52,9 @@ define(["require", "exports", "jimu/WidgetManager", "jimu/PanelManager", "dojo/_
             console.log(this.manifest.name + ' onSignOut');
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
-            console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
+            console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning point layer " + data.layer.name + ".", widgetId, historyData);
             this.callingWidgetId = widgetId;
-            if (data.command == "selectBufferPoint") {
+            if (name === this.config.remoteControlledBy && data.command === "selectBufferPoint") {
                 // uncheck other layers
                 this.layerItems.map(function (layerItem) {
                     if (layerItem.featureLayer !== data.layer) {
@@ -68,6 +68,9 @@ define(["require", "exports", "jimu/WidgetManager", "jimu/PanelManager", "dojo/_
                 ws_1.triggerWidgetOpen(this.id);
                 // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
                 this.selectionCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function (selection) { this.selectionCompleteBackToBuffer(selection, widgetId, ws_1); }));
+            }
+            else {
+                console.log(this.manifest.name + " ignoring command.");
             }
         };
         Widget.prototype.selectionCompleteBackToBuffer = function (selection, callingWidgetId, ws) {

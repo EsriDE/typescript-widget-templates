@@ -222,9 +222,13 @@ class Widget extends BaseWidget {
   }
 
   editPolygons() {
-    this.publishData({
-      command: "editPolygons"
-    });
+    var polygonLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
+    if (polygonLayer) {
+      this.publishData({
+        command: "editPolygons",
+        layer: polygonLayer
+      });
+    }
   }
 
   /* 
