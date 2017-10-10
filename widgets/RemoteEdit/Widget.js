@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "./EditWidget"], function (require, exports, WidgetManager, lang, EditWidget) {
+define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/array", "./EditWidget"], function (require, exports, WidgetManager, lang, array, EditWidget) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -54,14 +54,20 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "./EditWi
         Widget.prototype._addFilterEditor = function (settings) {
             _super.prototype._addFilterEditor.call(this, settings);
             console.log(this.manifest.name + ' _addFilterEditor');
-            console.log("this._filterEditor.selectDropDown", this._filterEditor.selectDropDown);
-            //ToDo: Evaluate layerIDs and select correct layer
-            this._filterEditor.selectDropDown.selectedIndex = 2; //("customDistricts_6344");
+            // Find optionID of transmitted layerID
+            array.forEach(this._filterEditor.selectDropDown.options, lang.hitch(this, function (option, i) {
+                if (option.attributes[0].nodeValue === this.editLayerId) {
+                    this.editLayerOptionIndex = i;
+                }
+            }));
+            this._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
             console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning polygon layer " + data.layer.id + ".", widgetId, historyData);
             this.callingWidgetId = widgetId;
             if (name === this.config.remoteControlledBy && data.command == "editPolygons") {
+                // Save transmitted layerID
+                this.editLayerId = data.layer.id;
                 console.log("this Edit", this);
                 //this._filterEditor.selectDropDown.set("", true)
                 /*       // uncheck other layers
@@ -74,11 +80,10 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "./EditWi
                       this.selectDijit.setFeatureLayers([data.layer]);
                       */
                 // open RemoteEdit widget
-                var ws = WidgetManager.getInstance();
-                ws.triggerWidgetOpen(this.id);
-                /*
-                    // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
-                    this.selectionCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function(selection) {this.selectionCompleteBackToBuffer(selection, widgetId, ws);})); */
+                var ws_1 = WidgetManager.getInstance();
+                ws_1.triggerWidgetOpen(this.id);
+                // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
+                this.editCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function (selection) { this.selectionCompleteBackToBuffer(selection, widgetId, ws_1); }));
             }
             else {
                 console.log(this.manifest.name + " ignoring command.");
