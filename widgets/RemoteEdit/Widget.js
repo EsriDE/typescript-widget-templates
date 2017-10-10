@@ -32,6 +32,7 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
         };
         Widget.prototype.onClose = function () {
             _super.prototype.onClose.call(this);
+            this.editLayerId = undefined;
             console.log(this.manifest.name + ' onClose');
         };
         Widget.prototype.onMinimize = function () {
@@ -54,13 +55,23 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
         Widget.prototype._addFilterEditor = function (settings) {
             _super.prototype._addFilterEditor.call(this, settings);
             console.log(this.manifest.name + ' _addFilterEditor');
-            // Find optionID of transmitted layerID
-            array.forEach(this._filterEditor.selectDropDown.options, lang.hitch(this, function (option, i) {
-                if (option.attributes[0].nodeValue === this.editLayerId) {
-                    this.editLayerOptionIndex = i;
-                }
-            }));
-            this._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
+            if (this.editLayerId !== undefined) {
+                // Find optionID of transmitted layerID
+                array.forEach(this._filterEditor.selectDropDown.options, lang.hitch(this, function (option, i) {
+                    if (option.attributes[0].nodeValue === this.editLayerId) {
+                        this.editLayerOptionIndex = i;
+                    }
+                }));
+                this._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
+                // ToDo: Trying to pre-select a template by entering a search text
+                this._filterEditor.filterTextBox.value = "kau";
+                this.editor.templatePicker.update(true);
+            }
+        };
+        Widget.prototype._getTemplatePicker = function (layerInfos) {
+            var templatePicker = _super.prototype._getTemplatePicker.call(this, layerInfos);
+            templatePicker.attr("grouping", false);
+            return templatePicker;
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
             console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning polygon layer " + data.layer.id + ".", widgetId, historyData);
