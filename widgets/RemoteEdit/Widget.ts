@@ -84,45 +84,14 @@ class Widget extends EditWidget {
       // Save transmitted layerID
       this.editLayerId = data.layer.id;
 
-      console.log("this Edit", this);
-      //this._filterEditor.selectDropDown.set("", true)
-
-/*       // uncheck other layers
-      this.layerItems.map(layerItem => {
-        if (layerItem.featureLayer!==data.layer) {
-          html.removeClass(layerItem.selectableCheckBox, 'checked');
-        }
-      });
-      // select layer
-      this.selectDijit.setFeatureLayers([data.layer]);
-      */
-
       // open RemoteEdit widget
       let ws = WidgetManager.getInstance();
       ws.triggerWidgetOpen(this.id);
- 
-      // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
-      this.editCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function(selection) {this.selectionCompleteBackToBuffer(selection, widgetId, ws);}));
     }
     else {
       console.log(this.manifest.name + " ignoring command.");
     }
   }
-
-/*   selectionCompleteBackToBuffer(selection, callingWidgetId, ws) {
-    if (selection.features.length > 0) {
-      this.publishData({
-          command: "generateBuffers",
-          valid: true
-      });
-      console.log(ws.getAllWidgets());
-      ws.triggerWidgetOpen(callingWidgetId);
-      let ps = PanelManager.getInstance();
-      ps.closePanel(this.id + "_panel");
-      this.selectionCompleteSignal.remove();
-    }
-  } */
-
 }
 
 interface SpecificWidgetConfig{

@@ -72,22 +72,9 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             if (name === this.config.remoteControlledBy && data.command == "editPolygons") {
                 // Save transmitted layerID
                 this.editLayerId = data.layer.id;
-                console.log("this Edit", this);
-                //this._filterEditor.selectDropDown.set("", true)
-                /*       // uncheck other layers
-                      this.layerItems.map(layerItem => {
-                        if (layerItem.featureLayer!==data.layer) {
-                          html.removeClass(layerItem.selectableCheckBox, 'checked');
-                        }
-                      });
-                      // select layer
-                      this.selectDijit.setFeatureLayers([data.layer]);
-                      */
                 // open RemoteEdit widget
-                var ws_1 = WidgetManager.getInstance();
-                ws_1.triggerWidgetOpen(this.id);
-                // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
-                this.editCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function (selection) { this.selectionCompleteBackToBuffer(selection, widgetId, ws_1); }));
+                var ws = WidgetManager.getInstance();
+                ws.triggerWidgetOpen(this.id);
             }
             else {
                 console.log(this.manifest.name + " ignoring command.");
