@@ -80,7 +80,7 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
             else if (data.command == "performAggregation" && data.valid && data.selectedFeature) {
                 this.selectedFeature = data.selectedFeature;
                 var selectedFeatures = [];
-                selectedFeatures.push(data.selectedFeature);
+                selectedFeatures.push(data.selectedFeature.graphic);
                 var selectedFeatureSet = new FeatureSet();
                 selectedFeatureSet.features = selectedFeatures;
                 this.performAggregation(selectedFeatureSet);
@@ -95,28 +95,29 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
             this.geoprocessor.on("execute-complete", lang.hitch(this, this.geoprocessorCallback));
         };
         Widget.prototype.geoprocessorCallback = function (evt) {
+            var _this = this;
+            evt.results.forEach(function (result) {
+                _this.selectedFeature.graphic.attributes[result.paramName] = result.value;
+            });
             var updateAttributes = {};
             evt.results.forEach(function (result) {
                 updateAttributes[result.paramName] = result.value;
             });
-            updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId];
+            updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
             var updates = [{ "attributes": updateAttributes }];
             this.publishData({
                 command: "returnAggregatedData",
-                selectedFeature: this.selectedFeature,
+                updates: updates,
                 valid: true
             });
-            /*     this.editLayer.applyEdits(null, updates).then(value => {
-                  this.attributeInspector.refresh();
-                });  */
             // hide loader
             domConstruct.destroy(this.loadingIndicatorContainer);
             domConstruct.destroy(this.loadingIndicatorText);
             domConstruct.destroy(this.loadingIndicatorImage);
         };
         Widget.prototype.performAggregation = function (pFeatureSet) {
-            var paramsFeatureSet = new FeatureSet();
-            paramsFeatureSet.features = this.polygonLayer.getSelectedFeatures();
+            /*     var paramsFeatureSet = new FeatureSet();
+                paramsFeatureSet.features = this.polygonLayer.getSelectedFeatures(); */
             if (pFeatureSet.features.length > 0) {
                 var params = {
                     "Feature_Class": pFeatureSet

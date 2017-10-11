@@ -123,7 +123,7 @@ class Widget extends BaseWidget {
     else if (data.command=="performAggregation" && data.valid && data.selectedFeature) {
       this.selectedFeature = data.selectedFeature;     
       let selectedFeatures= [];
-      selectedFeatures.push(data.selectedFeature);
+      selectedFeatures.push(data.selectedFeature.graphic);
       let selectedFeatureSet = new FeatureSet();
       selectedFeatureSet.features = selectedFeatures;
       this.performAggregation(selectedFeatureSet);
@@ -140,21 +140,22 @@ class Widget extends BaseWidget {
   }
 
   geoprocessorCallback(evt) {
+    evt.results.forEach(result => {
+      this.selectedFeature.graphic.attributes[result.paramName] = result.value;
+    });
+
     let updateAttributes = {};
     evt.results.forEach(result => {
       updateAttributes[result.paramName] = result.value;
     });
-    updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId];
+    updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
     let updates = [{"attributes":updateAttributes}];
     this.publishData({
       command: "returnAggregatedData",
-      selectedFeature: this.selectedFeature,
+      updates: updates,
       valid: true
     });
 
-/*     this.editLayer.applyEdits(null, updates).then(value => {
-      this.attributeInspector.refresh();
-    });  */
     // hide loader
     domConstruct.destroy(this.loadingIndicatorContainer);
     domConstruct.destroy(this.loadingIndicatorText);
@@ -162,11 +163,11 @@ class Widget extends BaseWidget {
   }
 
   performAggregation(pFeatureSet) {
-    var paramsFeatureSet = new FeatureSet();
-    paramsFeatureSet.features = this.polygonLayer.getSelectedFeatures();
-    if (paramsFeatureSet.features.length>0) {
+/*     var paramsFeatureSet = new FeatureSet();
+    paramsFeatureSet.features = this.polygonLayer.getSelectedFeatures(); */
+    if (pFeatureSet.features.length>0) {
       var params = {
-        "Feature_Class": paramsFeatureSet
+        "Feature_Class": pFeatureSet
       };
       this.geoprocessor.execute(params);
     }

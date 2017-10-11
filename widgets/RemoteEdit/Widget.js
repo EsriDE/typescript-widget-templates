@@ -60,7 +60,6 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             this.editor.editToolbar.on('vertex-move-stop', lang.hitch(this, this.performAggregation));
         };
         Widget.prototype.performAggregation = function (selectedFeature) {
-            console.log("RE performAggregation", selectedFeature);
             this.publishData({
                 command: "performAggregation",
                 selectedFeature: selectedFeature,
@@ -82,14 +81,23 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             }
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
-            console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning polygon layer " + data.layer.id + ".", widgetId, historyData);
+            var _this = this;
+            console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
             this.callingWidgetId = widgetId;
-            if (name === this.config.remoteControlledBy && data.command == "editPolygons") {
+            if (name === this.config.remoteControlledBy && data.command == "editPolygons" && data.layer) {
+                console.log("Command concerns polygon layer " + data.layer.id + ".", widgetId, historyData);
                 // Save transmitted layerID
                 this.editLayerId = data.layer.id;
                 // open RemoteEdit widget
                 var ws = WidgetManager.getInstance();
                 ws.triggerWidgetOpen(this.id);
+            }
+            else if (name === this.config.remoteControlledBy && data.command == "returnAggregatedData" && data.selectedFeature) {
+                console.log("Command concerns update ", data.updates);
+                var polygonLayer = this.map.getLayer(this.editLayerId);
+                polygonLayer.applyEdits(null, data.updates).then(function (value) {
+                    _this.editor.attributeInspector.refresh();
+                });
             }
             else {
                 console.log(this.manifest.name + " ignoring command.");

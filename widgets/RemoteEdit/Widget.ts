@@ -71,7 +71,6 @@ class Widget extends EditWidget {
   }
 
   performAggregation(selectedFeature) {
-    console.log("RE performAggregation", selectedFeature);
     this.publishData({
       command: "performAggregation",
       selectedFeature: selectedFeature,
@@ -96,15 +95,25 @@ class Widget extends EditWidget {
   }
 
   onReceiveData(name, widgetId, data, historyData) {
-    console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning polygon layer " + data.layer.id + ".", widgetId, historyData);
+    console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
     this.callingWidgetId = widgetId;
-    if (name===this.config.remoteControlledBy && data.command=="editPolygons") {
+    if (name===this.config.remoteControlledBy && data.command=="editPolygons" && data.layer) {
+      console.log("Command concerns polygon layer " + data.layer.id + ".", widgetId, historyData);
       // Save transmitted layerID
       this.editLayerId = data.layer.id;
 
       // open RemoteEdit widget
       let ws = WidgetManager.getInstance();
       ws.triggerWidgetOpen(this.id);
+    }
+    else if (name===this.config.remoteControlledBy && data.command=="returnAggregatedData" && data.selectedFeature) {
+      console.log("Command concerns update " , data.updates);
+
+      let polygonLayer = this.map.getLayer(this.editLayerId) as FeatureLayer;
+      polygonLayer.applyEdits(null, data.updates).then(value => {
+        this.editor.attributeInspector.refresh();
+      }); 
+
     }
     else {
       console.log(this.manifest.name + " ignoring command.");
