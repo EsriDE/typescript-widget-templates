@@ -9,7 +9,6 @@ import EditWidget = require("./EditWidget");
 class Widget extends EditWidget {
 
   private callingWidgetId: String;
-  private editCompleteSignal;
   private editLayerId: String;
   private editLayerOptionIndex: Number;
 
