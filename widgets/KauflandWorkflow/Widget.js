@@ -116,8 +116,6 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
             domConstruct.destroy(this.loadingIndicatorImage);
         };
         Widget.prototype.performAggregation = function (pFeatureSet) {
-            /*     var paramsFeatureSet = new FeatureSet();
-                paramsFeatureSet.features = this.polygonLayer.getSelectedFeatures(); */
             if (pFeatureSet.features.length > 0) {
                 var params = {
                     "Feature_Class": pFeatureSet

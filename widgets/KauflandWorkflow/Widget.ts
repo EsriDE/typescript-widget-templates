@@ -163,8 +163,6 @@ class Widget extends BaseWidget {
   }
 
   performAggregation(pFeatureSet) {
-/*     var paramsFeatureSet = new FeatureSet();
-    paramsFeatureSet.features = this.polygonLayer.getSelectedFeatures(); */
     if (pFeatureSet.features.length>0) {
       var params = {
         "Feature_Class": pFeatureSet

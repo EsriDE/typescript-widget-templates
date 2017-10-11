@@ -64,10 +64,7 @@ class Widget extends EditWidget {
   _bindEventsAfterCreate(settings) {
     super._bindEventsAfterCreate(settings);
 
-    this.editor.editToolbar.on('graphic-move-stop', lang.hitch(this, this.performAggregation));
-    this.editor.editToolbar.on('rotate-stop', lang.hitch(this, this.performAggregation));
-    this.editor.editToolbar.on('scale-stop', lang.hitch(this, this.performAggregation));
-    this.editor.editToolbar.on('vertex-move-stop', lang.hitch(this, this.performAggregation));
+    this.editor.editToolbar.on('deactivate', lang.hitch(this, this.performAggregation));
   }
 
   performAggregation(selectedFeature) {
@@ -106,7 +103,7 @@ class Widget extends EditWidget {
       let ws = WidgetManager.getInstance();
       ws.triggerWidgetOpen(this.id);
     }
-    else if (name===this.config.remoteControlledBy && data.command=="returnAggregatedData" && data.selectedFeature) {
+    else if (name===this.config.remoteControlledBy && data.command=="returnAggregatedData" && data.updates) {
       console.log("Command concerns update " , data.updates);
 
       let polygonLayer = this.map.getLayer(this.editLayerId) as FeatureLayer;
