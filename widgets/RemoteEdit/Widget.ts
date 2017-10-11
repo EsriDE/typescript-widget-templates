@@ -64,7 +64,15 @@ class Widget extends EditWidget {
   _bindEventsAfterCreate(settings) {
     super._bindEventsAfterCreate(settings);
 
+    // "deactivate" fires after switching or leaving the edit mode. Works after drawing new features, cut, generally: after editing attributes.
     this.editor.editToolbar.on('deactivate', lang.hitch(this, this.performAggregation));
+
+/*     // no "deacivate" or any other event after reshape => wait for http call and aggregate then
+    esriRequest.setRequestPreCallback(lang.hitch(this, function(evt) {
+      if (evt.url.includes("reshape")) {
+        this.performAggregation(evt);
+      }
+    })); */
   }
 
   performAggregation(selectedFeature) {
