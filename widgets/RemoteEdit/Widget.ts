@@ -3,6 +3,7 @@ import PanelManager = require("jimu/PanelManager");
 import lang = require("dojo/_base/lang");
 import html = require("dojo/_base/html");
 import array = require("dojo/_base/array");
+import esriRequest = require("esri/request");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import EditWidget = require("./EditWidget");
 
@@ -15,7 +16,7 @@ class Widget extends EditWidget {
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-edit"}, args));
     this.fetchDataByName(this.config.remoteControlledBy);
-    console.log(this.widgetName + ' constructor');
+    console.log(this.manifest.name + ' constructor');
   }
 
   startup() {
@@ -58,6 +59,24 @@ class Widget extends EditWidget {
   onSignOut() {
     super.onSignOut();
     console.log(this.manifest.name + ' onSignOut');
+  }
+
+  _bindEventsAfterCreate(settings) {
+    super._bindEventsAfterCreate(settings);
+
+    this.editor.editToolbar.on('graphic-move-stop', lang.hitch(this, this.performAggregation));
+    this.editor.editToolbar.on('rotate-stop', lang.hitch(this, this.performAggregation));
+    this.editor.editToolbar.on('scale-stop', lang.hitch(this, this.performAggregation));
+    this.editor.editToolbar.on('vertex-move-stop', lang.hitch(this, this.performAggregation));
+  }
+
+  performAggregation(selectedFeature) {
+    console.log("RE performAggregation", selectedFeature);
+    this.publishData({
+      command: "performAggregation",
+      selectedFeature: selectedFeature,
+      valid: true
+    });
   }
 
   _addFilterEditor(settings) {

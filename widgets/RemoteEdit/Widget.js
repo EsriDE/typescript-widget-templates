@@ -15,7 +15,7 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
         function Widget(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-edit" }, args)) || this;
             _this.fetchDataByName(_this.config.remoteControlledBy);
-            console.log(_this.widgetName + ' constructor');
+            console.log(_this.manifest.name + ' constructor');
             return _this;
         }
         Widget.prototype.startup = function () {
@@ -51,6 +51,21 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
         Widget.prototype.onSignOut = function () {
             _super.prototype.onSignOut.call(this);
             console.log(this.manifest.name + ' onSignOut');
+        };
+        Widget.prototype._bindEventsAfterCreate = function (settings) {
+            _super.prototype._bindEventsAfterCreate.call(this, settings);
+            this.editor.editToolbar.on('graphic-move-stop', lang.hitch(this, this.performAggregation));
+            this.editor.editToolbar.on('rotate-stop', lang.hitch(this, this.performAggregation));
+            this.editor.editToolbar.on('scale-stop', lang.hitch(this, this.performAggregation));
+            this.editor.editToolbar.on('vertex-move-stop', lang.hitch(this, this.performAggregation));
+        };
+        Widget.prototype.performAggregation = function (selectedFeature) {
+            console.log("RE performAggregation", selectedFeature);
+            this.publishData({
+                command: "performAggregation",
+                selectedFeature: selectedFeature,
+                valid: true
+            });
         };
         Widget.prototype._addFilterEditor = function (settings) {
             _super.prototype._addFilterEditor.call(this, settings);

@@ -46,6 +46,8 @@ class Widget extends BaseWidget {
   private loadingIndicatorContainer;
   private loadingIndicatorText;
   private loadingIndicatorImage;
+  private selectedFeature: Graphic;
+  private polygonLayer: FeatureLayer;
 
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));
@@ -91,9 +93,6 @@ class Widget extends BaseWidget {
       this.editToolbar.deactivate();
       this.editToolbar = null;
     }
-    this.editLayer.setSelectionSymbol(undefined);
-    this.editLayer.clearSelection();
-    this.editLayer.refresh();
   }
 
   onMinimize() {
@@ -121,6 +120,15 @@ class Widget extends BaseWidget {
       this.generateBufferAroundPointSelection(pointSelection);
       data.valid = false;
     }
+    else if (data.command=="performAggregation" && data.valid && data.selectedFeature) {
+      this.selectedFeature = data.selectedFeature;     
+      let selectedFeatures= [];
+      selectedFeatures.push(data.selectedFeature);
+      let selectedFeatureSet = new FeatureSet();
+      selectedFeatureSet.features = selectedFeatures;
+      this.performAggregation(selectedFeatureSet);
+      data.valid = false;
+    }
   }
 
   initGeoprocessor() {
@@ -128,26 +136,34 @@ class Widget extends BaseWidget {
     this.geoprocessor.setOutSpatialReference({
       wkid: 102100
     } as SpatialReference);
-    this.geoprocessor.on("execute-complete", lang.hitch(this, function(evt) {
-      let updateAttributes = {};
-      evt.results.forEach(result => {
-        updateAttributes[result.paramName] = result.value;
-      });
-      updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId];
-      let updates = [{"attributes":updateAttributes}];
-      this.editLayer.applyEdits(null, updates).then(value => {
-        this.attributeInspector.refresh();
-      }); 
-      // hide loader
-      domConstruct.destroy(this.loadingIndicatorContainer);
-      domConstruct.destroy(this.loadingIndicatorText);
-      domConstruct.destroy(this.loadingIndicatorImage);
-    }));
+    this.geoprocessor.on("execute-complete", lang.hitch(this, this.geoprocessorCallback));
   }
 
-  performAggregation() {
+  geoprocessorCallback(evt) {
+    let updateAttributes = {};
+    evt.results.forEach(result => {
+      updateAttributes[result.paramName] = result.value;
+    });
+    updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId];
+    let updates = [{"attributes":updateAttributes}];
+    this.publishData({
+      command: "returnAggregatedData",
+      selectedFeature: this.selectedFeature,
+      valid: true
+    });
+
+/*     this.editLayer.applyEdits(null, updates).then(value => {
+      this.attributeInspector.refresh();
+    });  */
+    // hide loader
+    domConstruct.destroy(this.loadingIndicatorContainer);
+    domConstruct.destroy(this.loadingIndicatorText);
+    domConstruct.destroy(this.loadingIndicatorImage);
+  }
+
+  performAggregation(pFeatureSet) {
     var paramsFeatureSet = new FeatureSet();
-    paramsFeatureSet.features = this.editLayer.getSelectedFeatures();
+    paramsFeatureSet.features = this.polygonLayer.getSelectedFeatures();
     if (paramsFeatureSet.features.length>0) {
       var params = {
         "Feature_Class": paramsFeatureSet
@@ -189,7 +205,6 @@ class Widget extends BaseWidget {
     }
   }
 
-
   generateBufferAroundPointSelection(pointSelection: Graphic[]) {
     var pointGeometries = pointSelection.map(
       currentValue => currentValue.geometry
@@ -222,11 +237,11 @@ class Widget extends BaseWidget {
   }
 
   editPolygons() {
-    var polygonLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
-    if (polygonLayer) {
+    this.polygonLayer = this.map.getLayer(this.config.polygonLayerId) as FeatureLayer;
+    if (this.polygonLayer) {
       this.publishData({
         command: "editPolygons",
-        layer: polygonLayer
+        layer: this.polygonLayer
       });
     }
   }

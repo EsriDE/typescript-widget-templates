@@ -15,7 +15,7 @@ define(["require", "exports", "jimu/WidgetManager", "jimu/PanelManager", "dojo/_
         function Widget(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-select" }, args)) || this;
             _this.fetchDataByName(_this.config.remoteControlledBy);
-            console.log(_this.widgetName + ' constructor');
+            console.log(_this.manifest.name + ' constructor');
             return _this;
         }
         Widget.prototype.startup = function () {
@@ -52,9 +52,10 @@ define(["require", "exports", "jimu/WidgetManager", "jimu/PanelManager", "dojo/_
             console.log(this.manifest.name + ' onSignOut');
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
-            console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning point layer " + data.layer.name + ".", widgetId, historyData);
+            console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
             this.callingWidgetId = widgetId;
-            if (name === this.config.remoteControlledBy && data.command === "selectBufferPoint") {
+            if (name === this.config.remoteControlledBy && data.command === "selectBufferPoint" && data.layer) {
+                console.log("Command concerns point layer " + data.layer.name + ".");
                 // uncheck other layers
                 this.layerItems.map(function (layerItem) {
                     if (layerItem.featureLayer !== data.layer) {

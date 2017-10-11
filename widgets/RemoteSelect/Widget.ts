@@ -13,7 +13,7 @@ class Widget extends SelectWidget {
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-select"}, args));
     this.fetchDataByName(this.config.remoteControlledBy);
-    console.log(this.widgetName + ' constructor');
+    console.log(this.manifest.name + ' constructor');
   }
 
   startup() {
@@ -58,9 +58,10 @@ class Widget extends SelectWidget {
   }
 
   onReceiveData(name, widgetId, data, historyData) {
-    console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning point layer " + data.layer.name + ".", widgetId, historyData);
+    console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
     this.callingWidgetId = widgetId;
-    if (name===this.config.remoteControlledBy && data.command==="selectBufferPoint") {
+    if (name===this.config.remoteControlledBy && data.command==="selectBufferPoint" && data.layer) {
+      console.log("Command concerns point layer " + data.layer.name + ".");
       // uncheck other layers
       this.layerItems.map(layerItem => {
         if (layerItem.featureLayer!==data.layer) {

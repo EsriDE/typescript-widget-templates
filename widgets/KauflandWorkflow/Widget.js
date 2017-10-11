@@ -55,9 +55,6 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
                 this.editToolbar.deactivate();
                 this.editToolbar = null;
             }
-            this.editLayer.setSelectionSymbol(undefined);
-            this.editLayer.clearSelection();
-            this.editLayer.refresh();
         };
         Widget.prototype.onMinimize = function () {
             console.log(this.manifest.name + ' onMinimize');
@@ -80,35 +77,49 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
                 this.generateBufferAroundPointSelection(pointSelection);
                 data.valid = false;
             }
+            else if (data.command == "performAggregation" && data.valid && data.selectedFeature) {
+                this.selectedFeature = data.selectedFeature;
+                var selectedFeatures = [];
+                selectedFeatures.push(data.selectedFeature);
+                var selectedFeatureSet = new FeatureSet();
+                selectedFeatureSet.features = selectedFeatures;
+                this.performAggregation(selectedFeatureSet);
+                data.valid = false;
+            }
         };
         Widget.prototype.initGeoprocessor = function () {
             this.geoprocessor = new Geoprocessor(this.config.geoprocessorUrl);
             this.geoprocessor.setOutSpatialReference({
                 wkid: 102100
             });
-            this.geoprocessor.on("execute-complete", lang.hitch(this, function (evt) {
-                var _this = this;
-                var updateAttributes = {};
-                evt.results.forEach(function (result) {
-                    updateAttributes[result.paramName] = result.value;
-                });
-                updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId];
-                var updates = [{ "attributes": updateAttributes }];
-                this.editLayer.applyEdits(null, updates).then(function (value) {
-                    _this.attributeInspector.refresh();
-                });
-                // hide loader
-                domConstruct.destroy(this.loadingIndicatorContainer);
-                domConstruct.destroy(this.loadingIndicatorText);
-                domConstruct.destroy(this.loadingIndicatorImage);
-            }));
+            this.geoprocessor.on("execute-complete", lang.hitch(this, this.geoprocessorCallback));
         };
-        Widget.prototype.performAggregation = function () {
+        Widget.prototype.geoprocessorCallback = function (evt) {
+            var updateAttributes = {};
+            evt.results.forEach(function (result) {
+                updateAttributes[result.paramName] = result.value;
+            });
+            updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.editLayer.getSelectedFeatures()[0].attributes[this.config.polygonLayerFieldNames.objectId];
+            var updates = [{ "attributes": updateAttributes }];
+            this.publishData({
+                command: "returnAggregatedData",
+                selectedFeature: this.selectedFeature,
+                valid: true
+            });
+            /*     this.editLayer.applyEdits(null, updates).then(value => {
+                  this.attributeInspector.refresh();
+                });  */
+            // hide loader
+            domConstruct.destroy(this.loadingIndicatorContainer);
+            domConstruct.destroy(this.loadingIndicatorText);
+            domConstruct.destroy(this.loadingIndicatorImage);
+        };
+        Widget.prototype.performAggregation = function (pFeatureSet) {
             var paramsFeatureSet = new FeatureSet();
-            paramsFeatureSet.features = this.editLayer.getSelectedFeatures();
-            if (paramsFeatureSet.features.length > 0) {
+            paramsFeatureSet.features = this.polygonLayer.getSelectedFeatures();
+            if (pFeatureSet.features.length > 0) {
                 var params = {
-                    "Feature_Class": paramsFeatureSet
+                    "Feature_Class": pFeatureSet
                 };
                 this.geoprocessor.execute(params);
             }
@@ -165,11 +176,11 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
             graphicsToRemove.map(function (graphic) { return _this.map.graphics.remove(graphic); });
         };
         Widget.prototype.editPolygons = function () {
-            var polygonLayer = this.map.getLayer(this.config.polygonLayerId);
-            if (polygonLayer) {
+            this.polygonLayer = this.map.getLayer(this.config.polygonLayerId);
+            if (this.polygonLayer) {
                 this.publishData({
                     command: "editPolygons",
-                    layer: polygonLayer
+                    layer: this.polygonLayer
                 });
             }
         };
