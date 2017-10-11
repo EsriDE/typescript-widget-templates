@@ -1,44 +1,14 @@
 {
     "generateBuffers": true,
-    "templatePicker": true,
     "remotelyControlling": [
         "RemoteSelect",
         "RemoteEdit"
     ],
-    "attributeInspectorDiv": "catchmentAreaAttributeInspectorDiv",
-    "templatePickerDiv": "catchmentAreaTemplatePickerDiv",
     "pointLayerId": "Test_Standorte_8435",
     "polygonLayerId": "customDistricts_2009",
     "geoprocessorUrl": "https://vsdev1717.esri-de.com/server/rest/services/GP_TOOLS/useCustomPolygon_mitReply/GPServer/useCustomPolygon_mitReply",
     "polygonLayerFieldNames": {
         "objectId": "OBJECTID",
         "title": "NAME"
-    },
-    "polygonLayerAttributeInspectorFields": [
-        {
-            "fieldName": "NAME",
-            "tooltip": "Name",
-            "isEditable": true
-        },
-        {
-            "fieldName": "DESCRIPTION",
-            "tooltip": "Description",
-            "isEditable": true
-        },
-        {
-            "fieldName": "RANKING",
-            "tooltip": "Ranking",
-            "isEditable": false
-        },
-        {
-            "fieldName": "SUM_PP_FOOD_DRINK",
-            "tooltip": "Foods & Drinks",
-            "isEditable": true
-        },
-        {
-            "fieldName": "COMP_IDX",
-            "tooltip": "Computer Index",
-            "isEditable": true
-        }
-    ]
+    }
 }
