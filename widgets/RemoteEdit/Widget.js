@@ -63,15 +63,8 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
                     }
                 }));
                 this._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
-                // ToDo: Trying to pre-select a template by entering a search text
-                this._filterEditor.filterTextBox.value = "kau";
-                this.editor.templatePicker.update(true);
+                this._filterEditor._onLayerFilterChanged();
             }
-        };
-        Widget.prototype._getTemplatePicker = function (layerInfos) {
-            var templatePicker = _super.prototype._getTemplatePicker.call(this, layerInfos);
-            templatePicker.attr("grouping", false);
-            return templatePicker;
         };
         Widget.prototype.onReceiveData = function (name, widgetId, data, historyData) {
             console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + " concerning polygon layer " + data.layer.id + ".", widgetId, historyData);

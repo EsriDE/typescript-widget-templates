@@ -73,17 +73,8 @@ class Widget extends EditWidget {
         }
       })); 
       this._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
-
-      // ToDo: Trying to pre-select a template by entering a search text
-      this._filterEditor.filterTextBox.value = "kau";
-      this.editor.templatePicker.update(true);
+      this._filterEditor._onLayerFilterChanged();
     }
-  }
-
-  _getTemplatePicker(layerInfos) {
-    let templatePicker = super._getTemplatePicker(layerInfos);
-    templatePicker.attr("grouping", false);
-    return templatePicker;
   }
 
   onReceiveData(name, widgetId, data, historyData) {
