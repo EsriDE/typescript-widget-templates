@@ -56,12 +56,15 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             _super.prototype._bindEventsAfterCreate.call(this, settings);
             // "deactivate" fires after switching or leaving the edit mode. Works after drawing new features, cut, generally: after editing attributes.
             this.editor.editToolbar.on('deactivate', lang.hitch(this, this.performAggregation));
-            /*     // no "deacivate" or any other event after reshape => wait for http call and aggregate then
+            /*  ToDo: Can't get feature that was reshaped, no re-aggregation possible.
+            
+                // no "deacivate" or any other event after reshape => wait for http call and aggregate then
                 esriRequest.setRequestPreCallback(lang.hitch(this, function(evt) {
                   if (evt.url.includes("reshape")) {
                     this.performAggregation(evt);
                   }
-                })); */
+                  return evt;
+                }));*/
         };
         Widget.prototype.performAggregation = function (selectedFeature) {
             this.publishData({
