@@ -58,27 +58,14 @@ class Widget extends BaseWidget {
     }
     this.firstEditorInit = true;
     this.initGeoprocessor();
+  }
 
-    // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
-    let ws = WidgetManager.getInstance();
-    this.config.remotelyControlling.map(remotelyControlledWidgetName => {
-      this.fetchDataByName(remotelyControlledWidgetName);
-      if (ws.getWidgetsByName(remotelyControlledWidgetName).length==0) {
-        let remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", this.appConfig);
-        if (remoteWidget[0]) {
-          ws.loadWidget(remoteWidget[0]).then(function(evt) {
-            // activate buttons when widgets are loaded
-            let buttonNodes = domQuery("input[type='button']");
-            array.forEach(buttonNodes, function(buttonNode) {
-              buttonNode.disabled = false;
-            })
-          });
-        }
-        else {
-          console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
-        }
-      }
-    });
+  activateButtons(name: string) {
+    // Activate buttons that contain the WidgetName as CSS class when widgets are loaded
+    let buttonNodes = domQuery("input[type='button']." + name)
+    array.forEach(buttonNodes, function(buttonNode) {
+      buttonNode.disabled = false;
+    })
   }
 
   startup() {
@@ -91,6 +78,26 @@ class Widget extends BaseWidget {
 
   onOpen() {
     console.log(this.manifest.name + ' onOpen');
+    
+    // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
+    let ws = WidgetManager.getInstance();
+    this.config.remotelyControlling.map(lang.hitch(this, function(remotelyControlledWidgetName){
+      this.fetchDataByName(remotelyControlledWidgetName);
+      if (ws.getWidgetsByName(remotelyControlledWidgetName).length==0) {
+        let remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", this.appConfig);
+        if (remoteWidget[0]) {
+          ws.loadWidget(remoteWidget[0]).then(lang.hitch(this, function(evt) {
+            this.activateButtons(evt.name);
+          }));
+        }
+        else {
+          console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
+        }
+      }
+      else {
+        this.activateButtons(remotelyControlledWidgetName);
+      }
+    }));
   }
 
   onClose() {
@@ -149,14 +156,14 @@ class Widget extends BaseWidget {
 
   geoprocessorCallback(evt) {
     // hide loader
-    if (dom.byId("loadingIndicatorContainer")) {
-      domStyle.set(dom.byId("loadingIndicatorContainer"), "display", "none");
+    if (dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,''))) {
+      domStyle.set(dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,'')), "display", "none");
     }
-    if (dom.byId("loadingIndicatorText")) {
-      domStyle.set(dom.byId("loadingIndicatorText"), "display", "none");
+    if (dom.byId("loadingIndicatorText"+this.label.replace(/ /g,''))) {
+      domStyle.set(dom.byId("loadingIndicatorText"+this.label.replace(/ /g,'')), "display", "none");
     }
-    if (dom.byId("loadingIndicatorImage")) {
-      domStyle.set(dom.byId("loadingIndicatorImage"), "display", "none");
+    if (dom.byId("loadingIndicatorImage"+this.label.replace(/ /g,''))) {
+      domStyle.set(dom.byId("loadingIndicatorImage"+this.label.replace(/ /g,'')), "display", "none");
     }
 
     let updateAttributes = {};
@@ -185,31 +192,34 @@ class Widget extends BaseWidget {
     }
 
     // show loader
-    if (dom.byId("loadingIndicatorContainer")) {
-      domStyle.set(dom.byId("loadingIndicatorContainer"), "display", "block");
+    if (dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,''))) {
+      domStyle.set(dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,'')), "display", "block");
     }
     else {
       this.loadingIndicatorContainer = domConstruct.create("div", {
-        id: "loadingIndicatorContainer"
+        id: "loadingIndicatorContainer"+this.label.replace(/ /g,''),
+        class: "loadingIndicatorContainer"
       }, this.getPanel().domNode);
     }
-    if (dom.byId("loadingIndicatorText")) {
-      domStyle.set(dom.byId("loadingIndicatorText"), "display", "block");
+    if (dom.byId("loadingIndicatorText"+this.label.replace(/ /g,''))) {
+      domStyle.set(dom.byId("loadingIndicatorText"+this.label.replace(/ /g,'')), "display", "block");
     }
     else {
       this.loadingIndicatorText = domConstruct.create("div", {
-        id: "loadingIndicatorText",
+        id: "loadingIndicatorText"+this.label.replace(/ /g,''),
+        class: "loadingIndicatorText",
         innerHTML: this.nls.performingAggregation
-      }, this.loadingIndicatorContainer);
+      }, dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,''));
     }
-    if (dom.byId("loadingIndicatorImage")) {
-      domStyle.set(dom.byId("loadingIndicatorImage"), "display", "block");
+    if (dom.byId("loadingIndicatorImage"+this.label.replace(/ /g,''))) {
+      domStyle.set(dom.byId("loadingIndicatorImage"+this.label.replace(/ /g,'')), "display", "block");
     }
     else {
       this.loadingIndicatorImage = domConstruct.create("img", {
-        id: "loadingIndicator",
+        id: "loadingIndicator"+this.label.replace(/ /g,''),
+        class: "loadingIndicator",
         src: "https://js.arcgis.com/3.21/esri/dijit/images/ajax-loader-segments-circle-64.gif"
-      }, this.loadingIndicatorText, "first");
+      }, dom.byId("loadingIndicatorText"+this.label.replace(/ /g,'')), "first");
     }
   }
 
