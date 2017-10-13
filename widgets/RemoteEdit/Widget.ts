@@ -3,6 +3,9 @@ import PanelManager = require("jimu/PanelManager");
 import lang = require("dojo/_base/lang");
 import html = require("dojo/_base/html");
 import array = require("dojo/_base/array");
+import dom = require("dojo/dom");
+import domConstruct = require("dojo/dom-construct");
+import domStyle = require("dojo/dom-style");
 import esriRequest = require("esri/request");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import EditWidget = require("./EditWidget");
@@ -67,15 +70,26 @@ class Widget extends EditWidget {
     // "deactivate" fires after switching or leaving the edit mode. Works after drawing new features, cut, generally: after editing attributes.
     this.editor.editToolbar.on('deactivate', lang.hitch(this, this.performAggregation));
 
-/*  ToDo: Can't get feature that was reshaped, no re-aggregation possible.
-
-    // no "deacivate" or any other event after reshape => wait for http call and aggregate then
+    // warn that features need to be re-aggregated manually 
     esriRequest.setRequestPreCallback(lang.hitch(this, function(evt) {
-      if (evt.url.includes("reshape")) {
-        this.performAggregation(evt);
+      if (evt.url.endsWith("/reshape") || evt.url.endsWith("/cut")) {
+
+        let templatePickerNode = document.getElementsByClassName("templatePicker")[0];
+
+        if (dom.byId("warningMessage")) {
+          domStyle.set(dom.byId("warningMessage"), "visibility", "visible");
+        }
+        else {
+          this.warningMessageNode = domConstruct.create("div", {
+            id: "warningMessage",
+            innerHTML: this.nls.warnReAggregateFeatures,
+            style: "background-color: #f00;padding: 3px;margin-bottom: 15px;position: absolute;top: 260px;"
+          }, templatePickerNode, "after");
+        }
+        
       }
       return evt; 
-    }));*/
+    }));
   }
 
   performAggregation(selectedFeature) {
@@ -116,12 +130,13 @@ class Widget extends EditWidget {
     }
     else if (name===this.config.remoteControlledBy && data.command=="returnAggregatedData" && data.updates) {
       console.log("Command concerns update " , data.updates);
-
+      if (dom.byId("warningMessage")) {
+        domStyle.set(dom.byId("warningMessage"), "visibility", "hidden");
+      }
       let selectedFeatureLayer = this.map.getLayer(data.selectedFeatureLayerId) as FeatureLayer;
       selectedFeatureLayer.applyEdits(null, data.updates).then(value => {
         this.editor.attributeInspector.refresh();
       }); 
-
     }
     else {
       console.log(this.manifest.name + " ignoring command.");

@@ -13,7 +13,8 @@ define({
     noCanCreateLayerAreCurrentlyVisible:"No creatable layers are currently visible.",
     relatedTables: "Related tables:",
     relatedRecords: "Related records:",
-    noRelatedRecotds: "No related records were found."
+    noRelatedRecotds: "No related records were found.",
+    warnReAggregateFeatures: "Please re-aggregate field values by selecting and de-selecting edited feature."
   }),
   "de": 1
 });

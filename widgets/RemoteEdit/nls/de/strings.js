@@ -12,5 +12,6 @@ define({
   "noCanCreateLayerAreCurrentlyVisible": "Zurzeit sind keine erstellbaren Layer sichtbar.",
   "relatedTables": "Zugehörige Tabellen:",
   "relatedRecords": "Zugehörige Datensätze:",
-  "noRelatedRecotds": "Es wurden keine zugehörigen Datensätze gefunden."
+  "noRelatedRecotds": "Es wurden keine zugehörigen Datensätze gefunden.",
+  warnReAggregateFeatures: "Bitte Feldwerte re-aggregieren durch Selektion und Deselektion des editierten Features."
 });

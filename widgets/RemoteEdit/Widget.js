@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/array", "./EditWidget"], function (require, exports, WidgetManager, lang, array, EditWidget) {
+define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/array", "dojo/dom", "dojo/dom-construct", "dojo/dom-style", "esri/request", "./EditWidget"], function (require, exports, WidgetManager, lang, array, dom, domConstruct, domStyle, esriRequest, EditWidget) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -56,15 +56,23 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             _super.prototype._bindEventsAfterCreate.call(this, settings);
             // "deactivate" fires after switching or leaving the edit mode. Works after drawing new features, cut, generally: after editing attributes.
             this.editor.editToolbar.on('deactivate', lang.hitch(this, this.performAggregation));
-            /*  ToDo: Can't get feature that was reshaped, no re-aggregation possible.
-            
-                // no "deacivate" or any other event after reshape => wait for http call and aggregate then
-                esriRequest.setRequestPreCallback(lang.hitch(this, function(evt) {
-                  if (evt.url.includes("reshape")) {
-                    this.performAggregation(evt);
-                  }
-                  return evt;
-                }));*/
+            // warn that features need to be re-aggregated manually 
+            esriRequest.setRequestPreCallback(lang.hitch(this, function (evt) {
+                if (evt.url.endsWith("/reshape") || evt.url.endsWith("/cut")) {
+                    var templatePickerNode = document.getElementsByClassName("templatePicker")[0];
+                    if (dom.byId("warningMessage")) {
+                        domStyle.set(dom.byId("warningMessage"), "visibility", "visible");
+                    }
+                    else {
+                        this.warningMessageNode = domConstruct.create("div", {
+                            id: "warningMessage",
+                            innerHTML: this.nls.warnReAggregateFeatures,
+                            style: "background-color: #f00;padding: 3px;margin-bottom: 15px;position: absolute;top: 260px;"
+                        }, templatePickerNode, "after");
+                    }
+                }
+                return evt;
+            }));
         };
         Widget.prototype.performAggregation = function (selectedFeature) {
             this.publishData({
@@ -101,6 +109,9 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             }
             else if (name === this.config.remoteControlledBy && data.command == "returnAggregatedData" && data.updates) {
                 console.log("Command concerns update ", data.updates);
+                if (dom.byId("warningMessage")) {
+                    domStyle.set(dom.byId("warningMessage"), "visibility", "hidden");
+                }
                 var selectedFeatureLayer = this.map.getLayer(data.selectedFeatureLayerId);
                 selectedFeatureLayer.applyEdits(null, data.updates).then(function (value) {
                     _this.editor.attributeInspector.refresh();
