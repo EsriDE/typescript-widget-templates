@@ -20,28 +20,15 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
             }
             _this.firstEditorInit = true;
             _this.initGeoprocessor();
-            // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
-            var ws = WidgetManager.getInstance();
-            _this.config.remotelyControlling.map(function (remotelyControlledWidgetName) {
-                _this.fetchDataByName(remotelyControlledWidgetName);
-                if (ws.getWidgetsByName(remotelyControlledWidgetName).length == 0) {
-                    var remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", _this.appConfig);
-                    if (remoteWidget[0]) {
-                        ws.loadWidget(remoteWidget[0]).then(function (evt) {
-                            // activate buttons when widgets are loaded
-                            var buttonNodes = domQuery("input[type='button']");
-                            array.forEach(buttonNodes, function (buttonNode) {
-                                buttonNode.disabled = false;
-                            });
-                        });
-                    }
-                    else {
-                        console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
-                    }
-                }
-            });
             return _this;
         }
+        Widget.prototype.activateButtons = function (name) {
+            // Activate buttons that contain the WidgetName as CSS class when widgets are loaded
+            var buttonNodes = domQuery("input[type='button']." + name);
+            array.forEach(buttonNodes, function (buttonNode) {
+                buttonNode.disabled = false;
+            });
+        };
         Widget.prototype.startup = function () {
             console.log(this.manifest.name + ' startup', this.config, this.map);
         };
@@ -50,6 +37,25 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
         };
         Widget.prototype.onOpen = function () {
             console.log(this.manifest.name + ' onOpen');
+            // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
+            var ws = WidgetManager.getInstance();
+            this.config.remotelyControlling.map(lang.hitch(this, function (remotelyControlledWidgetName) {
+                this.fetchDataByName(remotelyControlledWidgetName);
+                if (ws.getWidgetsByName(remotelyControlledWidgetName).length == 0) {
+                    var remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", this.appConfig);
+                    if (remoteWidget[0]) {
+                        ws.loadWidget(remoteWidget[0]).then(lang.hitch(this, function (evt) {
+                            this.activateButtons(evt.name);
+                        }));
+                    }
+                    else {
+                        console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
+                    }
+                }
+                else {
+                    this.activateButtons(remotelyControlledWidgetName);
+                }
+            }));
         };
         Widget.prototype.onClose = function () {
             console.log(this.manifest.name + ' onClose');

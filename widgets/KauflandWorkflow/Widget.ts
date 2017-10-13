@@ -58,27 +58,14 @@ class Widget extends BaseWidget {
     }
     this.firstEditorInit = true;
     this.initGeoprocessor();
+  }
 
-    // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
-    let ws = WidgetManager.getInstance();
-    this.config.remotelyControlling.map(remotelyControlledWidgetName => {
-      this.fetchDataByName(remotelyControlledWidgetName);
-      if (ws.getWidgetsByName(remotelyControlledWidgetName).length==0) {
-        let remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", this.appConfig);
-        if (remoteWidget[0]) {
-          ws.loadWidget(remoteWidget[0]).then(function(evt) {
-            // activate buttons when widgets are loaded
-            let buttonNodes = domQuery("input[type='button']");
-            array.forEach(buttonNodes, function(buttonNode) {
-              buttonNode.disabled = false;
-            })
-          });
-        }
-        else {
-          console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
-        }
-      }
-    });
+  activateButtons(name: string) {
+    // Activate buttons that contain the WidgetName as CSS class when widgets are loaded
+    let buttonNodes = domQuery("input[type='button']." + name)
+    array.forEach(buttonNodes, function(buttonNode) {
+      buttonNode.disabled = false;
+    })
   }
 
   startup() {
@@ -91,6 +78,26 @@ class Widget extends BaseWidget {
 
   onOpen() {
     console.log(this.manifest.name + ' onOpen');
+    
+    // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
+    let ws = WidgetManager.getInstance();
+    this.config.remotelyControlling.map(lang.hitch(this, function(remotelyControlledWidgetName){
+      this.fetchDataByName(remotelyControlledWidgetName);
+      if (ws.getWidgetsByName(remotelyControlledWidgetName).length==0) {
+        let remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", this.appConfig);
+        if (remoteWidget[0]) {
+          ws.loadWidget(remoteWidget[0]).then(lang.hitch(this, function(evt) {
+            this.activateButtons(evt.name);
+          }));
+        }
+        else {
+          console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
+        }
+      }
+      else {
+        this.activateButtons(remotelyControlledWidgetName);
+      }
+    }));
   }
 
   onClose() {
