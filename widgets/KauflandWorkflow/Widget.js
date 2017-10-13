@@ -96,18 +96,17 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
         };
         Widget.prototype.geoprocessorCallback = function (evt) {
             var _this = this;
-            evt.results.forEach(function (result) {
-                _this.selectedFeature.graphic.attributes[result.paramName] = result.value;
-            });
             var updateAttributes = {};
             evt.results.forEach(function (result) {
                 updateAttributes[result.paramName] = result.value;
+                _this.selectedFeature.graphic.attributes[result.paramName] = result.value;
             });
             updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
             var updates = [{ "attributes": updateAttributes }];
             this.publishData({
                 command: "returnAggregatedData",
                 updates: updates,
+                selectedFeatureLayerId: this.selectedFeature.graphic._layer.id,
                 valid: true
             });
             // hide loader

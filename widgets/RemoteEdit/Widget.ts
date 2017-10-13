@@ -114,8 +114,8 @@ class Widget extends EditWidget {
     else if (name===this.config.remoteControlledBy && data.command=="returnAggregatedData" && data.updates) {
       console.log("Command concerns update " , data.updates);
 
-      let polygonLayer = this.map.getLayer(this.editLayerId) as FeatureLayer;
-      polygonLayer.applyEdits(null, data.updates).then(value => {
+      let selectedFeatureLayer = this.map.getLayer(data.selectedFeatureLayerId) as FeatureLayer;
+      selectedFeatureLayer.applyEdits(null, data.updates).then(value => {
         this.editor.attributeInspector.refresh();
       }); 
 

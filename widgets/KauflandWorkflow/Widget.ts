@@ -140,19 +140,17 @@ class Widget extends BaseWidget {
   }
 
   geoprocessorCallback(evt) {
-    evt.results.forEach(result => {
-      this.selectedFeature.graphic.attributes[result.paramName] = result.value;
-    });
-
     let updateAttributes = {};
     evt.results.forEach(result => {
       updateAttributes[result.paramName] = result.value;
+      this.selectedFeature.graphic.attributes[result.paramName] = result.value;
     });
     updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
     let updates = [{"attributes":updateAttributes}];
     this.publishData({
       command: "returnAggregatedData",
       updates: updates,
+      selectedFeatureLayerId: this.selectedFeature.graphic._layer.id,
       valid: true
     });
 

@@ -98,8 +98,8 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             }
             else if (name === this.config.remoteControlledBy && data.command == "returnAggregatedData" && data.updates) {
                 console.log("Command concerns update ", data.updates);
-                var polygonLayer = this.map.getLayer(this.editLayerId);
-                polygonLayer.applyEdits(null, data.updates).then(function (value) {
+                var selectedFeatureLayer = this.map.getLayer(data.selectedFeatureLayerId);
+                selectedFeatureLayer.applyEdits(null, data.updates).then(function (value) {
                     _this.editor.attributeInspector.refresh();
                 });
             }
