@@ -1,7 +1,7 @@
 {
   "name": "RemoteSelect",
   "platform": "HTML",
-  "version": "1.0.1",
+  "version": "1.1",
   "wabVersion": "2.4",
   "author": "Niklas Köhn, Esri Deutschland GmbH",
   "description": "Select widget with remote control functionality",
