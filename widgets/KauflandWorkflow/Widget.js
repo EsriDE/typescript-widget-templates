@@ -109,14 +109,14 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
         Widget.prototype.geoprocessorCallback = function (evt) {
             var _this = this;
             // hide loader
-            if (dom.byId("loadingIndicatorContainer")) {
-                domStyle.set(dom.byId("loadingIndicatorContainer"), "display", "none");
+            if (dom.byId("loadingIndicatorContainer" + this.label.replace(/ /g, ''))) {
+                domStyle.set(dom.byId("loadingIndicatorContainer" + this.label.replace(/ /g, '')), "display", "none");
             }
-            if (dom.byId("loadingIndicatorText")) {
-                domStyle.set(dom.byId("loadingIndicatorText"), "display", "none");
+            if (dom.byId("loadingIndicatorText" + this.label.replace(/ /g, ''))) {
+                domStyle.set(dom.byId("loadingIndicatorText" + this.label.replace(/ /g, '')), "display", "none");
             }
-            if (dom.byId("loadingIndicatorImage")) {
-                domStyle.set(dom.byId("loadingIndicatorImage"), "display", "none");
+            if (dom.byId("loadingIndicatorImage" + this.label.replace(/ /g, ''))) {
+                domStyle.set(dom.byId("loadingIndicatorImage" + this.label.replace(/ /g, '')), "display", "none");
             }
             var updateAttributes = {};
             if (evt && evt.results) {
@@ -142,31 +142,34 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
                 this.geoprocessor.execute(params);
             }
             // show loader
-            if (dom.byId("loadingIndicatorContainer")) {
-                domStyle.set(dom.byId("loadingIndicatorContainer"), "display", "block");
+            if (dom.byId("loadingIndicatorContainer" + this.label.replace(/ /g, ''))) {
+                domStyle.set(dom.byId("loadingIndicatorContainer" + this.label.replace(/ /g, '')), "display", "block");
             }
             else {
                 this.loadingIndicatorContainer = domConstruct.create("div", {
-                    id: "loadingIndicatorContainer"
+                    id: "loadingIndicatorContainer" + this.label.replace(/ /g, ''),
+                    class: "loadingIndicatorContainer"
                 }, this.getPanel().domNode);
             }
-            if (dom.byId("loadingIndicatorText")) {
-                domStyle.set(dom.byId("loadingIndicatorText"), "display", "block");
+            if (dom.byId("loadingIndicatorText" + this.label.replace(/ /g, ''))) {
+                domStyle.set(dom.byId("loadingIndicatorText" + this.label.replace(/ /g, '')), "display", "block");
             }
             else {
                 this.loadingIndicatorText = domConstruct.create("div", {
-                    id: "loadingIndicatorText",
+                    id: "loadingIndicatorText" + this.label.replace(/ /g, ''),
+                    class: "loadingIndicatorText",
                     innerHTML: this.nls.performingAggregation
-                }, this.loadingIndicatorContainer);
+                }, dom.byId("loadingIndicatorContainer" + this.label.replace(/ /g, '')));
             }
-            if (dom.byId("loadingIndicatorImage")) {
-                domStyle.set(dom.byId("loadingIndicatorImage"), "display", "block");
+            if (dom.byId("loadingIndicatorImage" + this.label.replace(/ /g, ''))) {
+                domStyle.set(dom.byId("loadingIndicatorImage" + this.label.replace(/ /g, '')), "display", "block");
             }
             else {
                 this.loadingIndicatorImage = domConstruct.create("img", {
-                    id: "loadingIndicator",
+                    id: "loadingIndicator" + this.label.replace(/ /g, ''),
+                    class: "loadingIndicator",
                     src: "https://js.arcgis.com/3.21/esri/dijit/images/ajax-loader-segments-circle-64.gif"
-                }, this.loadingIndicatorText, "first");
+                }, dom.byId("loadingIndicatorText" + this.label.replace(/ /g, '')), "first");
             }
         };
         Widget.prototype.checkPointSelection = function () {

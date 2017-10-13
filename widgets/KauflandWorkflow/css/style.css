@@ -21,7 +21,7 @@
 .atiButtons {
     padding-bottom: 30px;
 }
-#loadingIndicatorContainer {
+.loadingIndicatorContainer {
     position:absolute;
     width:100%;
     height:100%;
@@ -29,7 +29,7 @@
     background: rgba(100,100,100,0.8);
     top:0px;
 }
-#loadingIndicatorText {
+.loadingIndicatorText {
     color:#fff;
     position: absolute;
     left: 50%;
@@ -38,7 +38,7 @@
     margin-left: -100px;
     text-align: center;
 }
-#loadingIndicator {
+.loadingIndicator {
     position: absolute;
     width: 78px;
     height: 78px;
