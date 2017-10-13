@@ -2,11 +2,11 @@
     <div id="generateBuffersContainer" class="kauflandContainer" data-dojo-attach-point="generateBuffersContainer">
         <div>${nls.bufferLabel}</div>
         <div>${nls.bufferRadius}<input type="number" class="clarofakeinput" alt="${nls.bufferRadius}" data-dojo-attach-point="bufferRadiusMeters" value="5000"></div>
-        <input type="button" class="clarofake" value="${nls.bufferGenerateButton}" data-dojo-attach-event="onclick:checkPointSelection">
-        <input type="button" class="clarofake" value="${nls.bufferResetButton}" data-dojo-attach-event="onclick:resetBuffers">
+        <input type="button" class="clarofake" value="${nls.bufferGenerateButton}" data-dojo-attach-event="onclick:checkPointSelection" disabled>
+        <input type="button" class="clarofake" value="${nls.bufferResetButton}" data-dojo-attach-event="onclick:resetBuffers" disabled>
     </div>
 
     <div id="editPolygonsContainer" class="kauflandContainer" data-dojo-attach-point="editPolygonsContainer">
-        <input type="button" class="clarofake" value="${nls.editPolygons}" data-dojo-attach-event="onclick:editPolygons">
+        <input type="button" class="clarofake" value="${nls.editPolygons}" data-dojo-attach-event="onclick:editPolygons" disabled>
     </div>
 </div>

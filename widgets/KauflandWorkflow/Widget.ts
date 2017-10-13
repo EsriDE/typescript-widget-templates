@@ -10,6 +10,7 @@ import domConstruct = require("dojo/dom-construct");
 import domStyle = require("dojo/dom-style");
 import domAttr = require("dojo/dom-attr");
 import domGeometry = require("dojo/dom-geometry");
+import domQuery = require("dojo/query");
 import Button = require("dijit/form/Button");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import geometryEngine = require("esri/geometry/geometryEngine");
@@ -64,7 +65,13 @@ class Widget extends BaseWidget {
       if (ws.getWidgetsByName(remotelyControlledWidgetName).length==0) {
         let remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", this.appConfig);
         if (remoteWidget[0]) {
-          ws.loadWidget(remoteWidget[0]);
+          ws.loadWidget(remoteWidget[0]).then(function(evt) {
+            // activate buttons when widgets are loaded
+            let buttonNodes = domQuery("input[type='button']");
+            array.forEach(buttonNodes, function(buttonNode) {
+              buttonNode.disabled = false;
+            })
+          });
         }
         else {
           console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);

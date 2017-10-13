@@ -27,6 +27,7 @@
     height:100%;
     z-index: 100;
     background: rgba(100,100,100,0.8);
+    top:0px;
 }
 #loadingIndicatorText {
     color:#fff;

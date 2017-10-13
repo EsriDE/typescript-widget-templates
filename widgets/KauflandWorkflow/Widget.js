@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_base/lang", "dojox/json/query", "dojo/dom-construct", "dojo/dom-style", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, WidgetManager, lang, jsonQuery, domConstruct, domStyle, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Geoprocessor, FeatureSet) {
+define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/array", "dojox/json/query", "dojo/dom-construct", "dojo/dom-style", "dojo/query", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, WidgetManager, lang, array, jsonQuery, domConstruct, domStyle, domQuery, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Geoprocessor, FeatureSet) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -27,7 +27,13 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
                 if (ws.getWidgetsByName(remotelyControlledWidgetName).length == 0) {
                     var remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", _this.appConfig);
                     if (remoteWidget[0]) {
-                        ws.loadWidget(remoteWidget[0]);
+                        ws.loadWidget(remoteWidget[0]).then(function (evt) {
+                            // activate buttons when widgets are loaded
+                            var buttonNodes = domQuery("input[type='button']");
+                            array.forEach(buttonNodes, function (buttonNode) {
+                                buttonNode.disabled = false;
+                            });
+                        });
                     }
                     else {
                         console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
