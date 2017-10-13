@@ -6,6 +6,7 @@ import array = require("dojo/_base/array");
 import event = require("dojo/_base/event");
 import json = require('dojo/json');
 import jsonQuery = require("dojox/json/query");
+import dom = require("dojo/dom");
 import domConstruct = require("dojo/dom-construct");
 import domStyle = require("dojo/dom-style");
 import domAttr = require("dojo/dom-attr");
@@ -147,24 +148,32 @@ class Widget extends BaseWidget {
   }
 
   geoprocessorCallback(evt) {
-    let updateAttributes = {};
-    evt.results.forEach(result => {
-      updateAttributes[result.paramName] = result.value;
-      this.selectedFeature.graphic.attributes[result.paramName] = result.value;
-    });
-    updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
-    let updates = [{"attributes":updateAttributes}];
-    this.publishData({
-      command: "returnAggregatedData",
-      updates: updates,
-      selectedFeatureLayerId: this.selectedFeature.graphic._layer.id,
-      valid: true
-    });
-
     // hide loader
-    domConstruct.destroy(this.loadingIndicatorContainer);
-    domConstruct.destroy(this.loadingIndicatorText);
-    domConstruct.destroy(this.loadingIndicatorImage);
+    if (dom.byId("loadingIndicatorContainer")) {
+      domStyle.set(dom.byId("loadingIndicatorContainer"), "display", "none");
+    }
+    if (dom.byId("loadingIndicatorText")) {
+      domStyle.set(dom.byId("loadingIndicatorText"), "display", "none");
+    }
+    if (dom.byId("loadingIndicatorImage")) {
+      domStyle.set(dom.byId("loadingIndicatorImage"), "display", "none");
+    }
+
+    let updateAttributes = {};
+    if (evt && evt.results) {
+      evt.results.forEach(result => {
+        updateAttributes[result.paramName] = result.value;
+        this.selectedFeature.graphic.attributes[result.paramName] = result.value;
+      });
+      updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
+      let updates = [{"attributes":updateAttributes}];
+      this.publishData({
+        command: "returnAggregatedData",
+        updates: updates,
+        selectedFeatureLayerId: this.selectedFeature.graphic._layer.id,
+        valid: true
+      });
+    }
   }
 
   performAggregation(pFeatureSet) {
@@ -176,17 +185,32 @@ class Widget extends BaseWidget {
     }
 
     // show loader
-    this.loadingIndicatorContainer = domConstruct.create("div", {
-      id: "loadingIndicatorContainer"
-    }, this.getPanel().domNode);
-    this.loadingIndicatorText = domConstruct.create("div", {
-      id: "loadingIndicatorText",
-      innerHTML: this.nls.performingAggregation
-    }, this.loadingIndicatorContainer);
-    this.loadingIndicatorImage = domConstruct.create("img", {
-      id: "loadingIndicator",
-      src: "https://js.arcgis.com/3.21/esri/dijit/images/ajax-loader-segments-circle-64.gif"
-    }, this.loadingIndicatorText, "first");
+    if (dom.byId("loadingIndicatorContainer")) {
+      domStyle.set(dom.byId("loadingIndicatorContainer"), "display", "block");
+    }
+    else {
+      this.loadingIndicatorContainer = domConstruct.create("div", {
+        id: "loadingIndicatorContainer"
+      }, this.getPanel().domNode);
+    }
+    if (dom.byId("loadingIndicatorText")) {
+      domStyle.set(dom.byId("loadingIndicatorText"), "display", "block");
+    }
+    else {
+      this.loadingIndicatorText = domConstruct.create("div", {
+        id: "loadingIndicatorText",
+        innerHTML: this.nls.performingAggregation
+      }, this.loadingIndicatorContainer);
+    }
+    if (dom.byId("loadingIndicatorImage")) {
+      domStyle.set(dom.byId("loadingIndicatorImage"), "display", "block");
+    }
+    else {
+      this.loadingIndicatorImage = domConstruct.create("img", {
+        id: "loadingIndicator",
+        src: "https://js.arcgis.com/3.21/esri/dijit/images/ajax-loader-segments-circle-64.gif"
+      }, this.loadingIndicatorText, "first");
+    }
   }
 
   checkPointSelection() {

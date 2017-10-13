@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/array", "dojox/json/query", "dojo/dom-construct", "dojo/dom-style", "dojo/query", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, WidgetManager, lang, array, jsonQuery, domConstruct, domStyle, domQuery, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Geoprocessor, FeatureSet) {
+define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/array", "dojox/json/query", "dojo/dom", "dojo/dom-construct", "dojo/dom-style", "dojo/query", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, WidgetManager, lang, array, jsonQuery, dom, domConstruct, domStyle, domQuery, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Geoprocessor, FeatureSet) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
@@ -102,23 +102,31 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
         };
         Widget.prototype.geoprocessorCallback = function (evt) {
             var _this = this;
-            var updateAttributes = {};
-            evt.results.forEach(function (result) {
-                updateAttributes[result.paramName] = result.value;
-                _this.selectedFeature.graphic.attributes[result.paramName] = result.value;
-            });
-            updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
-            var updates = [{ "attributes": updateAttributes }];
-            this.publishData({
-                command: "returnAggregatedData",
-                updates: updates,
-                selectedFeatureLayerId: this.selectedFeature.graphic._layer.id,
-                valid: true
-            });
             // hide loader
-            domConstruct.destroy(this.loadingIndicatorContainer);
-            domConstruct.destroy(this.loadingIndicatorText);
-            domConstruct.destroy(this.loadingIndicatorImage);
+            if (dom.byId("loadingIndicatorContainer")) {
+                domStyle.set(dom.byId("loadingIndicatorContainer"), "display", "none");
+            }
+            if (dom.byId("loadingIndicatorText")) {
+                domStyle.set(dom.byId("loadingIndicatorText"), "display", "none");
+            }
+            if (dom.byId("loadingIndicatorImage")) {
+                domStyle.set(dom.byId("loadingIndicatorImage"), "display", "none");
+            }
+            var updateAttributes = {};
+            if (evt && evt.results) {
+                evt.results.forEach(function (result) {
+                    updateAttributes[result.paramName] = result.value;
+                    _this.selectedFeature.graphic.attributes[result.paramName] = result.value;
+                });
+                updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
+                var updates = [{ "attributes": updateAttributes }];
+                this.publishData({
+                    command: "returnAggregatedData",
+                    updates: updates,
+                    selectedFeatureLayerId: this.selectedFeature.graphic._layer.id,
+                    valid: true
+                });
+            }
         };
         Widget.prototype.performAggregation = function (pFeatureSet) {
             if (pFeatureSet.features.length > 0) {
@@ -128,17 +136,32 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
                 this.geoprocessor.execute(params);
             }
             // show loader
-            this.loadingIndicatorContainer = domConstruct.create("div", {
-                id: "loadingIndicatorContainer"
-            }, this.getPanel().domNode);
-            this.loadingIndicatorText = domConstruct.create("div", {
-                id: "loadingIndicatorText",
-                innerHTML: this.nls.performingAggregation
-            }, this.loadingIndicatorContainer);
-            this.loadingIndicatorImage = domConstruct.create("img", {
-                id: "loadingIndicator",
-                src: "https://js.arcgis.com/3.21/esri/dijit/images/ajax-loader-segments-circle-64.gif"
-            }, this.loadingIndicatorText, "first");
+            if (dom.byId("loadingIndicatorContainer")) {
+                domStyle.set(dom.byId("loadingIndicatorContainer"), "display", "block");
+            }
+            else {
+                this.loadingIndicatorContainer = domConstruct.create("div", {
+                    id: "loadingIndicatorContainer"
+                }, this.getPanel().domNode);
+            }
+            if (dom.byId("loadingIndicatorText")) {
+                domStyle.set(dom.byId("loadingIndicatorText"), "display", "block");
+            }
+            else {
+                this.loadingIndicatorText = domConstruct.create("div", {
+                    id: "loadingIndicatorText",
+                    innerHTML: this.nls.performingAggregation
+                }, this.loadingIndicatorContainer);
+            }
+            if (dom.byId("loadingIndicatorImage")) {
+                domStyle.set(dom.byId("loadingIndicatorImage"), "display", "block");
+            }
+            else {
+                this.loadingIndicatorImage = domConstruct.create("img", {
+                    id: "loadingIndicator",
+                    src: "https://js.arcgis.com/3.21/esri/dijit/images/ajax-loader-segments-circle-64.gif"
+                }, this.loadingIndicatorText, "first");
+            }
         };
         Widget.prototype.checkPointSelection = function () {
             var pointLayer = this.map.getLayer(this.config.pointLayerId);
