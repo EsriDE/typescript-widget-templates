@@ -83,14 +83,14 @@ class Widget extends BaseWidget {
     
     // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
     let ws = WidgetManager.getInstance();
-    this.config.remotelyControlling.map(lang.hitch(this, function(remotelyControlledWidgetName){
+    this.config.remotelyControlling.map(remotelyControlledWidgetName => {
       this.fetchDataByName(remotelyControlledWidgetName);
       if (ws.getWidgetsByName(remotelyControlledWidgetName).length==0) {
         let remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", this.appConfig);
         if (remoteWidget[0]) {
-          ws.loadWidget(remoteWidget[0]).then(lang.hitch(this, function(evt) {
+          ws.loadWidget(remoteWidget[0]).then(evt => {
             this.activateButtons(evt.name);
-          }));
+          });
         }
         else {
           console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
@@ -99,7 +99,7 @@ class Widget extends BaseWidget {
       else {
         this.activateButtons(remotelyControlledWidgetName);
       }
-    }));
+    });
   }
 
   onClose() {

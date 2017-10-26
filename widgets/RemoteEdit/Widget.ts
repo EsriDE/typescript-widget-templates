@@ -71,7 +71,7 @@ class Widget extends EditWidget {
     this.editor.editToolbar.on('deactivate', lang.hitch(this, this.performAggregation));
 
     // warn that features need to be re-aggregated manually 
-    esriRequest.setRequestPreCallback(lang.hitch(this, function(evt) {
+    esriRequest.setRequestPreCallback(evt => {
       if (evt.url.endsWith("/reshape") || evt.url.endsWith("/cut")) {
 
         let templatePickerNode = document.getElementsByClassName("templatePicker")[0];
@@ -89,7 +89,7 @@ class Widget extends EditWidget {
         
       }
       return evt; 
-    }));
+    });
   }
 
   performAggregation(selectedFeature) {

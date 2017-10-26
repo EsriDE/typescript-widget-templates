@@ -53,26 +53,27 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             console.log(this.manifest.name + ' onSignOut');
         };
         Widget.prototype._bindEventsAfterCreate = function (settings) {
+            var _this = this;
             _super.prototype._bindEventsAfterCreate.call(this, settings);
             // "deactivate" fires after switching or leaving the edit mode. Works after drawing new features, cut, generally: after editing attributes.
             this.editor.editToolbar.on('deactivate', lang.hitch(this, this.performAggregation));
             // warn that features need to be re-aggregated manually 
-            esriRequest.setRequestPreCallback(lang.hitch(this, function (evt) {
+            esriRequest.setRequestPreCallback(function (evt) {
                 if (evt.url.endsWith("/reshape") || evt.url.endsWith("/cut")) {
                     var templatePickerNode = document.getElementsByClassName("templatePicker")[0];
                     if (dom.byId("warningMessage")) {
                         domStyle.set(dom.byId("warningMessage"), "visibility", "visible");
                     }
                     else {
-                        this.warningMessageNode = domConstruct.create("div", {
+                        _this.warningMessageNode = domConstruct.create("div", {
                             id: "warningMessage",
-                            innerHTML: this.nls.warnReAggregateFeatures,
+                            innerHTML: _this.nls.warnReAggregateFeatures,
                             style: "background-color: #f00;padding: 3px;margin-bottom: 15px;position: absolute;top: 260px;"
                         }, templatePickerNode, "after");
                     }
                 }
                 return evt;
-            }));
+            });
         };
         Widget.prototype.performAggregation = function (selectedFeature) {
             this.publishData({

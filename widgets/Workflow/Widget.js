@@ -36,26 +36,27 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
             console.log(this.manifest.name + ' postCreate', this.config);
         };
         Widget.prototype.onOpen = function () {
+            var _this = this;
             console.log(this.manifest.name + ' onOpen');
             // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
             var ws = WidgetManager.getInstance();
-            this.config.remotelyControlling.map(lang.hitch(this, function (remotelyControlledWidgetName) {
-                this.fetchDataByName(remotelyControlledWidgetName);
+            this.config.remotelyControlling.map(function (remotelyControlledWidgetName) {
+                _this.fetchDataByName(remotelyControlledWidgetName);
                 if (ws.getWidgetsByName(remotelyControlledWidgetName).length == 0) {
-                    var remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", this.appConfig);
+                    var remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", _this.appConfig);
                     if (remoteWidget[0]) {
-                        ws.loadWidget(remoteWidget[0]).then(lang.hitch(this, function (evt) {
-                            this.activateButtons(evt.name);
-                        }));
+                        ws.loadWidget(remoteWidget[0]).then(function (evt) {
+                            _this.activateButtons(evt.name);
+                        });
                     }
                     else {
                         console.warn("No appConfig entry found for widget named " + remotelyControlledWidgetName + ".", remoteWidget);
                     }
                 }
                 else {
-                    this.activateButtons(remotelyControlledWidgetName);
+                    _this.activateButtons(remotelyControlledWidgetName);
                 }
-            }));
+            });
         };
         Widget.prototype.onClose = function () {
             console.log(this.manifest.name + ' onClose');
