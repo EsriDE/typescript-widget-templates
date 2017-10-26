@@ -106,11 +106,14 @@ class Widget extends EditWidget {
     
     if (this.editLayerId !== undefined) {
       // Find optionID of transmitted layerID
-      array.forEach(this._filterEditor.selectDropDown.options, lang.hitch(this, function(option, i) {
+      array.forEach(this._filterEditor.selectDropDown.options, (option, i) => {
         if (option.attributes[0].nodeValue===this.editLayerId) {
           this.editLayerOptionIndex = i;
         }
-      })); 
+      }); 
+
+      //this._filterEditor.selectDropDown.options.map();
+
       this._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
       this._filterEditor._onLayerFilterChanged();
     }

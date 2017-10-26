@@ -74,7 +74,9 @@ class Widget extends SelectWidget {
       let ws = WidgetManager.getInstance();
       ws.triggerWidgetOpen(this.id);
       // after making the selection, return to original widget ("widgetId" parameter) and trigger buffer operation there
-      this.selectionCompleteSignal = data.layer.on("selection-complete", lang.hitch(this, function(selection) {this.selectionCompleteBackToBuffer(selection, widgetId, ws);}));
+      this.selectionCompleteSignal = data.layer.on("selection-complete", selection => {
+        this.selectionCompleteBackToBuffer(selection, widgetId, ws);
+      });
     }
     else {
       console.log(this.manifest.name + " ignoring command.");

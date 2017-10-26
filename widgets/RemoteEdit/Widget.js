@@ -83,15 +83,17 @@ define(["require", "exports", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_ba
             });
         };
         Widget.prototype._addFilterEditor = function (settings) {
+            var _this = this;
             _super.prototype._addFilterEditor.call(this, settings);
             console.log(this.manifest.name + ' _addFilterEditor');
             if (this.editLayerId !== undefined) {
                 // Find optionID of transmitted layerID
-                array.forEach(this._filterEditor.selectDropDown.options, lang.hitch(this, function (option, i) {
-                    if (option.attributes[0].nodeValue === this.editLayerId) {
-                        this.editLayerOptionIndex = i;
+                array.forEach(this._filterEditor.selectDropDown.options, function (option, i) {
+                    if (option.attributes[0].nodeValue === _this.editLayerId) {
+                        _this.editLayerOptionIndex = i;
                     }
-                }));
+                });
+                //this._filterEditor.selectDropDown.options.map();
                 this._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
                 this._filterEditor._onLayerFilterChanged();
             }
