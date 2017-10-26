@@ -8,12 +8,12 @@
 .attributeInspectorEditButton {
     float:right;
 }
-.jimu-widget-kauflandworkflow {
+.jimu-widget-Workflow {
     width:100%;
     height:100%;
 }
 
-.kauflandContainer {
+.workflowContainer {
     background: #efefef;
     padding: 5px;
     margin: 2px 0px 10px 0px;

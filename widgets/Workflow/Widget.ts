@@ -30,10 +30,12 @@ import InfoTemplate = require("esri/InfoTemplate");
 import Geoprocessor = require("esri/tasks/Geoprocessor");
 import SpatialReference = require("esri/SpatialReference");
 import FeatureSet = require("esri/tasks/FeatureSet");
+import GeometryService = require("esri/tasks/GeometryService");
+import AreasAndLengthsParameters = require("esri/tasks/AreasAndLengthsParameters");
 
 class Widget extends BaseWidget {
 
-  public baseClass: string = "jimu-widget-kauflandworkflow";
+  public baseClass: string = "jimu-widget-Workflow";
   public config: SpecificWidgetConfig;
   private editLayer: FeatureLayer;
   private selectedFeatureSet: FeatureSet;
@@ -42,7 +44,7 @@ class Widget extends BaseWidget {
   private editToolbar: Edit;
   private drawToolbar: Draw;
   private templatePicker: TemplatePicker;
-  private geoprocessor: Geoprocessor;
+  private geometryService: GeometryService;
   private subnode: HTMLElement;
   private firstEditorInit: Boolean;
   private loadingIndicatorContainer;
@@ -52,12 +54,12 @@ class Widget extends BaseWidget {
   private polygonLayer: FeatureLayer;
 
   constructor(args?) {
-    super(lang.mixin({baseClass: "jimu-widget-kauflandworkflow"}, args));
+    super(lang.mixin({baseClass: "jimu-widget-Workflow"}, args));
     if (this.config.generateBuffers!==true) {
       domStyle.set(this.generateBuffersContainer, "display", "none");
     }
     this.firstEditorInit = true;
-    this.initGeoprocessor();
+    this.initGeometryService();
   }
 
   activateButtons(name: string) {
@@ -141,20 +143,17 @@ class Widget extends BaseWidget {
       selectedFeatures.push(data.selectedFeature.graphic);
       let selectedFeatureSet = new FeatureSet();
       selectedFeatureSet.features = selectedFeatures;
-      this.performAggregation(selectedFeatureSet);
+      this.geometryAnalysis(selectedFeatureSet);
       data.valid = false;
     }
   }
 
-  initGeoprocessor() {
-    this.geoprocessor = new Geoprocessor(this.config.geoprocessorUrl);
-    this.geoprocessor.setOutSpatialReference({
-      wkid: 102100
-    } as SpatialReference);
-    this.geoprocessor.on("execute-complete", lang.hitch(this, this.geoprocessorCallback));
+  initGeometryService() {
+    this.geometryService = new GeometryService("https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
+    this.geometryService.on("areas-and-lengths-complete", lang.hitch(this, this.geometryCallback));
   }
 
-  geoprocessorCallback(evt) {
+  geometryCallback(evt) {
     // hide loader
     if (dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,''))) {
       domStyle.set(dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,'')), "display", "none");
@@ -167,11 +166,9 @@ class Widget extends BaseWidget {
     }
 
     let updateAttributes = {};
-    if (evt && evt.results) {
-      evt.results.forEach(result => {
-        updateAttributes[result.paramName] = result.value;
-        this.selectedFeature.graphic.attributes[result.paramName] = result.value;
-      });
+    if (evt && evt.result) {
+      updateAttributes["area"] = evt.result.areas[0];
+      updateAttributes["length"] = evt.result.lengths[0];
       updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
       let updates = [{"attributes":updateAttributes}];
       this.publishData({
@@ -183,12 +180,18 @@ class Widget extends BaseWidget {
     }
   }
 
-  performAggregation(pFeatureSet) {
+  geometryAnalysis(pFeatureSet) {
     if (pFeatureSet.features.length>0) {
-      var params = {
-        "Feature_Class": pFeatureSet
-      };
-      this.geoprocessor.execute(params);
+      let areasAndLengthParams = new AreasAndLengthsParameters();
+      areasAndLengthParams.areaUnit = GeometryService.UNIT_SQUARE_METERS;
+      areasAndLengthParams.calculationType = "geodesic";
+      areasAndLengthParams.lengthUnit = GeometryService.UNIT_METER;
+
+      let poly = new Polygon(pFeatureSet.features[0].geometry.spatialReference);
+      poly.addRing(pFeatureSet.features[0].geometry.rings[0])
+      areasAndLengthParams.polygons = [poly];
+
+      this.geometryService.areasAndLengths(areasAndLengthParams);
     }
 
     // show loader

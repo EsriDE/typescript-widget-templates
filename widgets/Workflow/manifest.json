@@ -1,12 +1,12 @@
 {
-  "name": "KauflandWorkflow",
+  "name": "Workflow",
   "2D": true,
   "3D": false,
   "platform": "HTML",
   "version": "1.1.1",
   "wabVersion": "2.5",
   "author": "Niklas Köhn, Esri Deutschland GmbH",
-  "description": "Kaufland Australia workflow",
+  "description": "Workflow",
   "copyright": "Esri Deutschland GmbH 2017",
   "license": "",
   "properties": {

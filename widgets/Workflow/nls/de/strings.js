@@ -1,6 +1,6 @@
 ﻿define({
     root:({
-        _widgetLabel: "Kaufland Arbeitsablauf NLS",
+        _widgetLabel: "Workflow",
         bufferLabel: "Puffer um selektierten Ort erstellen",
         bufferRadius: "Puffer-Radius:",
         bufferGenerateButton: "Generieren"

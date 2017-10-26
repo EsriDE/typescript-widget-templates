@@ -21,7 +21,7 @@ define([
 function(declare, BaseWidgetSetting) {
 
   return declare([BaseWidgetSetting], {
-    baseClass: 'jimu-widget-kauflandworkflow-setting',
+    baseClass: 'jimu-widget-workflow-setting',
 
     postCreate: function(){
       //the config object is passed in

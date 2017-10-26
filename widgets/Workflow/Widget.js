@@ -8,18 +8,18 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/array", "dojox/json/query", "dojo/dom", "dojo/dom-construct", "dojo/dom-style", "dojo/query", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/tasks/Geoprocessor", "esri/tasks/FeatureSet"], function (require, exports, BaseWidget, WidgetManager, lang, array, jsonQuery, dom, domConstruct, domStyle, domQuery, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Geoprocessor, FeatureSet) {
+define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_base/lang", "dojo/_base/array", "dojox/json/query", "dojo/dom", "dojo/dom-construct", "dojo/dom-style", "dojo/query", "esri/geometry/geometryEngine", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color", "esri/geometry/Polygon", "esri/tasks/FeatureSet", "esri/tasks/GeometryService", "esri/tasks/AreasAndLengthsParameters"], function (require, exports, BaseWidget, WidgetManager, lang, array, jsonQuery, dom, domConstruct, domStyle, domQuery, geometryEngine, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color, Polygon, FeatureSet, GeometryService, AreasAndLengthsParameters) {
     "use strict";
     var Widget = (function (_super) {
         __extends(Widget, _super);
         function Widget(args) {
-            var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-kauflandworkflow" }, args)) || this;
-            _this.baseClass = "jimu-widget-kauflandworkflow";
+            var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-Workflow" }, args)) || this;
+            _this.baseClass = "jimu-widget-Workflow";
             if (_this.config.generateBuffers !== true) {
                 domStyle.set(_this.generateBuffersContainer, "display", "none");
             }
             _this.firstEditorInit = true;
-            _this.initGeoprocessor();
+            _this.initGeometryService();
             return _this;
         }
         Widget.prototype.activateButtons = function (name) {
@@ -95,19 +95,15 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
                 selectedFeatures.push(data.selectedFeature.graphic);
                 var selectedFeatureSet = new FeatureSet();
                 selectedFeatureSet.features = selectedFeatures;
-                this.performAggregation(selectedFeatureSet);
+                this.geometryAnalysis(selectedFeatureSet);
                 data.valid = false;
             }
         };
-        Widget.prototype.initGeoprocessor = function () {
-            this.geoprocessor = new Geoprocessor(this.config.geoprocessorUrl);
-            this.geoprocessor.setOutSpatialReference({
-                wkid: 102100
-            });
-            this.geoprocessor.on("execute-complete", lang.hitch(this, this.geoprocessorCallback));
+        Widget.prototype.initGeometryService = function () {
+            this.geometryService = new GeometryService("https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
+            this.geometryService.on("areas-and-lengths-complete", lang.hitch(this, this.geometryCallback));
         };
-        Widget.prototype.geoprocessorCallback = function (evt) {
-            var _this = this;
+        Widget.prototype.geometryCallback = function (evt) {
             // hide loader
             if (dom.byId("loadingIndicatorContainer" + this.label.replace(/ /g, ''))) {
                 domStyle.set(dom.byId("loadingIndicatorContainer" + this.label.replace(/ /g, '')), "display", "none");
@@ -119,11 +115,9 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
                 domStyle.set(dom.byId("loadingIndicatorImage" + this.label.replace(/ /g, '')), "display", "none");
             }
             var updateAttributes = {};
-            if (evt && evt.results) {
-                evt.results.forEach(function (result) {
-                    updateAttributes[result.paramName] = result.value;
-                    _this.selectedFeature.graphic.attributes[result.paramName] = result.value;
-                });
+            if (evt && evt.result) {
+                updateAttributes["area"] = evt.result.areas[0];
+                updateAttributes["length"] = evt.result.lengths[0];
                 updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
                 var updates = [{ "attributes": updateAttributes }];
                 this.publishData({
@@ -134,12 +128,16 @@ define(["require", "exports", "jimu/BaseWidget", "jimu/WidgetManager", "dojo/_ba
                 });
             }
         };
-        Widget.prototype.performAggregation = function (pFeatureSet) {
+        Widget.prototype.geometryAnalysis = function (pFeatureSet) {
             if (pFeatureSet.features.length > 0) {
-                var params = {
-                    "Feature_Class": pFeatureSet
-                };
-                this.geoprocessor.execute(params);
+                var areasAndLengthParams = new AreasAndLengthsParameters();
+                areasAndLengthParams.areaUnit = GeometryService.UNIT_SQUARE_METERS;
+                areasAndLengthParams.calculationType = "geodesic";
+                areasAndLengthParams.lengthUnit = GeometryService.UNIT_METER;
+                var poly = new Polygon(pFeatureSet.features[0].geometry.spatialReference);
+                poly.addRing(pFeatureSet.features[0].geometry.rings[0]);
+                areasAndLengthParams.polygons = [poly];
+                this.geometryService.areasAndLengths(areasAndLengthParams);
             }
             // show loader
             if (dom.byId("loadingIndicatorContainer" + this.label.replace(/ /g, ''))) {
