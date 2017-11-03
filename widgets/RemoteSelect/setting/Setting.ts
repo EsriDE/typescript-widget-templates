@@ -1,5 +1,4 @@
 import lang = require("dojo/_base/lang");
-import esriRequest = require("esri/request");
 import SelectSetting = require("./SelectSetting");
 
 class Setting extends SelectSetting {
@@ -7,10 +6,6 @@ class Setting extends SelectSetting {
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-select-setting"}, args));
     console.log("Setting Page for " + this.manifest.name + ' constructor.', this.config);
-
-    esriRequest.setRequestPreCallback(function(evt) {
-      console.log("esriRequest", evt);
-    });
   }
 
   startup() {
@@ -54,24 +49,18 @@ class Setting extends SelectSetting {
     super.onSignOut();
   }
 
-  resize() {
-    console.log("Setting Page for " + this.manifest.name + ' resize');
-    super.resize();
-  }
-
-  _onWindowResize() {
-    console.log("Setting Page for " + this.manifest.name + ' _onWindowResize');
-    super._onWindowResize();
-  }
-
-  setConfig() {
-    console.log("Setting Page for " + this.manifest.name + ' setConfig');
-    super.setConfig();
-  }
-
   getConfig() {
     console.log("Setting Page for " + this.manifest.name + ' getConfig.', this.config);
-    super.getConfig();
+    let newConfig = super.getConfig();
+    newConfig.remoteControlledBy = this.remoteControlledBy.textbox.value;
+    return newConfig;
+  }
+
+  _init() {
+    console.log("Setting Page for " + this.manifest.name + ' _init.');
+    super._init();
+
+    this.remoteControlledBy.textbox.value = this.config.remoteControlledBy;
   }
 
 }

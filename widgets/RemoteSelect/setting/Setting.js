@@ -8,16 +8,13 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "dojo/_base/lang", "esri/request", "./SelectSetting"], function (require, exports, lang, esriRequest, SelectSetting) {
+define(["require", "exports", "dojo/_base/lang", "./SelectSetting"], function (require, exports, lang, SelectSetting) {
     "use strict";
     var Setting = (function (_super) {
         __extends(Setting, _super);
         function Setting(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-select-setting" }, args)) || this;
             console.log("Setting Page for " + _this.manifest.name + ' constructor.', _this.config);
-            esriRequest.setRequestPreCallback(function (evt) {
-                console.log("esriRequest", evt);
-            });
             return _this;
         }
         Setting.prototype.startup = function () {
@@ -53,21 +50,16 @@ define(["require", "exports", "dojo/_base/lang", "esri/request", "./SelectSettin
             console.log("Setting Page for " + this.manifest.name + ' onSignOut');
             _super.prototype.onSignOut.call(this);
         };
-        Setting.prototype.resize = function () {
-            console.log("Setting Page for " + this.manifest.name + ' resize');
-            _super.prototype.resize.call(this);
-        };
-        Setting.prototype._onWindowResize = function () {
-            console.log("Setting Page for " + this.manifest.name + ' _onWindowResize');
-            _super.prototype._onWindowResize.call(this);
-        };
-        Setting.prototype.setConfig = function () {
-            console.log("Setting Page for " + this.manifest.name + ' setConfig');
-            _super.prototype.setConfig.call(this);
-        };
         Setting.prototype.getConfig = function () {
             console.log("Setting Page for " + this.manifest.name + ' getConfig.', this.config);
-            _super.prototype.getConfig.call(this);
+            var newConfig = _super.prototype.getConfig.call(this);
+            newConfig.remoteControlledBy = this.remoteControlledBy.textbox.value;
+            return newConfig;
+        };
+        Setting.prototype._init = function () {
+            console.log("Setting Page for " + this.manifest.name + ' _init.');
+            _super.prototype._init.call(this);
+            this.remoteControlledBy.textbox.value = this.config.remoteControlledBy;
         };
         return Setting;
     }(SelectSetting));
