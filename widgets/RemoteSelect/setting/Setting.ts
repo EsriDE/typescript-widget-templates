@@ -1,53 +1,77 @@
 import lang = require("dojo/_base/lang");
+import esriRequest = require("esri/request");
 import SelectSetting = require("./SelectSetting");
 
 class Setting extends SelectSetting {
 
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-select-setting"}, args));
-    console.log(this.config);
-    console.log("Setting Page for " + this.manifest.name + ' constructor');
+    console.log("Setting Page for " + this.manifest.name + ' constructor.', this.config);
+
+    esriRequest.setRequestPreCallback(function(evt) {
+      console.log("esriRequest", evt);
+    });
   }
 
   startup() {
-    super.startup();
     console.log("Setting Page for " + this.manifest.name + ' startup', this.config, this.map);
+    super.startup();
   }
 
   postCreate() {
-    super.postCreate();
     console.log("Setting Page for " + this.manifest.name + ' postCreate', this.config);
+    super.postCreate();
   }
 
   onOpen() {
-    super.onOpen();
     console.log("Setting Page for " + this.manifest.name + ' onOpen');
+    super.onOpen();
   }
 
   onClose() {
-    super.onClose();
     console.log("Setting Page for " + this.manifest.name + ' onClose');
+    super.onClose();
   }
 
   onMinimize() {
-    super.onMinimize();
     console.log("Setting Page for " + this.manifest.name + ' onMinimize');
+    super.onMinimize();
   }
 
   onMaximize() {
-    super.onMaximize();
     console.log("Setting Page for " + this.manifest.name + ' onMaximize');
+    super.onMaximize();
   }
 
   onSignIn(credential){
-    super.onSignIn();
     /* jshint unused:false*/
     console.log("Setting Page for " + this.manifest.name + ' onSignIn');
+    super.onSignIn();
   }
 
   onSignOut() {
-    super.onSignOut();
     console.log("Setting Page for " + this.manifest.name + ' onSignOut');
+    super.onSignOut();
+  }
+
+  resize() {
+    console.log("Setting Page for " + this.manifest.name + ' resize');
+    super.resize();
+  }
+
+  _onWindowResize() {
+    console.log("Setting Page for " + this.manifest.name + ' _onWindowResize');
+    super._onWindowResize();
+  }
+
+  setConfig() {
+    console.log("Setting Page for " + this.manifest.name + ' setConfig');
+    super.setConfig();
+  }
+
+  getConfig() {
+    console.log("Setting Page for " + this.manifest.name + ' getConfig.', this.config);
+    super.getConfig();
   }
 
 }

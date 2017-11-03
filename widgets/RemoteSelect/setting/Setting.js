@@ -8,48 +8,66 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "dojo/_base/lang", "./SelectSetting"], function (require, exports, lang, SelectSetting) {
+define(["require", "exports", "dojo/_base/lang", "esri/request", "./SelectSetting"], function (require, exports, lang, esriRequest, SelectSetting) {
     "use strict";
     var Setting = (function (_super) {
         __extends(Setting, _super);
         function Setting(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-select-setting" }, args)) || this;
-            console.log(_this.config);
-            console.log("Setting Page for " + _this.manifest.name + ' constructor');
+            console.log("Setting Page for " + _this.manifest.name + ' constructor.', _this.config);
+            esriRequest.setRequestPreCallback(function (evt) {
+                console.log("esriRequest", evt);
+            });
             return _this;
         }
         Setting.prototype.startup = function () {
-            _super.prototype.startup.call(this);
             console.log("Setting Page for " + this.manifest.name + ' startup', this.config, this.map);
+            _super.prototype.startup.call(this);
         };
         Setting.prototype.postCreate = function () {
-            _super.prototype.postCreate.call(this);
             console.log("Setting Page for " + this.manifest.name + ' postCreate', this.config);
+            _super.prototype.postCreate.call(this);
         };
         Setting.prototype.onOpen = function () {
-            _super.prototype.onOpen.call(this);
             console.log("Setting Page for " + this.manifest.name + ' onOpen');
+            _super.prototype.onOpen.call(this);
         };
         Setting.prototype.onClose = function () {
-            _super.prototype.onClose.call(this);
             console.log("Setting Page for " + this.manifest.name + ' onClose');
+            _super.prototype.onClose.call(this);
         };
         Setting.prototype.onMinimize = function () {
-            _super.prototype.onMinimize.call(this);
             console.log("Setting Page for " + this.manifest.name + ' onMinimize');
+            _super.prototype.onMinimize.call(this);
         };
         Setting.prototype.onMaximize = function () {
-            _super.prototype.onMaximize.call(this);
             console.log("Setting Page for " + this.manifest.name + ' onMaximize');
+            _super.prototype.onMaximize.call(this);
         };
         Setting.prototype.onSignIn = function (credential) {
-            _super.prototype.onSignIn.call(this);
             /* jshint unused:false*/
             console.log("Setting Page for " + this.manifest.name + ' onSignIn');
+            _super.prototype.onSignIn.call(this);
         };
         Setting.prototype.onSignOut = function () {
-            _super.prototype.onSignOut.call(this);
             console.log("Setting Page for " + this.manifest.name + ' onSignOut');
+            _super.prototype.onSignOut.call(this);
+        };
+        Setting.prototype.resize = function () {
+            console.log("Setting Page for " + this.manifest.name + ' resize');
+            _super.prototype.resize.call(this);
+        };
+        Setting.prototype._onWindowResize = function () {
+            console.log("Setting Page for " + this.manifest.name + ' _onWindowResize');
+            _super.prototype._onWindowResize.call(this);
+        };
+        Setting.prototype.setConfig = function () {
+            console.log("Setting Page for " + this.manifest.name + ' setConfig');
+            _super.prototype.setConfig.call(this);
+        };
+        Setting.prototype.getConfig = function () {
+            console.log("Setting Page for " + this.manifest.name + ' getConfig.', this.config);
+            _super.prototype.getConfig.call(this);
         };
         return Setting;
     }(SelectSetting));
