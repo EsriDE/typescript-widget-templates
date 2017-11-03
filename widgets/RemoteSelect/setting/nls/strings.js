@@ -4,7 +4,8 @@ define({
     selectionMode: "Interactive selection mode",
     partiallyWithin: "Partially within",
     whollyWithin: "Wholly within",
-    allowExport: "Allow to export selected features"
+    allowExport: "Allow to export selected features",
+    remoteControlledBy: "Remotely controlled by"
   }),
   "ar": 1,
   "bs": 1,
