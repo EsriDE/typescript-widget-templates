@@ -1,0 +1,85 @@
+.templatePicker {
+    height:120px !important;
+    overflow:hidden !important;
+}
+.attributeInspectorSaveButton {
+    float:right;
+}
+.attributeInspectorEditButton {
+    float:right;
+}
+.jimu-widget-Workflow {
+    width:100%;
+    height:100%;
+}
+
+.workflowContainer {
+    background: #efefef;
+    padding: 5px;
+    margin: 2px 0px 10px 0px;
+}
+.atiButtons {
+    padding-bottom: 30px;
+}
+.loadingIndicatorContainer {
+    position:absolute;
+    width:100%;
+    height:100%;
+    z-index: 100;
+    background: rgba(100,100,100,0.8);
+    top:0px;
+}
+.loadingIndicatorText {
+    color:#fff;
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    width: 200px;
+    margin-left: -100px;
+    text-align: center;
+}
+.loadingIndicator {
+    position: absolute;
+    width: 78px;
+    height: 78px;
+    left: 50%;
+    margin-left: -39px;
+    margin-top: -85px;
+    background-color: #f4f4f4;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+#messageContainer {
+    color: #f00;
+}
+
+.clarofake {
+    font-family: "Avenir Light", Verdana, Geneva, sans-serif;
+    font-size: 12px;
+    padding: 0 0.3em;
+    border: 1px solid #759dc0;
+    padding: 2px 4px 4px 4px;
+    margin: 5px 5px 5px 0px;
+    color: #000000;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+    background-color: #bcd8f4;
+    background-repeat: repeat-x;
+    background-image: linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+}
+.clarofakeinput {
+    font-family: "Avenir Light", Verdana, Geneva, sans-serif;
+    font-size: 12px;
+    padding: 0 0.3em;
+    border: 1px solid #759dc0;
+    padding: 2px 4px 4px 4px;
+    margin: 5px 5px 5px 0px;
+    color: #000000;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+input:disabled {
+    background-color: rgb(235, 235, 228);
+}
