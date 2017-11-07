@@ -10,7 +10,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define(["require", "exports", "dojo/_base/lang", "./SelectSetting"], function (require, exports, lang, SelectSetting) {
     "use strict";
-    var Setting = (function (_super) {
+    var Setting = /** @class */ (function (_super) {
         __extends(Setting, _super);
         function Setting(args) {
             var _this = _super.call(this, lang.mixin({ baseClass: "jimu-widget-select-setting" }, args)) || this;

@@ -2,7 +2,6 @@ import WidgetManager = require("jimu/WidgetManager");
 import PanelManager = require("jimu/PanelManager");
 import lang = require("dojo/_base/lang");
 import html = require("dojo/_base/html");
-import array = require("dojo/_base/array");
 import dom = require("dojo/dom");
 import domConstruct = require("dojo/dom-construct");
 import domStyle = require("dojo/dom-style");
@@ -23,6 +22,7 @@ class Widget extends EditWidget {
   private nls: any;
   private map: Map;
   private id: string;
+  private _filterEditor: any;
   private warningMessageNode: HTMLElement;
 
   constructor(args?) {
@@ -115,16 +115,17 @@ class Widget extends EditWidget {
     
     if (this.editLayerId !== undefined) {
       // Find optionID of transmitted layerID
-      array.forEach(super._filterEditor.selectDropDown.options, (option, i) => {
+      let optionsArray = Array.from(this._filterEditor.selectDropDown.options);
+      optionsArray.forEach((option, i) => {
         if (option.attributes[0].nodeValue===this.editLayerId) {
           this.editLayerOptionIndex = i;
         }
-      }); 
+      });
 
       //this._filterEditor.selectDropDown.options.map();
 
-      super._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
-      super._filterEditor._onLayerFilterChanged();
+      this._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
+      this._filterEditor._onLayerFilterChanged();
     }
   }
 
