@@ -8,6 +8,8 @@ import domConstruct = require("dojo/dom-construct");
 import domStyle = require("dojo/dom-style");
 import esriRequest = require("esri/request");
 import FeatureLayer = require("esri/layers/FeatureLayer");
+import Graphic = require("esri/graphic");
+import Map = require("esri/map");
 import EditWidget = require("./EditWidget");
 
 class Widget extends EditWidget {
@@ -15,10 +17,17 @@ class Widget extends EditWidget {
   private callingWidgetId: String;
   private editLayerId: String;
   private editLayerOptionIndex: Number;
+  private editor: any;
+  private manifest: any;
+  private config: any;
+  private nls: any;
+  private map: Map;
+  private id: string;
+  private warningMessageNode: HTMLElement;
 
   constructor(args?) {
     super(lang.mixin({baseClass: "jimu-widget-edit"}, args));
-    this.fetchDataByName(this.config.remoteControlledBy);
+    super.fetchDataByName(this.config.remoteControlledBy);
     console.log(this.manifest.name + ' constructor');
   }
 
@@ -68,7 +77,7 @@ class Widget extends EditWidget {
     super._bindEventsAfterCreate(settings);
 
     // "deactivate" fires after switching or leaving the edit mode. Works after drawing new features, cut, generally: after editing attributes.
-    this.editor.editToolbar.on('deactivate', lang.hitch(this, this.performAggregation));
+    this.editor.editToolbar.on('deactivate', (evt: EditDeactivateEvtObject) => this.performAggregation);
 
     // warn that features need to be re-aggregated manually 
     esriRequest.setRequestPreCallback(evt => {
@@ -84,7 +93,7 @@ class Widget extends EditWidget {
             id: "warningMessage",
             innerHTML: this.nls.warnReAggregateFeatures,
             style: "background-color: #f00;padding: 3px;margin-bottom: 15px;position: absolute;top: 260px;"
-          }, templatePickerNode, "after");
+          }, templatePickerNode.id, "after");
         }
         
       }
@@ -92,8 +101,8 @@ class Widget extends EditWidget {
     });
   }
 
-  performAggregation(selectedFeature) {
-    this.publishData({
+  performAggregation(selectedFeature: EditDeactivateEvtObject) {
+    super.publishData({
       command: "performAggregation",
       selectedFeature: selectedFeature,
       valid: true
@@ -106,7 +115,7 @@ class Widget extends EditWidget {
     
     if (this.editLayerId !== undefined) {
       // Find optionID of transmitted layerID
-      array.forEach(this._filterEditor.selectDropDown.options, (option, i) => {
+      array.forEach(super._filterEditor.selectDropDown.options, (option, i) => {
         if (option.attributes[0].nodeValue===this.editLayerId) {
           this.editLayerOptionIndex = i;
         }
@@ -114,8 +123,8 @@ class Widget extends EditWidget {
 
       //this._filterEditor.selectDropDown.options.map();
 
-      this._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
-      this._filterEditor._onLayerFilterChanged();
+      super._filterEditor.selectDropDown.selectedIndex = this.editLayerOptionIndex;
+      super._filterEditor._onLayerFilterChanged();
     }
   }
 
@@ -155,6 +164,10 @@ interface SpecificWidgetConfig{
 interface Item{
   name: string;
   href: string;
+}
+
+interface EditDeactivateEvtObject {
+  graphic: Graphic;
 }
 
 export = Widget;

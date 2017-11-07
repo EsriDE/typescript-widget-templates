@@ -1,0 +1,5 @@
+# please adapt to local environment
+
+mklink /D Widget1 D:\data\<Path_to_dev_folder>\Widget1
+mklink /D Widget2 D:\data\<Path_to_dev_folder>\Widget2
+mklink /D Widget3 D:\data\<Path_to_dev_folder>\Widget3

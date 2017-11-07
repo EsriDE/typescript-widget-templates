@@ -150,7 +150,7 @@ class Widget extends BaseWidget {
 
   initGeometryService() {
     this.geometryService = new GeometryService("https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
-    this.geometryService.on("areas-and-lengths-complete", lang.hitch(this, this.geometryCallback));
+    this.geometryService.on("areas-and-lengths-complete", (evt) => this.geometryCallback);
   }
 
   geometryCallback(evt) {
