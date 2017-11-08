@@ -6,8 +6,8 @@ Standard Edit Widget enhanced with eventing functionality.
 
 ## Compatibility
 
-Tested on Web AppBuilder versions 2.4 and 2.5.
-Based on Edit Widget sources from WAB version 2.4.
+Tested on Web AppBuilder versions 2.4, 2.5 and 2.6.
+Based on Edit Widget sources from WAB version 2.6.
 
 ## Dependencies
 
