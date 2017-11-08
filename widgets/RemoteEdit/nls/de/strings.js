@@ -1,5 +1,5 @@
 define({
-  "_widgetLabel": "Remote-Bearbeiten",
+  "_widgetLabel": "Bearbeiten",
   "_featureAction_Edit": "Bearbeiten",
   "title": "Vorlage zur Feature-Erstellung auswählen",
   "pressStr": "Drücken Sie ",
@@ -13,5 +13,6 @@ define({
   "relatedTables": "Zugehörige Tabellen:",
   "relatedRecords": "Zugehörige Datensätze:",
   "noRelatedRecotds": "Es wurden keine zugehörigen Datensätze gefunden.",
-  warnReAggregateFeatures: "Bitte Feldwerte re-aggregieren durch Selektion und Deselektion des editierten Features."
+  "startToDraw": "Klicken, um mit dem Zeichnen zu beginnen",
+  "startToAddPoint": "Klicken, um einen Punkt hinzuzufügen"
 });

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// Copyright © 2014 - 2016 Esri. All Rights Reserved.
+// Copyright © 2014 - 2017 Esri. All Rights Reserved.
 //
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -973,34 +973,34 @@ define([
         // according to move track to revert .
         if(moveTrack) {
           switch (selectedFeature.geometry.type) {
-          case 'point':
-            selectedFeature.geometry.x -= moveTrack.x;
-            selectedFeature.geometry.y += moveTrack.y;
-            break;
-          case 'polygon':
-            array.forEach(selectedFeature.geometry.rings, function(ring) {
-              array.forEach(ring, function(point) {
+            case 'point':
+              selectedFeature.geometry.x -= moveTrack.x;
+              selectedFeature.geometry.y += moveTrack.y;
+              break;
+            case 'polygon':
+              array.forEach(selectedFeature.geometry.rings, function(ring) {
+                array.forEach(ring, function(point) {
+                  point[0] -= moveTrack.x;
+                  point[1] += moveTrack.y;
+                });
+              });
+              break;
+            case 'polyline':
+              array.forEach(selectedFeature.geometry.paths, function(path) {
+                array.forEach(path, function(point) {
+                  point[0] -= moveTrack.x;
+                  point[1] += moveTrack.y;
+                });
+              });
+              break;
+            case 'multiPoint':
+              array.forEach(selectedFeature.geometry.points, function(point) {
                 point[0] -= moveTrack.x;
                 point[1] += moveTrack.y;
               });
-            });
-            break;
-          case 'polyline':
-            array.forEach(selectedFeature.geometry.paths, function(path) {
-              array.forEach(path, function(point) {
-                point[0] -= moveTrack.x;
-                point[1] += moveTrack.y;
-              });
-            });
-            break;
-          case 'multiPoint':
-            array.forEach(selectedFeature.geometry.points, function(point) {
-              point[0] -= moveTrack.x;
-              point[1] += moveTrack.y;
-            });
-            break;
-          default:
-            return;
+              break;
+            default:
+              return;
           }
 
           //hide editing assistance geometry when !autoApplyEditWhenGeometryIsMoved.

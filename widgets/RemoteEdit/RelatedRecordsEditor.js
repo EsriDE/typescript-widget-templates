@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// Copyright © 2014 - 2016 Esri. All Rights Reserved.
+// Copyright © 2014 - 2017 Esri. All Rights Reserved.
 //
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -330,10 +330,25 @@ function (declare, lang, array, html, on, Deferred, domQuery, editUtils,
                                     [relatedFeature],
                                     null,
                                     lang.hitch(this, function() {
+
+        // update current selectedFeature of ATI.
+        if(attributeChangeEvt.target &&
+           attributeChangeEvt.target._selection &&
+           attributeChangeEvt.target._selection[0]) {
+          var selectedFeature = attributeChangeEvt.target._selection[0];
+          selectedFeature.attributes[attributeChangeEvt.fieldName] = attributeChangeEvt.fieldValue;
+
+          if(attributeChangeEvt.fieldName === relatedLayerObject.typeIdField) {
+            relatedLayerObject.ownershipBasedAccessControlForFeatures = true;
+            attributeChangeEvt.target.refresh();
+            relatedLayerObject.ownershipBasedAccessControlForFeatures = false;
+          }
+        }
         retDef.resolve();
       }), lang.hitch(this, function() {
         retDef.reject();
       }));
+
       return retDef;
     },
 
@@ -841,14 +856,14 @@ function (declare, lang, array, html, on, Deferred, domQuery, editUtils,
 
     performUndo: function() {
       switch (this.operationName) {
-      case Clazz.OPERATION_SHOW_RELATED_TABLES:
-        return this.relatedRecordsEditor.showRelatedTables(this.operationData);
-      case Clazz.OPERATION_SHOW_RELATED_RECORDS:
-        return this.relatedRecordsEditor.showRelatedRecords(this.operationData);
-      case Clazz.OPERATION_SHOW_INSPECTOR:
-        return this.relatedRecordsEditor.showInspector(this.operationData);
-      default:
-        return this.relatedRecordsEditor.showFirstPage(this.operationData, true);
+        case Clazz.OPERATION_SHOW_RELATED_TABLES:
+          return this.relatedRecordsEditor.showRelatedTables(this.operationData);
+        case Clazz.OPERATION_SHOW_RELATED_RECORDS:
+          return this.relatedRecordsEditor.showRelatedRecords(this.operationData);
+        case Clazz.OPERATION_SHOW_INSPECTOR:
+          return this.relatedRecordsEditor.showInspector(this.operationData);
+        default:
+          return this.relatedRecordsEditor.showFirstPage(this.operationData, true);
       }
     }
   });
