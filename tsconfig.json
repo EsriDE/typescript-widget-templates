@@ -6,7 +6,9 @@
     "sourceMap": true,
     "watch": true,
     "rootDir": "",
-    "outDir": ""
+    "outDir": "",
+    "noImplicitAny": true,
+    "strictNullChecks": true
   },
   "exclude" : ["node_modules"]
 }

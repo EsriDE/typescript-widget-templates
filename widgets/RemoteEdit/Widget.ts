@@ -14,7 +14,7 @@ import EditWidget = require("./EditWidget");
 class Widget extends EditWidget {
 
   private callingWidgetId: String;
-  private editLayerId: String;
+  private editLayerId: String | undefined;
   private editLayerOptionIndex: Number;
   private editor: any;
   private manifest: any;
@@ -25,7 +25,7 @@ class Widget extends EditWidget {
   private _filterEditor: any;
   private warningMessageNode: HTMLElement;
 
-  constructor(args?) {
+  constructor(args?: Array<any>) {
     super(lang.mixin({baseClass: "jimu-widget-edit"}, args));
     super.fetchDataByName(this.config.remoteControlledBy);
     console.log(this.manifest.name + ' constructor');
@@ -62,7 +62,7 @@ class Widget extends EditWidget {
     console.log(this.manifest.name + ' onMaximize');
   }
 
-  onSignIn(credential){
+  onSignIn(credential: any){
     super.onSignIn();
     /* jshint unused:false*/
     console.log(this.manifest.name + ' onSignIn');
@@ -73,14 +73,14 @@ class Widget extends EditWidget {
     console.log(this.manifest.name + ' onSignOut');
   }
 
-  _bindEventsAfterCreate(settings) {
+  _bindEventsAfterCreate(settings: any) {
     super._bindEventsAfterCreate(settings);
 
     // "deactivate" fires after switching or leaving the edit mode. Works after drawing new features, cut, generally: after editing attributes.
     this.editor.editToolbar.on('deactivate', (evt: EditDeactivateEvtObject) => this.performAggregation);
 
     // warn that features need to be re-aggregated manually 
-    esriRequest.setRequestPreCallback(evt => {
+    esriRequest.setRequestPreCallback( (evt: any ) => {
       if (evt.url.endsWith("/reshape") || evt.url.endsWith("/cut")) {
 
         let templatePickerNode = document.getElementsByClassName("templatePicker")[0];
@@ -109,14 +109,14 @@ class Widget extends EditWidget {
     });
   }
 
-  _addFilterEditor(settings) {
+  _addFilterEditor(settings: any) {
     super._addFilterEditor(settings);
     console.log(this.manifest.name + ' _addFilterEditor');
     
     if (this.editLayerId !== undefined) {
       // Find optionID of transmitted layerID
       let optionsArray = Array.from(this._filterEditor.selectDropDown.options);
-      optionsArray.forEach((option, i) => {
+      optionsArray.forEach((option: HTMLOptionElement, i: number) => {
         if (option.attributes[0].nodeValue===this.editLayerId) {
           this.editLayerOptionIndex = i;
         }
@@ -129,7 +129,7 @@ class Widget extends EditWidget {
     }
   }
 
-  onReceiveData(name, widgetId, data, historyData) {
+  onReceiveData(name: String, widgetId: String, data: any, historyData: any) {
     console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
     this.callingWidgetId = widgetId;
     if (name===this.config.remoteControlledBy && data.command=="editPolygons" && data.layer) {
@@ -147,7 +147,7 @@ class Widget extends EditWidget {
         domStyle.set(dom.byId("warningMessage"), "visibility", "hidden");
       }
       let selectedFeatureLayer = this.map.getLayer(data.selectedFeatureLayerId) as FeatureLayer;
-      selectedFeatureLayer.applyEdits(null, data.updates).then(value => {
+      selectedFeatureLayer.applyEdits(undefined, data.updates).then( (value: any) => {
         this.editor.attributeInspector.refresh();
       }); 
     }
@@ -155,16 +155,6 @@ class Widget extends EditWidget {
       console.log(this.manifest.name + " ignoring command.");
     }
   }
-}
-
-interface SpecificWidgetConfig{
-  value: string;
-  elements: Item[];
-}
-
-interface Item{
-  name: string;
-  href: string;
 }
 
 interface EditDeactivateEvtObject {
