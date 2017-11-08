@@ -10,6 +10,7 @@
   "copyright": "Esri Deutschland GmbH 2017",
   "license": "",
   "properties": {
+    "supportMultipleInstances": true,
 		"inPanel":true,
 		"hasLocale": true,
 		"hasStyle":true,
@@ -19,6 +20,6 @@
 		"hasSettingUIFile":false,
 		"hasSettingLocale":false,
 		"hasSettingStyle":false,
-		"IsController":false
+		"isController":false
   }
 }
