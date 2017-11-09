@@ -37,10 +37,10 @@ https://github.com/Esri/jsapi-resources/tree/master/3.x/typescript
 **npm install --save @types/arcgis-js-api@3**
 **npm install --save @types/arcgis-js-api@4**
 
-// Type definitions for Dojo v1.9
-// Project: http://dojotoolkit.org
-// Definitions by: Michael Van Sickle <https://github.com/vansimke>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+Type definitions for Dojo v1.9
+Project: http://dojotoolkit.org
+Definitions by: Michael Van Sickle <https://github.com/vansimke>
+Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 **npm install --save @types/dojo**
 
 ### Sample Coding:
