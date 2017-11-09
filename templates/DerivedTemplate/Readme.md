@@ -1,4 +1,4 @@
-# DerivedTemplate Widget
+# Derived Widget Template 
 
 ## Description
 The template widget shows how to derive from a ESRI widget. 
