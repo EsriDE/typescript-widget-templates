@@ -35,6 +35,7 @@ Ctrl-Shift B
 ### Load typescript definitions
 https://github.com/Esri/jsapi-resources/tree/master/3.x/typescript  
 **npm install --save @types/arcgis-js-api@3**  
+https://github.com/Esri/jsapi-resources/tree/master/4.x/typescript  
 **npm install --save @types/arcgis-js-api@4**  
 
 Type definitions for Dojo v1.9  
