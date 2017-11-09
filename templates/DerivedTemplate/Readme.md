@@ -21,7 +21,7 @@ mklink /d <WAB Path>\server\apps\3\widgets\DerivedTemplate <Dev Path>\Widgets\De
 
 
 ## Compatibility
-Created and tested for Web AppBuilder 2.4
+Created and tested for Web AppBuilder 2.4, 2.5 and 2.6
 
 ## Dependencies
 
