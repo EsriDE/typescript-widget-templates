@@ -1,7 +1,7 @@
 # Derived Widget Template 
 
 ## Description
-The template widget shows how to derive from a ESRI widget. 
+The widget template shows how to derive from a ESRI widget. 
 
 ## HowTo:
 1. Copy original "widget.js" to "<AnyName>Widget.js"
