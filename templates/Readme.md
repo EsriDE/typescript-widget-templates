@@ -30,7 +30,9 @@ Please modify your **tsconfig.json** like this:
 git init
 ```
 ### First Build
-**Ctrl-Shift B**
+```
+Ctrl-Shift B
+```
 
 ### Load typescript definitions
 https://github.com/Esri/jsapi-resources/tree/master/3.x/typescript  
