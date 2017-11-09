@@ -6,7 +6,8 @@ The template widget shows how to derive from a ESRI widget.
 ## HowTo:
 1. Copy original "widget.js" to "<AnyName>Widget.js"
 2. Start coding in your "Widget.ts" file
-3. Create links to the Web AppBuilder stemapp (and to you app path):
+3. Create links to the Web AppBuilder stemapp (and to you app path):  
+
 ´´´
 // You need to be admin to execute the following lines:
 mklink /d <WAB Path>\client\stemapp\widgets\DerivedTemplate <Dev Path>\Widgets\DerivedTemplate 
