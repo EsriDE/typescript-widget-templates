@@ -1,6 +1,6 @@
 # Set up Visual Studio Code:
 
-### TypescriptCompiler
+### Install latest Typescript Compiler
 ```
 npm install -g typescript
 ```
@@ -9,7 +9,7 @@ npm install -g typescript
 ```
 tsc -init
 ```
-Please modify your tsconfig.json like this:
+Please modify your **tsconfig.json** like this:
 ```
 {
   "compileOnSave": true,
@@ -30,7 +30,7 @@ Please modify your tsconfig.json like this:
 git init
 ```
 ### First Build
-Ctrl-Shift B
+**Ctrl-Shift B**
 
 ### Load typescript definitions
 https://github.com/Esri/jsapi-resources/tree/master/3.x/typescript  
