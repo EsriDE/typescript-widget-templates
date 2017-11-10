@@ -24,30 +24,6 @@ define(["require", "exports", "dojo/_base/lang", "dojo/dom-construct", "./Select
         Setting.prototype.postCreate = function () {
             console.log("Setting Page for " + this.manifest.name + ' postCreate', this.config);
             _super.prototype.postCreate.call(this);
-            var domConfigSectionInline = domConstruct.create("div", {
-                class: "config-section inline"
-            }, document.documentElement, "last");
-            var domLabel = domConstruct.create("div", {
-                class: "label"
-            }, domConfigSectionInline, "last");
-            domLabel.innerHTML = "${nls.remoteControlledBy}";
-            var domInputRemoteControlledBy = domConstruct.create("input", {
-                "data-dojo-attach-point": "remoteControlledBy",
-                "data-dojo-type": "dijit/form/TextBox",
-                "name": "remoteControlledBy"
-            }, domConfigSectionInline, "last");
-            /*
-        
-              <div class="config-section inline">
-            <div class="label">${nls.remoteControlledBy}</div>
-            <input data-dojo-attach-point="remoteControlledBy"
-            data-dojo-type="dijit/form/TextBox"
-            name="remoteControlledBy"
-            />
-          </div>
-        
-        
-            */
         };
         Setting.prototype.onOpen = function () {
             console.log("Setting Page for " + this.manifest.name + ' onOpen');
@@ -77,13 +53,27 @@ define(["require", "exports", "dojo/_base/lang", "dojo/dom-construct", "./Select
         Setting.prototype.getConfig = function () {
             console.log("Setting Page for " + this.manifest.name + ' getConfig.', this.config);
             var newConfig = _super.prototype.getConfig.call(this);
-            newConfig.remoteControlledBy = this.remoteControlledBy.textbox.value;
+            newConfig.remoteControlledBy = this.remoteControlledBy.value;
             return newConfig;
         };
         Setting.prototype._init = function () {
             console.log("Setting Page for " + this.manifest.name + ' _init.');
             _super.prototype._init.call(this);
-            this.remoteControlledBy.textbox.value = this.config.remoteControlledBy;
+            var parentElement = this.exportCheckBoxDiv.parentElement;
+            var domConfigSectionInline = domConstruct.create("div", {
+                class: "config-section inline"
+            }, parentElement, "after");
+            var domLabel = domConstruct.create("div", {
+                class: "label",
+                style: "margin-right: 3px;"
+            }, domConfigSectionInline, "last");
+            domLabel.innerHTML = this.nls.remoteControlledBy;
+            this.remoteControlledBy = domConstruct.create("input", {
+                "data-dojo-attach-point": "remoteControlledBy",
+                "data-dojo-type": "dijit/form/TextBox",
+                "name": "remoteControlledBy"
+            }, domConfigSectionInline, "last");
+            this.remoteControlledBy.value = this.config.remoteControlledBy;
         };
         return Setting;
     }(SelectSetting));
