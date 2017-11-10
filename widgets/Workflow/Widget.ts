@@ -35,25 +35,27 @@ import AreasAndLengthsParameters = require("esri/tasks/AreasAndLengthsParameters
 
 class Widget extends BaseWidget {
 
-  public baseClass: string = "jimu-widget-Workflow";
-  public config: SpecificWidgetConfig;
+  public config: any;
+  private manifest: any;
   private editLayer: FeatureLayer;
   private selectedFeatureSet: FeatureSet;
   private updateFeature: Graphic;
   private attributeInspector: AttributeInspector;
-  private editToolbar: Edit;
+  private editToolbar: Edit | undefined;
   private drawToolbar: Draw;
   private templatePicker: TemplatePicker;
   private geometryService: GeometryService;
   private subnode: HTMLElement;
   private firstEditorInit: Boolean;
-  private loadingIndicatorContainer;
-  private loadingIndicatorText;
-  private loadingIndicatorImage;
+  private loadingIndicatorContainer: HTMLDivElement;
+  private loadingIndicatorText: HTMLDivElement;
+  private loadingIndicatorImage: HTMLImageElement;
+  private generateBuffersContainer: HTMLDivElement;
   private selectedFeature: Graphic;
   private polygonLayer: FeatureLayer;
+  private bufferRadiusMeters: HTMLInputElement;
 
-  constructor(args?) {
+  constructor(args?: Array<any>) {
     super(lang.mixin({baseClass: "jimu-widget-Workflow"}, args));
     if (this.config.generateBuffers!==true) {
       domStyle.set(this.generateBuffersContainer, "display", "none");
@@ -64,10 +66,10 @@ class Widget extends BaseWidget {
 
   activateButtons(name: string) {
     // Activate buttons that contain the WidgetName as CSS class when widgets are loaded
-    let buttonNodes = domQuery("input[type='button']." + name)
-    array.forEach(buttonNodes, function(buttonNode) {
+    let buttonNodes: dojo.NodeList = domQuery("input[type='button']." + name)
+    buttonNodes.forEach(function(buttonNode: any) {
       buttonNode.disabled = false;
-    })
+    }, undefined);
   }
 
   startup() {
@@ -83,12 +85,12 @@ class Widget extends BaseWidget {
     
     // Initialize all widgets that are remote controlled by this one to be able to open them via the WidgetManager.
     let ws = WidgetManager.getInstance();
-    this.config.remotelyControlling.map(remotelyControlledWidgetName => {
-      this.fetchDataByName(remotelyControlledWidgetName);
+    this.config.remotelyControlling.map((remotelyControlledWidgetName: string) => {
+      super.fetchDataByName(remotelyControlledWidgetName);
       if (ws.getWidgetsByName(remotelyControlledWidgetName).length==0) {
         let remoteWidget = jsonQuery("$..widgets..[?name='" + remotelyControlledWidgetName + "']", this.appConfig);
         if (remoteWidget[0]) {
-          ws.loadWidget(remoteWidget[0]).then(evt => {
+          ws.loadWidget(remoteWidget[0]).then((evt: any) => {
             this.activateButtons(evt.name);
           });
         }
@@ -108,7 +110,7 @@ class Widget extends BaseWidget {
     if (this.attributeInspector) this.attributeInspector.destroy();
     if (this.editToolbar) {
       this.editToolbar.deactivate();
-      this.editToolbar = null;
+      this.editToolbar = undefined;
     }
   }
 
@@ -120,7 +122,7 @@ class Widget extends BaseWidget {
     console.log(this.manifest.name + ' onMaximize');
   }
 
-  onSignIn(credential){
+  onSignIn(credential: any){
     /* jshint unused:false*/
     console.log(this.manifest.name + ' onSignIn');
   }
@@ -129,7 +131,7 @@ class Widget extends BaseWidget {
     console.log(this.manifest.name + ' onSignOut');
   }
   
-  onReceiveData(name, widgetId, data, historyData) {
+  onReceiveData(name: String, widgetId: string, data: any, historyData: any) {
     console.log(this.manifest.name + " received a '" + data.command + "' command from " + name + ".", widgetId, historyData);
     if (data.command=="generateBuffers" && data.valid) {
       var pointLayer = this.map.getLayer(this.config.pointLayerId) as FeatureLayer;
@@ -138,9 +140,9 @@ class Widget extends BaseWidget {
       data.valid = false;
     }
     else if (data.command=="performAggregation" && data.valid && data.selectedFeature) {
-      this.selectedFeature = data.selectedFeature;     
+      this.selectedFeature = data.selectedFeature.graphic;     
       let selectedFeatures= [];
-      selectedFeatures.push(data.selectedFeature.graphic);
+      selectedFeatures.push(this.selectedFeature);
       let selectedFeatureSet = new FeatureSet();
       selectedFeatureSet.features = selectedFeatures;
       this.geometryAnalysis(selectedFeatureSet);
@@ -150,10 +152,11 @@ class Widget extends BaseWidget {
 
   initGeometryService() {
     this.geometryService = new GeometryService("https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
-    this.geometryService.on("areas-and-lengths-complete", (evt) => this.geometryCallback);
+    this.geometryService.on("areas-and-lengths-complete", (evt) => this.geometryCallback(evt));
+    this.geometryService.on("areas-and-lengths-complete", function(evt) {console.log("areas-and-lengths-complete",evt)});
   }
 
-  geometryCallback(evt) {
+  geometryCallback(evt: any) {
     // hide loader
     if (dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,''))) {
       domStyle.set(dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,'')), "display", "none");
@@ -165,30 +168,31 @@ class Widget extends BaseWidget {
       domStyle.set(dom.byId("loadingIndicatorImage"+this.label.replace(/ /g,'')), "display", "none");
     }
 
-    let updateAttributes = {};
+    let updateAttributes: any = {};
     if (evt && evt.result) {
       updateAttributes["area"] = evt.result.areas[0];
       updateAttributes["length"] = evt.result.lengths[0];
-      updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.graphic.attributes[this.config.polygonLayerFieldNames.objectId];
+      updateAttributes[this.config.polygonLayerFieldNames.objectId] = this.selectedFeature.attributes[this.config.polygonLayerFieldNames.objectId];
       let updates = [{"attributes":updateAttributes}];
       this.publishData({
         command: "returnAggregatedData",
         updates: updates,
-        selectedFeatureLayerId: this.selectedFeature.graphic._layer.id,
+        selectedFeatureLayerId: this.selectedFeature._layer.id,
         valid: true
       });
     }
   }
 
-  geometryAnalysis(pFeatureSet) {
+  geometryAnalysis(pFeatureSet: FeatureSet) {
     if (pFeatureSet.features.length>0) {
       let areasAndLengthParams = new AreasAndLengthsParameters();
       areasAndLengthParams.areaUnit = GeometryService.UNIT_SQUARE_METERS;
       areasAndLengthParams.calculationType = "geodesic";
       areasAndLengthParams.lengthUnit = GeometryService.UNIT_METER;
 
-      let poly = new Polygon(pFeatureSet.features[0].geometry.spatialReference);
-      poly.addRing(pFeatureSet.features[0].geometry.rings[0])
+      let polyData = new Polygon(pFeatureSet.features[0].geometry);
+      let poly = new Polygon(polyData.spatialReference);
+      poly.addRing(polyData.rings[0]);
       areasAndLengthParams.polygons = [poly];
 
       this.geometryService.areasAndLengths(areasAndLengthParams);
@@ -212,7 +216,7 @@ class Widget extends BaseWidget {
         id: "loadingIndicatorText"+this.label.replace(/ /g,''),
         class: "loadingIndicatorText",
         innerHTML: this.nls.performingAggregation
-      }, dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,''));
+      }, dom.byId("loadingIndicatorContainer"+this.label.replace(/ /g,'')));
     }
     if (dom.byId("loadingIndicatorImage"+this.label.replace(/ /g,''))) {
       domStyle.set(dom.byId("loadingIndicatorImage"+this.label.replace(/ /g,'')), "display", "block");
@@ -250,7 +254,7 @@ class Widget extends BaseWidget {
     var pointGeometries = pointSelection.map(
       currentValue => currentValue.geometry
     )
-    var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.value, "meters") as Polygon[];
+    var pointBuffers = geometryEngine.geodesicBuffer(pointGeometries, this.bufferRadiusMeters.valueAsNumber, "meters") as Polygon[];
 
     var symbol = new SimpleFillSymbol();
     symbol.setColor(new Color([100,100,100,0.25]));
@@ -286,16 +290,6 @@ class Widget extends BaseWidget {
       });
     }
   }
-}
-
-interface SpecificWidgetConfig{
-  value: string;
-  elements: Item[];
-}
-
-interface Item{
-  name: string;
-  href: string;
 }
 
 export = Widget;
