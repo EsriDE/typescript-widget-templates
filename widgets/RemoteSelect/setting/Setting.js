@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "dojo/_base/lang", "./SelectSetting"], function (require, exports, lang, SelectSetting) {
+define(["require", "exports", "dojo/_base/lang", "dojo/dom-construct", "./SelectSetting"], function (require, exports, lang, domConstruct, SelectSetting) {
     "use strict";
     var Setting = /** @class */ (function (_super) {
         __extends(Setting, _super);
@@ -24,6 +24,30 @@ define(["require", "exports", "dojo/_base/lang", "./SelectSetting"], function (r
         Setting.prototype.postCreate = function () {
             console.log("Setting Page for " + this.manifest.name + ' postCreate', this.config);
             _super.prototype.postCreate.call(this);
+            var domConfigSectionInline = domConstruct.create("div", {
+                class: "config-section inline"
+            }, document.documentElement, "last");
+            var domLabel = domConstruct.create("div", {
+                class: "label"
+            }, domConfigSectionInline, "last");
+            domLabel.innerHTML = "${nls.remoteControlledBy}";
+            var domInputRemoteControlledBy = domConstruct.create("input", {
+                "data-dojo-attach-point": "remoteControlledBy",
+                "data-dojo-type": "dijit/form/TextBox",
+                "name": "remoteControlledBy"
+            }, domConfigSectionInline, "last");
+            /*
+        
+              <div class="config-section inline">
+            <div class="label">${nls.remoteControlledBy}</div>
+            <input data-dojo-attach-point="remoteControlledBy"
+            data-dojo-type="dijit/form/TextBox"
+            name="remoteControlledBy"
+            />
+          </div>
+        
+        
+            */
         };
         Setting.prototype.onOpen = function () {
             console.log("Setting Page for " + this.manifest.name + ' onOpen');

@@ -1,9 +1,16 @@
+import Map = require("esri/map");
 import lang = require("dojo/_base/lang");
+import dom = require("dojo/dom");
+import domConstruct = require("dojo/dom-construct");
 import SelectSetting = require("./SelectSetting");
 
 class Setting extends SelectSetting {
 
-  constructor(args?) {
+  private manifest: any;
+  private config: any;
+  private map: Map;
+
+  constructor(args?: Array<any>) {
     super(lang.mixin({baseClass: "jimu-widget-select-setting"}, args));
     console.log("Setting Page for " + this.manifest.name + ' constructor.', this.config);
   }
@@ -16,6 +23,34 @@ class Setting extends SelectSetting {
   postCreate() {
     console.log("Setting Page for " + this.manifest.name + ' postCreate', this.config);
     super.postCreate();
+
+    let domConfigSectionInline: HTMLDivElement = domConstruct.create("div", {
+      class: "config-section inline"
+    }, document.documentElement, "last");
+
+    let domLabel: HTMLDivElement = domConstruct.create("div", {
+      class: "label"
+    }, domConfigSectionInline, "last");
+    domLabel.innerHTML = "${nls.remoteControlledBy}";
+
+    let domInputRemoteControlledBy: HTMLInputElement = domConstruct.create("input", {
+      "data-dojo-attach-point": "remoteControlledBy",
+      "data-dojo-type": "dijit/form/TextBox",
+      "name": "remoteControlledBy"
+    }, domConfigSectionInline, "last");
+
+    /*
+
+      <div class="config-section inline">
+    <div class="label">${nls.remoteControlledBy}</div>
+    <input data-dojo-attach-point="remoteControlledBy" 
+    data-dojo-type="dijit/form/TextBox"
+    name="remoteControlledBy"
+    />
+  </div>
+
+
+    */
   }
 
   onOpen() {
@@ -38,7 +73,7 @@ class Setting extends SelectSetting {
     super.onMaximize();
   }
 
-  onSignIn(credential){
+  onSignIn(credential: any){
     /* jshint unused:false*/
     console.log("Setting Page for " + this.manifest.name + ' onSignIn');
     super.onSignIn();
