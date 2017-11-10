@@ -94,14 +94,4 @@ class Setting extends SelectSetting {
 
 }
 
-interface SpecificWidgetConfig{
-  value: string;
-  elements: Item[];
-}
-
-interface Item{
-  name: string;
-  href: string;
-}
-
 export = Setting;
