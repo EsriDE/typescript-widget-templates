@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "dojo/_base/lang", "./SelectSetting"], function (require, exports, lang, SelectSetting) {
+define(["require", "exports", "dojo/_base/lang", "dojo/dom-construct", "./SelectSetting"], function (require, exports, lang, domConstruct, SelectSetting) {
     "use strict";
     var Setting = /** @class */ (function (_super) {
         __extends(Setting, _super);
@@ -53,13 +53,27 @@ define(["require", "exports", "dojo/_base/lang", "./SelectSetting"], function (r
         Setting.prototype.getConfig = function () {
             console.log("Setting Page for " + this.manifest.name + ' getConfig.', this.config);
             var newConfig = _super.prototype.getConfig.call(this);
-            newConfig.remoteControlledBy = this.remoteControlledBy.textbox.value;
+            newConfig.remoteControlledBy = this.remoteControlledBy.value;
             return newConfig;
         };
         Setting.prototype._init = function () {
             console.log("Setting Page for " + this.manifest.name + ' _init.');
             _super.prototype._init.call(this);
-            this.remoteControlledBy.textbox.value = this.config.remoteControlledBy;
+            var parentElement = this.exportCheckBoxDiv.parentElement;
+            var domConfigSectionInline = domConstruct.create("div", {
+                class: "config-section inline"
+            }, parentElement, "after");
+            var domLabel = domConstruct.create("div", {
+                class: "label",
+                style: "margin-right: 3px;"
+            }, domConfigSectionInline, "last");
+            domLabel.innerHTML = this.nls.remoteControlledBy;
+            this.remoteControlledBy = domConstruct.create("input", {
+                "data-dojo-attach-point": "remoteControlledBy",
+                "data-dojo-type": "dijit/form/TextBox",
+                "name": "remoteControlledBy"
+            }, domConfigSectionInline, "last");
+            this.remoteControlledBy.value = this.config.remoteControlledBy;
         };
         return Setting;
     }(SelectSetting));
