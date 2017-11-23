@@ -1,0 +1,1 @@
+mklink /d "C:\Projekte\WebAppBuilderForArcGIS_2.6\server\apps\2\widgets\SIMPLE_NO_SETTINGS" "C:\Projekte\LKA-Workshop\Simple_No_Settings"

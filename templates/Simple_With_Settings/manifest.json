@@ -1,0 +1,17 @@
+{
+  "name": "SIMPLE_WITH_SETTINGS",
+  "platform": "HTML",
+  "version": "1.0.1",
+  "wabVersion": "2.6",
+  "author": "Stephan Mendler, Esri Deutschland GmbH",
+  "description": "Sample for a simple widget with settings.",
+  "copyright": "Esri Deutschland GmbH 2017",
+  "license": "",
+  "properties": {
+    "supportMultiInstance": false,
+    "hasSettingPage": true,
+    "hasSettingUIFile": true,
+    "hasSettingLocale": true,
+    "hasSettingStyle": true
+  }
+}
