@@ -1,5 +1,5 @@
 define({
-  "_widgetLabel": "Bearbeiten",
+  "_widgetLabel": "Remote-Bearbeiten",
   "_featureAction_Edit": "Bearbeiten",
   "title": "Vorlage zur Feature-Erstellung auswählen",
   "pressStr": "Drücken Sie ",
