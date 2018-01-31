@@ -1,5 +1,0 @@
-# please adapt to local environment
-
-mklink /D Workflow D:\data\TypeScriptWidgetPool\widgets\Workflow
-mklink /D RemoteSelect D:\data\TypeScriptWidgetPool\widgets\RemoteSelect
-mklink /D RemoteEdit D:\data\TypeScriptWidgetPool\widgets\RemoteEdit

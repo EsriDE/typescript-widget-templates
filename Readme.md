@@ -1,10 +1,13 @@
-# Set up Visual Studio Code:
+# TypeScript Widget Templates
+This repository provides setup instructions and starting points to develop widgets with TypeScript for applications based on the ArcGIS API for JavaScript in different versions, with or without the ArcGIS Web AppBuilder.
 
-### Install latest Typescript Compiler
+### Set up Visual Studio Code:
+
+#### Install latest Typescript Compiler
 ```
 npm install -g typescript
 ```
-### Initialize Typescript Project
+#### Initialize Typescript Project
 (creates tsconfig.json)
 ```
 tsc -init
@@ -25,16 +28,16 @@ Please modify your **tsconfig.json** like this:
 }
 ```
 
-### Initialize GIT
+#### Initialize GIT
 ```
 git init
 ```
-### First Build
+#### First Build
 ```
 Ctrl-Shift B
 ```
 
-### Load typescript definitions
+#### Load typescript definitions
 https://github.com/Esri/jsapi-resources/tree/master/3.x/typescript  
 **npm install --save @types/arcgis-js-api@3**  
 https://github.com/Esri/jsapi-resources/tree/master/4.x/typescript  
@@ -46,7 +49,7 @@ Definitions by: Michael Van Sickle <https://github.com/vansimke>
 Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped  
 **npm install --save @types/dojo**  
 
-### Sample Coding:
+#### Sample Coding:
 ```
 import Map = require("esri/map")
 let m = new Map("mapDiv", {
