@@ -21,9 +21,10 @@ mklink /d <WAB Path>\server\apps\3\widgets\DerivedTemplate <Dev Path>\Widgets\De
 
 
 ## Compatibility
-Created and tested for Web AppBuilder 2.4, 2.5 and 2.6
+Created and tested for 2D apps in Web AppBuilder 2.4, 2.5 and 2.6
 
 ## Dependencies
+The original Esri Select widget. Original source code has been copied into this folder.
 
 ### Other Widgets
 None.

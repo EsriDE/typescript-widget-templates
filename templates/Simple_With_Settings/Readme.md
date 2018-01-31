@@ -17,7 +17,7 @@ mklink /d <WAB Path>\server\apps\<your app number>>\widgets\DerivedTemplate <Dev
 - Use the ReadmeTemplate.md in this sample as a template for your Readme.md. Every widget should have a Readme.md!
 
 ## Compatibility
-Created and tested for Web AppBuilder 2.4, 2.5, 2.6
+Created and tested for 2D apps in Web AppBuilder 2.4, 2.5, 2.6
 
 ## Dependencies
 
