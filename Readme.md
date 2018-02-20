@@ -3,11 +3,11 @@ This repository provides setup instructions and starting points to develop widge
 
 ### Set up Visual Studio Code:
 
-#### Install latest Typescript Compiler
+#### Install latest TypeScript Compiler
 ```
-npm install -g typescript
+npm install -g TypeScript
 ```
-#### Initialize Typescript Project
+#### Initialize TypeScript Project
 (creates tsconfig.json)
 ```
 tsc -init
@@ -37,10 +37,13 @@ git init
 Ctrl-Shift B
 ```
 
-#### Load typescript definitions
-https://github.com/Esri/jsapi-resources/tree/master/3.x/typescript  
+### TypeScript definitions
+Definitions are interfaces of each referenced class that the TypeScript compiler uses to enable Intellisense in your IDE. Definitions for many well-known frameworks have been collected in on https://github.com/DefinitelyTyped/DefinitelyTyped. They can be downloaded and manually put into the project or installed via NPM as described below.
+
+#### Load TypeScript definitions
+https://github.com/Esri/jsapi-resources/tree/master/3.x/TypeScript  
 **npm install --save @types/arcgis-js-api@3**  
-https://github.com/Esri/jsapi-resources/tree/master/4.x/typescript  
+https://github.com/Esri/jsapi-resources/tree/master/4.x/TypeScript  
 **npm install --save @types/arcgis-js-api@4**  
 
 Type definitions for Dojo v1.9  
