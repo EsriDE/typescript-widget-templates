@@ -42,15 +42,15 @@ Definitions are interfaces of each referenced class that the TypeScript compiler
 
 #### Load TypeScript definitions
 https://github.com/Esri/jsapi-resources/tree/master/3.x/TypeScript  
-**npm install --save @types/arcgis-js-api@3**  
+**npm install @types/arcgis-js-api@3**  
 https://github.com/Esri/jsapi-resources/tree/master/4.x/TypeScript  
-**npm install --save @types/arcgis-js-api@4**  
+**npm install @types/arcgis-js-api@4**  
 
 Type definitions for Dojo v1.9  
 Project: http://dojotoolkit.org  
 Definitions by: Michael Van Sickle <https://github.com/vansimke>  
 Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped  
-**npm install --save @types/dojo**  
+**npm install @types/dojo**  
 
 #### Sample Coding:
 ```
