@@ -1,0 +1,17 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es5",
+    "module": "amd",
+    "sourceMap": true,
+    "watch": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "jsx": "react",
+    "jsxFactory": "tsx",
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "exclude" : ["node_modules"]
+}
