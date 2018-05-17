@@ -2,8 +2,8 @@
 This repository provides setup instructions and starting points to develop widgets with TypeScript for applications based on the ArcGIS API for JavaScript in different versions, with or without the ArcGIS Web AppBuilder.
 
 ### Prerequisites:
-Install [node.js|https://nodejs.org].
-Install [Visual Studio Code|https://code.visualstudio.com/].
+Install [node.js](https://nodejs.org).
+Install [Visual Studio Code](https://code.visualstudio.com).
 
 ### Set up Visual Studio Code:
 
