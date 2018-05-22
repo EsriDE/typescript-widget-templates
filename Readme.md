@@ -32,11 +32,8 @@ Please modify your **tsconfig.json** like this:
 }
 ```
 
-#### Initialize GIT
-```
-git init
-```
 #### First Build
+You should already see .JS and a .JS.MAP files generated from your .TS file after running the first build:
 ```
 Ctrl-Shift B
 ```
@@ -56,7 +53,18 @@ Definitions by: Michael Van Sickle <https://github.com/vansimke>
 Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped  
 **npm install @types/dojo**  
 
-#### Sample Coding:
+### Recommended steps to start your first project (optional)
+When starting your own project, we recommend the following steps:
+
+#### Initialize GIT
+In case you need source control, we recommend to start up a new GIT repository in your project folder.
+```
+git init
+```
+#### Create browser-readable project
+As the code in the "JS_API_4.x" and "WebAppBuilder" folders is not embedded into a project that is browser-readable, you should take the desired widget code and place it into your own project. In case you just want to see the simple 4.x "CameraStatus" widget in action, you're free to use the small sample app in the "docs" folder.
+
+### Sample Coding
 ```
 import Map = require("esri/map")
 let m = new Map("mapDiv", {
