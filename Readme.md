@@ -33,7 +33,7 @@ Please modify your **tsconfig.json** like this:
 ```
 
 #### First Build
-You should already see .JS and a .JS.MAP files generated from your .TS file after running the first build:
+You should already see .JS and .JS.MAP files generated from your .TS file after running the first build:
 ```
 Ctrl-Shift B
 ```
@@ -62,7 +62,7 @@ In case you need source control, we recommend to start up a new GIT repository i
 git init
 ```
 #### Create browser-readable project
-As the code in the "JS_API_4.x" and "WebAppBuilder" folders is not embedded into a project that is browser-readable, you should take the desired widget code and place it into your own project. In case you just want to see the simple 4.x "CameraStatus" widget in action, you're free to use the small sample app in the "docs" folder.
+As the code in the "JS_API_4.x" and "WebAppBuilder" folders is not embedded into a project that is browser-readable, you should take the desired widget code and place it into your own project. In case you just want to see the simple 4.x "CameraStatus" widget in action, you're free to use the small sample app in the "docs" folder, which is live under https://esride.github.io/typescript-widget-templates/.
 
 ### Sample Coding
 ```
