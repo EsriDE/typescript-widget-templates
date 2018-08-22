@@ -1,10 +1,10 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
     "target": "es5",
     "module": "amd",
-    "sourceMap": true,
-    "watch": true,
+    "sourceMap": false,
+    "rootDir": "",
+    "outDir": "",
     "noImplicitAny": true,
     "strictNullChecks": true
   },

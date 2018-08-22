@@ -1,0 +1,7 @@
+{
+    "developmentPath": "./**",
+    "deploymentPaths": [
+        "C:\\NIKDATA\\WebAppBuilderForArcGIS\\2.4\\client\\stemapp\\widgets",
+        "C:\\NIKDATA\\WebAppBuilderForArcGIS\\2.4\\server\\apps\\4\\widgets"
+    ]
+}
