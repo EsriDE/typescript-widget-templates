@@ -95,4 +95,5 @@ define(["require", "exports", "esri/widgets/Widget", "esri/core/accessorSupport/
     }(decorators_1.declared(Widget)));
     return CameraStatus;
 });
+
 //# sourceMappingURL=cameraStatus.js.map

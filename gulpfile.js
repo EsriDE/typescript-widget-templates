@@ -13,7 +13,7 @@ gulp.task('default', function () {console.log("default");});
 // Using 'series' to execute tasks: compileTs must be ready when deploy starts. We don't want asynchronous / parallel execution here!
 gulp.task('watchCompileDeploy', function() {
     console.log("watchCompileDeploy");
-    gulp.watch(["./**/*.ts","./**/*.html","./**/*.css"], function(done) {console.log("watch"); done();}); //gulp.series('compileTs', 'deploy'));
+    gulp.watch(["./**/*.ts","./**/*.html","./**/*.css"], gulp.series('compileTs', 'deploy')); //function(done) {console.log("watch"); done();}); //
 });
 
 // Other than the regular tsc compiler, grunt-typescript aborts task execution when errors arise. To avoid this, we need to catch the compile errors .on('error'), () => {})
