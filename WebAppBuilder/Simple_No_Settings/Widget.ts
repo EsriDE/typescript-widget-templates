@@ -24,7 +24,7 @@ class Widget extends BaseWidget {
 
   onOpen() {
     super.onOpen();
-    console.log(`OnOpen of ${this.baseClass}`);    
+    console.log(`OnOpen of ${this.baseClass}`);   
   }
 
   onClose(){

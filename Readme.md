@@ -5,6 +5,9 @@ This repository provides setup instructions and starting points to develop widge
 Install [node.js](https://nodejs.org).
 Install [Visual Studio Code](https://code.visualstudio.com).
 
+### Notes for Gulp documentation:
+* If tasks from tasks.json are not found after "npm install", please restart VS Code.
+
 ### Set up Visual Studio Code:
 
 #### Install latest TypeScript Compiler
