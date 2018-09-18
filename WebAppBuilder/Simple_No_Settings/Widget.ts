@@ -34,7 +34,7 @@ class Widget extends BaseWidget {
 
   onMinimize(){
     super.onMinimize();
-    console.log(`OnMinimize of ${this.baseClass}`);    
+    console.log(`OnMinimize of ${this.baseClass}`);
   }
 
   onMaximize(){

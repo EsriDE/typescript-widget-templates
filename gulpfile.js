@@ -13,12 +13,13 @@ gulp.task('default', function () {console.log("default");});
 // Using 'series' to execute tasks: compileTs must be ready when deploy starts. We don't want asynchronous / parallel execution here!
 gulp.task('watchCompileDeploy', function() {
     console.log("watchCompileDeploy");
-    gulp.watch(["./**/*.ts","./**/*.html","./**/*.css"], gulp.series('compileTs', 'deploy')); //function(done) {console.log("watch"); done();}); //
+    gulp.watch(gulpconfig.watchFileTypes, gulp.series('compileTs', 'deployWabWidgets'));
 });
 
 // Other than the regular tsc compiler, grunt-typescript aborts task execution when errors arise. To avoid this, we need to catch the compile errors .on('error'), () => {})
 // Ending the method with a return value, which comes back after compilation is finished.
 gulp.task('compileTs', function() {
+    console.log("Gulp task 'compileTs'");
     return tsProject
         .src()
         .pipe(sourcemaps.init())
@@ -32,11 +33,11 @@ gulp.task('compileTs', function() {
 });
 
 // Ending the method with a done() call, which lets the method continue ansynchronously in the back and confirms to the caller that it's being executed. Please note: This would not work for 'compileTs', because compilation needs time and Grunt would go on and deploy before compilation is finished.
-gulp.task('deploy', function(done) {
-    console.log("Gulp task 'deploy'");
-    gulpconfig.deploymentPaths.map(dest => {
+gulp.task('deployWabWidgets', function(done) {
+    console.log("Gulp task 'deployWabWidgets'");
+    gulpconfig.wabDeploymentPaths.map(dest => {
         console.log("copying files to", dest);
-        gulp.src(gulpconfig.developmentPath)
+        gulp.src(gulpconfig.wabDevelopmentPath)
             .pipe(gulp.dest(dest));
     });
     done();
