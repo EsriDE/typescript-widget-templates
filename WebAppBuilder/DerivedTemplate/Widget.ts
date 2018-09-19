@@ -1,3 +1,5 @@
+/// <reference path="../../jimu.d.ts/jimu.d.ts" />
+
 import WidgetManager = require("jimu/WidgetManager");
 import PanelManager = require("jimu/PanelManager");
 import lang = require("dojo/_base/lang");

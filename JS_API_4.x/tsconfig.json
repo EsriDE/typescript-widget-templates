@@ -14,7 +14,7 @@
     "jsx": "react",
     "jsxFactory": "tsx",
     "suppressImplicitAnyIndexErrors": true,
-    "typeRoots" : ["node_modules/@types"]
+    "typeRoots" : ["./node_modules"]
   },
   "exclude" : ["node_modules"]
 }
