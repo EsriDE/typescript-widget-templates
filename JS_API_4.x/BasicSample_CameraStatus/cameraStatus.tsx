@@ -62,7 +62,7 @@ class CameraStatus extends declared(Widget) {
     render() {
         const classes = {
             [CSS.base]: true,
-            [CSS.esrideCameraStatus]: true
+            [CSS.esrideCameraStatus]: true 
         };
         return (
             <div bind={this}

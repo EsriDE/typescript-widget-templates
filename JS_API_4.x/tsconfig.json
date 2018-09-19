@@ -11,7 +11,8 @@
     "emitDecoratorMetadata": true,
     "jsx": "react",
     "jsxFactory": "tsx",
-    "suppressImplicitAnyIndexErrors": true
+    "suppressImplicitAnyIndexErrors": true,
+    "typeRoots" : ["node_modules/@types"]
   },
   "exclude" : ["node_modules"]
 }

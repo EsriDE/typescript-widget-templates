@@ -1,7 +1,7 @@
 {
-  "name": "typescript_widget_templates_jsapi4.x",
+  "name": "typescript_widget_templates_webappbuilder",
   "version": "2.0.0",
-  "description": "Getting up to speed with TypeScript and the ArcGIS API for JavaScript 4.x in just a few minutes.",
+  "description": "Getting up to speed with TypeScript and the ArcGIS API for JavaScript in just a few minutes.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,7 +13,7 @@
   "keywords": [
     "javascript",
     "typescript",
-    "jsapi4",
+    "jsapi3",
     "esri",
     "arcgis"
   ],
@@ -24,6 +24,6 @@
   },
   "homepage": "https://github.com/EsriDE/typescript-widget-templates#readme",
   "devDependencies": {
-    "@types/arcgis-js-api": "^4.8.1"
+    "@types/arcgis-js-api": "^3.25.0"
   }
 }

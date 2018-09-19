@@ -6,6 +6,7 @@
     "rootDir": "",
     "outDir": "",
     "noImplicitAny": true,
+    "experimentalDecorators": true,
     "strictNullChecks": true
   },
   "exclude" : ["node_modules"]

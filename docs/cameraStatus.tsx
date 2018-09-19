@@ -1,3 +1,5 @@
+/// <reference path="./node_modules/@types/arcgis-js-api/index.d.ts" />
+
 import Widget = require("esri/widgets/Widget");
 import SceneView = require("esri/views/SceneView");
 import Accessor = require("esri/core/Accessor");
