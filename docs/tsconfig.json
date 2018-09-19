@@ -4,6 +4,8 @@
     "target": "es5",
     "module": "amd",
     "sourceMap": true,
+    "rootDir": "",
+    "outDir": "",
     "watch": true,
     "noImplicitAny": true,
     "strictNullChecks": true,

@@ -1,2 +1,4 @@
 /node_modules
 **/node_modules
+**/Widget.js
+**/Widget.js.map

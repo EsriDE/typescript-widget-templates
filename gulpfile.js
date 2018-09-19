@@ -2,31 +2,27 @@ var gulp = require('gulp');
 var ts = require("gulp-typescript");
 var sourcemaps = require('gulp-sourcemaps');
 
-// If you need several compiler configurations, start here by adding tsconfigs for your projects. Use the "include" property in tsconfig.json to restrict compilation to a certain folder.
-var tsProjectWab = ts.createProject("./WebAppBuilder/tsconfig.json");
-var tsProject4x = ts.createProject("./JS_API_4.x/tsconfig.json");
-
 // Deployment paths outsourced to config file
 var gulpconfig = require('./gulpconfig.json');
-
-gulp.task('default', function () {console.log("default");});
 
 // Using 'series' to execute tasks: compileTs must be ready when deploy starts. We don't want asynchronous / parallel execution here!
 gulp.task('watchCompileDeploy', function() {
     console.log("watchCompileDeploy");
+    gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs');
     gulp.watch(gulpconfig.watchFileTypes, 
         gulp.series(
-            //gulp.parallel('compileTsWab', 'compileTs4x'), 
-            'compileTsWab',
+            gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'), 
             'deployWabWidgets'
         )
     );
 });
 
 
+// If you need several compiler configurations, start here by adding tsconfigs for your projects. Use the "include" property in tsconfig.json to restrict compilation to a certain folder.
 // Other than the regular tsc compiler, grunt-typescript aborts task execution when errors arise. To avoid this, we need to catch the compile errors .on('error'), () => {})
 // Ending the method with a return value, which comes back after compilation is finished.
 gulp.task('compileTsWab', function() {
+    let tsProjectWab = ts.createProject("./WebAppBuilder/tsconfig.json");
     console.log("Gulp task 'compileTs tsProjectWab'");
     return tsProjectWab
         .src("./WebAppBuilder")
@@ -40,9 +36,10 @@ gulp.task('compileTsWab', function() {
         .pipe(gulp.dest("./WebAppBuilder"));
 });
 gulp.task('compileTs4x', function() {
+    let tsProject4x = ts.createProject("./JS_API_4.x/tsconfig.json");
     console.log("Gulp task 'compileTs tsProject4x'");
     return tsProject4x
-        .src()
+        .src("./JS_API_4.x")
         .pipe(sourcemaps.init())
         .pipe(tsProject4x())
         .on('error', () => {
@@ -50,7 +47,21 @@ gulp.task('compileTs4x', function() {
         })
         .js
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('.'));
+        .pipe(gulp.dest("./JS_API_4.x"));
+});
+gulp.task('compileTsDocs', function() {
+    let tsProjectDocs = ts.createProject("./docs/tsconfig.json");
+    console.log("Gulp task 'compileTs tsProjectDocs'");
+    return tsProjectDocs
+        .src("./docs")
+        .pipe(sourcemaps.init())
+        .pipe(tsProjectDocs())
+        .on('error', () => {
+            console.log("Catching TS compile errors to proceed with tasks.");
+        })
+        .js
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest("./docs"));
 });
 
 

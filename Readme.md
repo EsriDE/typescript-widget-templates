@@ -8,6 +8,9 @@ Install [Visual Studio Code](https://code.visualstudio.com).
 ### Notes for Gulp documentation:
 * If tasks from tasks.json are not found after "npm install", please restart VS Code.
 
+### Random notes
+* gulp.dest() at the end of the compileTs job puts files into one specific folder. To keep the original relative folder structure, you have to put ```"rootDir": ""``` and ```"outDir": ""``` in your tsconfig. 
+
 ### Set up Visual Studio Code:
 
 #### Install latest TypeScript Compiler
