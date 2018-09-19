@@ -6,15 +6,16 @@ var sourcemaps = require('gulp-sourcemaps');
 var gulpconfig = require('./gulpconfig.json');
 
 // Using 'series' to execute tasks: compileTs must be ready when deploy starts. We don't want asynchronous / parallel execution here!
-gulp.task('watchCompileDeploy', function() {
+gulp.task('watchCompileDeploy', function(done) {
     console.log("watchCompileDeploy");
-    gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs');
+    gulp.task(gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'));
     gulp.watch(gulpconfig.watchFileTypes, 
         gulp.series(
             gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'), 
             'deployWabWidgets'
         )
     );
+    done();
 });
 
 

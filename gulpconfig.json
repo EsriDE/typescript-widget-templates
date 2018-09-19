@@ -1,5 +1,10 @@
 {
-    "wabDevelopmentPath": "./WebAppBuilder/**",
+    "wabDevelopmentPath": [
+        "./WebAppBuilder/**",
+        "!./WebAppBuilder/**/*.js.map",
+        "!./WebAppBuilder/**/*.ts",
+        "!./WebAppBuilder/**/*.md"
+    ],
     "wabDeploymentPaths": [
         "C:\\NIKDATA\\WebAppBuilderForArcGIS\\2.4\\client\\stemapp\\widgets",
         "C:\\NIKDATA\\WebAppBuilderForArcGIS\\2.4\\server\\apps\\4\\widgets"
