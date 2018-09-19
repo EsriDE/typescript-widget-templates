@@ -16,7 +16,8 @@ gulp.task('watchCompileDeploy', function() {
     console.log("watchCompileDeploy");
     gulp.watch(gulpconfig.watchFileTypes, 
         gulp.series(
-            gulp.parallel('compileTsWab', 'compileTs4x'), 
+            //gulp.parallel('compileTsWab', 'compileTs4x'), 
+            'compileTsWab',
             'deployWabWidgets'
         )
     );
@@ -25,25 +26,25 @@ gulp.task('watchCompileDeploy', function() {
 
 // Other than the regular tsc compiler, grunt-typescript aborts task execution when errors arise. To avoid this, we need to catch the compile errors .on('error'), () => {})
 // Ending the method with a return value, which comes back after compilation is finished.
+gulp.task('compileTsWab', function() {
+    console.log("Gulp task 'compileTs tsProjectWab'");
+    return tsProjectWab
+        .src("./WebAppBuilder")
+        .pipe(sourcemaps.init())
+        .pipe(tsProjectWab())
+        .on('error', () => {
+            console.log("Catching TS compile errors to proceed with tasks.");
+        })
+        .js
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest("./WebAppBuilder"));
+});
 gulp.task('compileTs4x', function() {
     console.log("Gulp task 'compileTs tsProject4x'");
     return tsProject4x
         .src()
         .pipe(sourcemaps.init())
         .pipe(tsProject4x())
-        .on('error', () => {
-            console.log("Catching TS compile errors to proceed with tasks.");
-        })
-        .js
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('.'));
-});
-gulp.task('compileTsWab', function() {
-    console.log("Gulp task 'compileTs tsProjectWab'");
-    return tsProjectWab
-        .src()
-        .pipe(sourcemaps.init())
-        .pipe(tsProjectWab())
         .on('error', () => {
             console.log("Catching TS compile errors to proceed with tasks.");
         })
