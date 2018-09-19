@@ -4,6 +4,8 @@
   "description": "Getting up to speed with TypeScript and the ArcGIS API for JavaScript in just a few minutes.",
   "main": "gulpfile.js",
   "scripts": {
+    "install": "cd JS_API_4.x && npm install",
+    "postinstall": "cd docs && npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
