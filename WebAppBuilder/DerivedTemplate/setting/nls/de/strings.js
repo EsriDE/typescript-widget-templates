@@ -1,0 +1,3 @@
+define({
+  queries: "JSON Konfiguration:"
+});

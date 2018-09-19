@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// Copyright © 2014 - 2016 Esri. All Rights Reserved.
+// Copyright © 2014 - 2017 Esri. All Rights Reserved.
 //
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,30 +14,17 @@
 // limitations under the License.
 ///////////////////////////////////////////////////////////////////////////
 
-define([
-  'dojo/_base/declare',
-  'jimu/BaseWidgetSetting'
-],
-function(declare, BaseWidgetSetting) {
-
+define(["dojo/_base/declare", "jimu/BaseWidgetSetting"], function(
+  declare,
+  BaseWidgetSetting
+) {
   return declare([BaseWidgetSetting], {
-    baseClass: 'jimu-widget-countinpolygon-setting',
+    baseClass: "jimu-widget-chart-setting",
 
-    postCreate: function(){
-      //the config object is passed in
-      this.setConfig(this.config);
-    },
+    postCreate: function() {},
 
-    setConfig: function(config){
-      this.config = config;
-      var json = JSON.stringify(config, null, 2);
-      this.jsonTextField.value = json;      
-    },
+    setConfig: function(config) {},
 
-    getConfig: function(){
-      var jsonStr = this.jsonTextField.value;
-      var json = JSON.parse(jsonStr);
-      return json;
-    }
+    getConfig: function() {}
   });
 });

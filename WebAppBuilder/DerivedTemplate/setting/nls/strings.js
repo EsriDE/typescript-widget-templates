@@ -1,5 +1,6 @@
 define({
-	root: ({
-		configText: ""
-  })
+  root: {
+    queries: "JSON configuration:"
+  },
+  de: 1
 });
