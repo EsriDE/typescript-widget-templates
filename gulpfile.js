@@ -5,10 +5,14 @@ var sourcemaps = require('gulp-sourcemaps');
 // Deployment paths outsourced to config file
 var gulpconfig = require('./gulpconfig.json');
 
+// If you need several compiler configurations, start here by adding tsconfigs for your projects. Use the "include" property in tsconfig.json to restrict compilation to a certain folder.
+var tsProjectWab = ts.createProject("./WebAppBuilder/tsconfig.json");
+var tsProject4x = ts.createProject("./JS_API_4.x/tsconfig.json");
+
 // Using 'series' to execute tasks: compileTs must be ready when deploy starts. We don't want asynchronous / parallel execution here!
 gulp.task('watchCompileDeploy', function(done) {
     console.log("watchCompileDeploy");
-    gulp.task(gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'));
+    gulp.task(gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'));   // Todo: does not work
     gulp.watch(gulpconfig.watchFileTypes, 
         gulp.series(
             gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'), 
@@ -18,12 +22,9 @@ gulp.task('watchCompileDeploy', function(done) {
     done();
 });
 
-
-// If you need several compiler configurations, start here by adding tsconfigs for your projects. Use the "include" property in tsconfig.json to restrict compilation to a certain folder.
 // Other than the regular tsc compiler, grunt-typescript aborts task execution when errors arise. To avoid this, we need to catch the compile errors .on('error'), () => {})
 // Ending the method with a return value, which comes back after compilation is finished.
 gulp.task('compileTsWab', function() {
-    let tsProjectWab = ts.createProject("./WebAppBuilder/tsconfig.json");
     console.log("Gulp task 'compileTs tsProjectWab'");
     return tsProjectWab
         .src("./WebAppBuilder")
@@ -37,7 +38,6 @@ gulp.task('compileTsWab', function() {
         .pipe(gulp.dest("./WebAppBuilder"));
 });
 gulp.task('compileTs4x', function() {
-    let tsProject4x = ts.createProject("./JS_API_4.x/tsconfig.json");
     console.log("Gulp task 'compileTs tsProject4x'");
     return tsProject4x
         .src("./JS_API_4.x")
