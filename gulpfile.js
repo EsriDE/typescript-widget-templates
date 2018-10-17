@@ -8,11 +8,12 @@ var gulpconfig = require('./gulpconfig.json');
 // If you need several compiler configurations, start here by adding tsconfigs for your projects. Use the "include" property in tsconfig.json to restrict compilation to a certain folder.
 var tsProjectWab = ts.createProject("./WebAppBuilder/tsconfig.json");
 var tsProject4x = ts.createProject("./JS_API_4.x/tsconfig.json");
+var tsProjectDocs = ts.createProject("./docs/tsconfig.json");
 
 // Using 'series' to execute tasks: compileTs must be ready when deploy starts. We don't want asynchronous / parallel execution here!
 gulp.task('watchCompileDeploy', function(done) {
     console.log("watchCompileDeploy");
-    gulp.task(gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'));   // Todo: does not work
+    gulp.task(gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'));   // Todo: Initial compile does not work
     gulp.watch(gulpconfig.watchFileTypes, 
         gulp.series(
             gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'), 
@@ -51,7 +52,6 @@ gulp.task('compileTs4x', function() {
         .pipe(gulp.dest("./JS_API_4.x"));
 });
 gulp.task('compileTsDocs', function() {
-    let tsProjectDocs = ts.createProject("./docs/tsconfig.json");
     console.log("Gulp task 'compileTs tsProjectDocs'");
     return tsProjectDocs
         .src("./docs")
