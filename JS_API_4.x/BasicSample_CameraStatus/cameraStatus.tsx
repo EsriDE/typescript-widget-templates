@@ -46,8 +46,15 @@ class CameraStatus extends declared(Widget) {
     altitude: number = 0;
 
     constructor(params: CameraStatusParams) {
-        super();
+        super();      
         this._sceneView = params.sceneView;
+
+        this.fieldOfView = this._sceneView.camera.fov;
+        this.heading = this._sceneView.camera.heading;
+        this.tilt = this._sceneView.camera.tilt;
+        if (this._sceneView.camera.position.latitude) this.latitude = this._sceneView.camera.position.latitude;
+        if (this._sceneView.camera.position.longitude) this.longitude = this._sceneView.camera.position.longitude;
+        this.altitude = this._sceneView.camera.position.z;
 
         this._sceneView.watch("camera", () => {
             this.fieldOfView = this._sceneView.camera.fov;

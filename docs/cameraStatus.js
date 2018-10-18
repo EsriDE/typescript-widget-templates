@@ -38,6 +38,14 @@ define(["require", "exports", "esri/widgets/Widget", "esri/views/SceneView", "es
             _this.longitude = 0;
             _this.altitude = 0;
             _this._sceneView = params.sceneView;
+            _this.fieldOfView = _this._sceneView.camera.fov;
+            _this.heading = _this._sceneView.camera.heading;
+            _this.tilt = _this._sceneView.camera.tilt;
+            if (_this._sceneView.camera.position.latitude)
+                _this.latitude = _this._sceneView.camera.position.latitude;
+            if (_this._sceneView.camera.position.longitude)
+                _this.longitude = _this._sceneView.camera.position.longitude;
+            _this.altitude = _this._sceneView.camera.position.z;
             _this._sceneView.watch("camera", function () {
                 _this.fieldOfView = _this._sceneView.camera.fov;
                 _this.heading = _this._sceneView.camera.heading;
