@@ -1,3 +1,5 @@
+/// <reference path="./node_modules/@types/arcgis-js-api/index.d.ts" />
+
 import Widget = require("esri/widgets/Widget");
 import SceneView = require("esri/views/SceneView");
 import Accessor = require("esri/core/Accessor");
@@ -46,6 +48,13 @@ class CameraStatus extends declared(Widget) {
     constructor(params: CameraStatusParams) {
         super();
         this._sceneView = params.sceneView;
+        
+        this.fieldOfView = this._sceneView.camera.fov;
+        this.heading = this._sceneView.camera.heading;
+        this.tilt = this._sceneView.camera.tilt;
+        if (this._sceneView.camera.position.latitude) this.latitude = this._sceneView.camera.position.latitude;
+        if (this._sceneView.camera.position.longitude) this.longitude = this._sceneView.camera.position.longitude;
+        this.altitude = this._sceneView.camera.position.z;
 
         this._sceneView.watch("camera", () => {
             this.fieldOfView = this._sceneView.camera.fov;

@@ -4,6 +4,8 @@
     "target": "es5",
     "module": "amd",
     "sourceMap": true,
+    "rootDir": "",
+    "outDir": "",
     "watch": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -11,7 +13,8 @@
     "emitDecoratorMetadata": true,
     "jsx": "react",
     "jsxFactory": "tsx",
-    "suppressImplicitAnyIndexErrors": true
+    "suppressImplicitAnyIndexErrors": true,
+    "typeRoots" : ["./node_modules"]
   },
   "exclude" : ["node_modules"]
 }
