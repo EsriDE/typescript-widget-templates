@@ -13,25 +13,23 @@ var tsProject4x = ts.createProject("./JS_API_4.x/tsconfig.json");
 var tsProjectDocs = ts.createProject("./docs/tsconfig.json");
 
 // Using 'series' to execute tasks: compileTs must be ready when deploy starts. We don't want asynchronous / parallel execution here!
-gulp.task('watchCompileDeploy', function(done) {
-    console.log("watchCompileDeploy");
-    serve();
-    //gulp.parallel('serveDocs', 'compileTsWab', 'compileTs4x', 'compileTsDocs');   // Todo: Initial compile does not work
-    gulp.watch(gulpconfig.watchFileTypesNoBuild, 
-        gulp.series(
-            'reload',
-            'deployWabWidgets'
+gulp.task('watchCompileDeploy', gulp.parallel(
+        'serve', 'compileTsWab', 'compileTs4x', 'compileTsDocs',
+        gulp.watch(gulpconfig.watchFileTypesNoBuild, 
+            gulp.series(
+                'reload',
+                'deployWabWidgets'
+            ),
         ),
-    );
-    gulp.watch(gulpconfig.watchFileTypesNeedBuild, 
-        gulp.series(
-            gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'),
-            'reload',
-            'deployWabWidgets'
-        ),
-    );
-    done();
-});
+        gulp.watch(gulpconfig.watchFileTypesNeedBuild, 
+            gulp.series(
+                gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'),
+                'reload',
+                'deployWabWidgets'
+            ),
+        )
+    )
+);
 
 // Other than the regular tsc compiler, grunt-typescript aborts task execution when errors arise. To avoid this, we need to catch the compile errors .on('error'), () => {})
 // Ending the method with a return value, which comes back after compilation is finished.
@@ -92,11 +90,12 @@ gulp.task('reload', function(done){
     done();
 });
   
-function serve() {
+gulp.task('serve', function serve(done){
     console.log("serve docs");
     server.init({
         server: {
         baseDir: './docs'
         }
     });
-}
+    done();
+});
