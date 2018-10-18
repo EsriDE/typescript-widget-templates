@@ -39,8 +39,7 @@ gulp.task('watchCompileDeploy', function(done) {
 // Ending the method with a return value, which comes back after compilation is finished.
 gulp.task('compileTsWab', function() {
     console.log("Gulp task 'compileTs tsProjectWab'");
-    return tsProjectWab
-        .src("./WebAppBuilder")
+    return gulp.src("./WebAppBuilder")
         .pipe(sourcemaps.init())
         .pipe(tsProjectWab())
         .on('error', () => {
@@ -52,8 +51,7 @@ gulp.task('compileTsWab', function() {
 });
 gulp.task('compileTs4x', function() {
     console.log("Gulp task 'compileTs tsProject4x'");
-    return tsProject4x
-        .src("./JS_API_4.x")
+    return gulp.src("./JS_API_4.x")
         .pipe(sourcemaps.init())
         .pipe(tsProject4x())
         .on('error', () => {
@@ -65,8 +63,7 @@ gulp.task('compileTs4x', function() {
 });
 gulp.task('compileTsDocs', function() {
     console.log("Gulp task 'compileTs tsProjectDocs'");
-    return tsProjectDocs
-        .src("./docs")
+    return gulp.src("./docs")
         .pipe(sourcemaps.init())
         .pipe(tsProjectDocs())
         .on('error', () => {
