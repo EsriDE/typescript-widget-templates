@@ -1,6 +1,8 @@
 var gulp = require('gulp');
 var ts = require("gulp-typescript");
 var sourcemaps = require('gulp-sourcemaps');
+var browserSync = require('browser-sync');
+const server = browserSync.create();
 
 // Deployment paths outsourced to config file
 var gulpconfig = require('./gulpconfig.json');
@@ -13,12 +15,20 @@ var tsProjectDocs = ts.createProject("./docs/tsconfig.json");
 // Using 'series' to execute tasks: compileTs must be ready when deploy starts. We don't want asynchronous / parallel execution here!
 gulp.task('watchCompileDeploy', function(done) {
     console.log("watchCompileDeploy");
-    gulp.task(gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'));   // Todo: Initial compile does not work
-    gulp.watch(gulpconfig.watchFileTypes, 
+    serve();
+    //gulp.parallel('serveDocs', 'compileTsWab', 'compileTs4x', 'compileTsDocs');   // Todo: Initial compile does not work
+    gulp.watch(gulpconfig.watchFileTypesNoBuild, 
         gulp.series(
-            gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'), 
+            'reload',
             'deployWabWidgets'
-        )
+        ),
+    );
+    gulp.watch(gulpconfig.watchFileTypesNeedBuild, 
+        gulp.series(
+            gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'),
+            'reload',
+            'deployWabWidgets'
+        ),
     );
     done();
 });
@@ -65,7 +75,6 @@ gulp.task('compileTsDocs', function() {
         .pipe(gulp.dest("./docs"));
 });
 
-
 // Ending the method with a done() call, which lets the method continue ansynchronously in the back and confirms to the caller that it's being executed. Please note: This would not work for 'compileTs', because compilation needs time and Grunt would go on and deploy before compilation is finished.
 gulp.task('deployWabWidgets', function(done) {
     console.log("Gulp task 'deployWabWidgets'");
@@ -76,3 +85,18 @@ gulp.task('deployWabWidgets', function(done) {
     });
     done();
 });
+
+gulp.task('reload', function(done){
+    console.log("reload");
+    server.reload();
+    done();
+});
+  
+function serve() {
+    console.log("serve docs");
+    server.init({
+        server: {
+        baseDir: './docs'
+        }
+    });
+}
