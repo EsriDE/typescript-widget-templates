@@ -16,7 +16,9 @@ var tsProjectDocs = ts.createProject("./docs/tsconfig.json");
 gulp.task('watchCompileDeploy', function(done) {
     console.log("watchCompileDeploy");
     serve();
-    //gulp.parallel('serveDocs', 'compileTsWab', 'compileTs4x', 'compileTsDocs');   // Todo: Initial compile does not work
+
+    gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs');
+
     gulp.watch(gulpconfig.watchFileTypesNoBuild, 
         gulp.series(
             'reload',
