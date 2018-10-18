@@ -17,21 +17,18 @@ gulp.task('watchCompileDeploy', function(done) {
     console.log("watchCompileDeploy");
     serve();
 
-    gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs');
+    var reloadDeploy = gulp.series('reload', 'deployWabWidgets');
+    reloadDeploy();
 
-    gulp.watch(gulpconfig.watchFileTypesNoBuild, 
-        gulp.series(
-            'reload',
-            'deployWabWidgets'
-        ),
+    var compileAllReloadDeploy = gulp.series(
+        gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'),
+        'reload',
+        'deployWabWidgets'
     );
-    gulp.watch(gulpconfig.watchFileTypesNeedBuild, 
-        gulp.series(
-            gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'),
-            'reload',
-            'deployWabWidgets'
-        ),
-    );
+    compileAllReloadDeploy();
+
+    gulp.watch(gulpconfig.watchFileTypesNoBuild, reloadDeploy);
+    gulp.watch(gulpconfig.watchFileTypesNeedBuild, compileAllReloadDeploy);
     done();
 });
 
