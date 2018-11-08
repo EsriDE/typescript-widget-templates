@@ -18,7 +18,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define(["require", "exports", "esri/widgets/Widget", "esri/core/accessorSupport/decorators", "esri/widgets/support/widget"], function (require, exports, Widget, decorators_1, widget_1) {
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+define(["require", "exports", "esri/widgets/Widget", "esri/views/SceneView", "esri/core/accessorSupport/decorators", "esri/widgets/support/widget"], function (require, exports, Widget, SceneView, decorators_1, widget_1) {
     "use strict";
     var CSS = {
         base: "esri-widget",
@@ -61,47 +64,68 @@ define(["require", "exports", "esri/widgets/Widget", "esri/core/accessorSupport/
                 _a[CSS.base] = true,
                 _a[CSS.esrideCameraStatus] = true,
                 _a);
-            return (<div bind={this} class={CSS.base} classes={classes}>
-                Field of view: {this.fieldOfView.toFixed(2)}<br />
-                Heading: {this.heading.toFixed(2)}<br />
-                Tilt: {this.tilt.toFixed(2)}<br />
-                Latitude: {this.latitude.toFixed(2)}<br />
-                Longitude: {this.longitude.toFixed(2)}<br />
-                Altitude: {this.altitude.toFixed(2)}<br />
-            </div>);
+            return (widget_1.tsx("div", { bind: this, class: CSS.base, classes: classes },
+                "Field of view: ",
+                this.fieldOfView.toFixed(2),
+                widget_1.tsx("br", null),
+                "Heading: ",
+                this.heading.toFixed(2),
+                widget_1.tsx("br", null),
+                "Tilt: ",
+                this.tilt.toFixed(2),
+                widget_1.tsx("br", null),
+                "Latitude: ",
+                this.latitude.toFixed(2),
+                widget_1.tsx("br", null),
+                "Longitude: ",
+                this.longitude.toFixed(2),
+                widget_1.tsx("br", null),
+                "Altitude: ",
+                this.altitude.toFixed(2),
+                widget_1.tsx("br", null)));
         };
+        var _a;
         __decorate([
-            decorators_1.property()
+            decorators_1.property(),
+            __metadata("design:type", typeof (_a = typeof SceneView !== "undefined" && SceneView) === "function" ? _a : Object)
         ], CameraStatus.prototype, "_sceneView", void 0);
         __decorate([
             decorators_1.property(),
-            widget_1.renderable()
+            widget_1.renderable(),
+            __metadata("design:type", Number)
         ], CameraStatus.prototype, "fieldOfView", void 0);
         __decorate([
             decorators_1.property(),
-            widget_1.renderable()
+            widget_1.renderable(),
+            __metadata("design:type", Number)
         ], CameraStatus.prototype, "heading", void 0);
         __decorate([
             decorators_1.property(),
-            widget_1.renderable()
+            widget_1.renderable(),
+            __metadata("design:type", Number)
         ], CameraStatus.prototype, "tilt", void 0);
         __decorate([
             decorators_1.property(),
-            widget_1.renderable()
+            widget_1.renderable(),
+            __metadata("design:type", Number)
         ], CameraStatus.prototype, "latitude", void 0);
         __decorate([
             decorators_1.property(),
-            widget_1.renderable()
+            widget_1.renderable(),
+            __metadata("design:type", Number)
         ], CameraStatus.prototype, "longitude", void 0);
         __decorate([
             decorators_1.property(),
-            widget_1.renderable()
+            widget_1.renderable(),
+            __metadata("design:type", Number)
         ], CameraStatus.prototype, "altitude", void 0);
         CameraStatus = __decorate([
-            decorators_1.subclass("esride.widgets.CameraStatus")
+            decorators_1.subclass("esride.widgets.CameraStatus"),
+            __metadata("design:paramtypes", [Object])
         ], CameraStatus);
         return CameraStatus;
     }(decorators_1.declared(Widget)));
     return CameraStatus;
 });
+
 //# sourceMappingURL=cameraStatus.js.map
