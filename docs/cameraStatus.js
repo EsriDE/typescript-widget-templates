@@ -84,9 +84,10 @@ define(["require", "exports", "esri/widgets/Widget", "esri/views/SceneView", "es
                 this.altitude.toFixed(2),
                 widget_1.tsx("br", null)));
         };
+        var _a;
         __decorate([
             decorators_1.property(),
-            __metadata("design:type", SceneView)
+            __metadata("design:type", typeof (_a = typeof SceneView !== "undefined" && SceneView) === "function" ? _a : Object)
         ], CameraStatus.prototype, "_sceneView", void 0);
         __decorate([
             decorators_1.property(),
