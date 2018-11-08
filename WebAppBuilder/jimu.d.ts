@@ -1,3 +1,6 @@
+/// <reference path="../node_modules/@types/arcgis-js-api/index.d.ts" />
+/// <reference path="../node_modules/@types/dojo/dijit.d.ts" />
+
 declare module "jimu/BaseWidget" {
     import Map = require('esri/map');
     import _WidgetBase = require('dijit/_WidgetBase');
