@@ -18,7 +18,7 @@ function startPrompt(gulpconfig) {
         console.log('Command-line input received:');
         console.log('  wabDeploymentPaths: ' + result.wabDeploymentPaths);
         try {
-            gulpconfig.wabDeploymentPaths = JSON.parse(result.wabDeploymentPaths);
+            gulpconfig.wabDeploymentPaths = JSON.parse(result.wabDeploymentPaths).replace("\\", "/");
 
             const file = './gulpconfig.json';
             jsonfile.writeFile(file, gulpconfig)

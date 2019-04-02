@@ -26,6 +26,7 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "@types/dojo": "^1.9.40",
+    "@types/arcgis-js-api": "^3.25.0",
     "browser-sync": "^2.26.3",
     "gulp": "^4.0.0",
     "gulp-sourcemaps": "^2.6.4",
@@ -33,6 +34,5 @@
     "jsonfile": "^5.0.0",
     "prompt": "^1.0.0",
     "typescript": "next"
-  },
-  "dependencies": {}
+  }
 }

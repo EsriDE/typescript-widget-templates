@@ -1,12 +1,15 @@
+## Web AppBuilder for ArcGIS
 # TypeScript Widget Templates
 This repository provides setup instructions and starting points to develop widgets with TypeScript for applications based on the ArcGIS API for JavaScript in different versions, with or without the ArcGIS Web AppBuilder.
 
 ### Prerequisites:
-Install [node.js](https://nodejs.org).
+Checkout repository and execute ```npm install```.
+
+### Recommended:
 Install [Visual Studio Code](https://code.visualstudio.com).
 
 ### Notes for Gulp documentation:
-* If tasks from tasks.json are not found after "npm install", please restart VS Code.
+* If tasks from .vscode/tasks.json are not found after "npm install", please restart VS Code.
 
 ### Random notes
 * gulp.dest() at the end of the compileTs job puts files into one specific folder. To keep the original relative folder structure, you have to put ```"rootDir": ""``` and ```"outDir": ""``` in your tsconfig. 
