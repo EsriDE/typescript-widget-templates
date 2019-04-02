@@ -8,9 +8,7 @@ const server = browserSync.create();
 var gulpconfig = require('./gulpconfig.json');
 
 // If you need several compiler configurations, start here by adding tsconfigs for your projects. Use the "include" property in tsconfig.json to restrict compilation to a certain folder.
-var tsProjectWab = ts.createProject("./WebAppBuilder/tsconfig.json");
-var tsProject4x = ts.createProject("./JS_API_4.x/tsconfig.json");
-var tsProjectDocs = ts.createProject("./docs/tsconfig.json");
+var tsProjectWab = ts.createProject("./tsconfig.json");
 
 // Using 'series' to execute tasks: compileTs must be ready when deploy starts. We don't want asynchronous / parallel execution here!
 gulp.task('watchCompileDeploy', function(done) {
@@ -21,7 +19,7 @@ gulp.task('watchCompileDeploy', function(done) {
     reloadDeploy();
 
     var compileAllReloadDeploy = gulp.series(
-        gulp.parallel('compileTsWab', 'compileTs4x', 'compileTsDocs'),
+        gulp.parallel('compileTsWab'),  // if there were several compiler configurations, you would put the compile functions into this parallel execution
         'reload',
         'deployWabWidgets'
     );
@@ -36,7 +34,7 @@ gulp.task('watchCompileDeploy', function(done) {
 // Ending the method with a return value, which comes back after compilation is finished.
 gulp.task('compileTsWab', function() {
     console.log("Gulp task 'compileTs tsProjectWab'");
-    return tsProject4x.src("./WebAppBuilder")
+    return tsProjectWab.src()
         .pipe(sourcemaps.init())
         .pipe(tsProjectWab())
         .on('error', () => {
@@ -44,31 +42,7 @@ gulp.task('compileTsWab', function() {
         })
         .js
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest("./WebAppBuilder"));
-});
-gulp.task('compileTs4x', function() {
-    console.log("Gulp task 'compileTs tsProject4x'");
-    return tsProject4x.src("./JS_API_4.x")
-        .pipe(sourcemaps.init())
-        .pipe(tsProject4x())
-        .on('error', () => {
-            console.log("Catching TS compile errors to proceed with tasks.");
-        })
-        .js
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest("./JS_API_4.x"));
-});
-gulp.task('compileTsDocs', function() {
-    console.log("Gulp task 'compileTs tsProjectDocs'");
-    return tsProjectDocs.src("./docs")
-        .pipe(sourcemaps.init())
-        .pipe(tsProjectDocs())
-        .on('error', () => {
-            console.log("Catching TS compile errors to proceed with tasks.");
-        })
-        .js
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest("./docs"));
+        .pipe(gulp.dest('.'));
 });
 
 // Ending the method with a done() call, which lets the method continue ansynchronously in the back and confirms to the caller that it's being executed. Please note: This would not work for 'compileTs', because compilation needs time and Grunt would go on and deploy before compilation is finished.

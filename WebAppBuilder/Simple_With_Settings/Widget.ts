@@ -9,7 +9,7 @@ class Widget extends BaseWidget {
 
   constructor(args?: Array<any>) {
     super(lang.mixin({baseClass: "Simple_With_Settings"}, args));
-    console.log(`Constructor of ${this.baseClass}`);    
+    console.log(`Constructor of ${this.baseClass} NAAAG`);    
   }
 
   postCreate() {
