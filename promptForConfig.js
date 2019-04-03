@@ -5,10 +5,10 @@ const gulpconfigPath = './gulpconfig.json';
 function startPrompt(gulpconfig) {
     var schema = {
         properties: {
-          wabDeploymentPaths: {
+          wabPaths: {
             pattern: /\[.*\]/,
             message: 'Array expected',
-            default: JSON.stringify(gulpconfig.wabDeploymentPaths),
+            default: JSON.stringify(gulpconfig.wabPaths),
             required: false
           }
         }
@@ -16,9 +16,9 @@ function startPrompt(gulpconfig) {
     prompt.start();
     prompt.get(schema, function (err, result) {
         console.log('Command-line input received:');
-        console.log('  wabDeploymentPaths: ' + result.wabDeploymentPaths);
+        console.log('  wabPaths: ' + result.wabPaths);
         try {
-            gulpconfig.wabDeploymentPaths = JSON.parse(result.wabDeploymentPaths).replace("\\", "/");
+            gulpconfig.wabPaths = JSON.parse(result.wabPaths).replace("\\", "/");
 
             const file = './gulpconfig.json';
             jsonfile.writeFile(file, gulpconfig)

@@ -1,5 +1,6 @@
 {
   "name": "Derived",
+  "2D": true,
   "platform": "HTML",
   "version": "0.0",
   "wabVersion": "2.11",

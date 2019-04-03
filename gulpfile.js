@@ -48,10 +48,12 @@ gulp.task('compileTsWab', function() {
 // Ending the method with a done() call, which lets the method continue ansynchronously in the back and confirms to the caller that it's being executed. Please note: This would not work for 'compileTs', because compilation needs time and Grunt would go on and deploy before compilation is finished.
 gulp.task('deployWabWidgets', function(done) {
     console.log("Gulp task 'deployWabWidgets'");
-    gulpconfig.wabDeploymentPaths.map(dest => {
+    gulpconfig.wabPaths.map(devDep => {
+        devDep.deployment.map(dest => {
         console.log("copying files to", dest);
-        gulp.src(gulpconfig.wabDevelopmentPath)
+        gulp.src(devDep.development)
             .pipe(gulp.dest(dest));
+        })
     });
     done();
 });

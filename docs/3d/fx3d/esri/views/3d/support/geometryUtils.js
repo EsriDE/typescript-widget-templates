@@ -1,0 +1,5 @@
+/**
+ * Copyright @ 2018 Esri.
+ * All rights reserved under the copyright laws of the United States and applicable international laws, treaties, and conventions.
+ */
+define(["esri/views/3d/layers/graphics/Graphics3DSymbolCommonCode","esri/core/libs/gl-matrix-2/gl-matrix","esri/views/3d/webgl-engine/lib/Util","esri/views/3d/support/mathUtils"],function(r,a,e,t){var i=a.vec3f64,o=a.vec3,s=a.mat4f64,n=a.mat4,l=e.logWithBase,v=1e4,c=10,h={getOrigin:function(a,e,h,f){if(!(a.length<=0)){var m=i.create();r.chooseOrigin(a,h,f,m),r.subtractCoordinates(a,0,e,m);for(var u,d=0,g=i.fromValues(a[d],a[d+1],a[d+2]),M=i.create(this.bbMin),b=0;b<e;b++){d=3*b;for(var p=0;p<3;p++)u=a[d+p],u<g[p]?g[p]=u:u>M[p]&&(M[p]=u)}var w=i.create();o.lerp(w,g,M,.5);for(var x=0,b=0;b<e;b++){d=3*b;var C=a[d]-w[0],_=a[d+1]-w[1],y=a[d+2]-w[2],O=C*C+_*_+y*y;O>x&&(x=O)}x=Math.sqrt(x);var S=s.create();n.translate(S,S,m);var U=t.maxScale(S);o.transformMat4(w,w,S),x*=U;var V=c,q=0,B=x*V/v;B>1&&(q=Math.ceil(l(B,2)));var D=Math.pow(2,q)*v,b=Math.round(w[0]/D),G=Math.round(w[1]/D),p=Math.round(w[2]/D),W=q+"_"+b+"_"+G+"_"+p;return{vec3:i.fromValues(b*D,G*D,p*D),id:W}}}};return h});

@@ -1,12 +1,27 @@
 {
-    "wabDevelopmentPath": [
-        "./WebAppBuilder/**",
-        "!./WebAppBuilder/**/*.js.map",
-        "!./WebAppBuilder/**/*.ts",
-        "!./WebAppBuilder/**/*.md"
-    ],
-    "wabDeploymentPaths": [
-        "./docs/2d/widgets"
+    "wabPaths": [
+        {
+            "development": [
+                "./WebAppBuilder/**",
+                "!./WebAppBuilder/**/*.js.map",
+                "!./WebAppBuilder/**/*.ts",
+                "!./WebAppBuilder/**/*.md"
+            ],
+            "deployment": [
+                "./docs/2d/widgets"
+            ]
+        },
+        {
+            "development": [
+                "./WebAppBuilder3d/**",
+                "!./WebAppBuilder3d/**/*.js.map",
+                "!./WebAppBuilder3d/**/*.ts",
+                "!./WebAppBuilder3d/**/*.md"
+            ],
+            "deployment": [
+                "./docs/3d/widgets"
+            ]
+        }
     ],
     "watchFileTypesNeedBuild": [
         "./**/*.ts",
