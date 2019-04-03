@@ -1,5 +1,5 @@
 define({
-  "_widgetLabel": "Vybrat (Select)",
+  "_widgetLabel": "Derived",
   "showActions": "Zobrazit akce u vybraných prvků",
   "toggleSelectability": "Kliknutím přepnete podporování výběru.",
   "showSelectedFeatures": "Kliknutím zobrazíte vybrané prvky",

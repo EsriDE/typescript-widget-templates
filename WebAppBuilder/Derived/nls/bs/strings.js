@@ -1,5 +1,5 @@
 define({
-  "_widgetLabel": "Odaberi",
+  "_widgetLabel": "Derived",
   "showActions": "Prikaži radnje na odabranom/im geoobjektu/ima",
   "toggleSelectability": "Kliknite za prebacivanje mogućnosti odabira",
   "showSelectedFeatures": "Kliknite za prikaz odabranog geoobjekta",

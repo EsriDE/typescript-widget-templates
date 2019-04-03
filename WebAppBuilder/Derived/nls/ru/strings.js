@@ -1,5 +1,5 @@
 define({
-  "_widgetLabel": "Выбрать",
+  "_widgetLabel": "Derived",
   "showActions": "Показать действия для выбранных объектов",
   "toggleSelectability": "Щелкните, чтобы переключить доступность для выборки",
   "showSelectedFeatures": "Щелкните, чтобы показать выбранные объекты",

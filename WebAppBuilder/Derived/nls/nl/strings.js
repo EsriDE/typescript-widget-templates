@@ -1,5 +1,5 @@
 define({
-  "_widgetLabel": "Selecteren",
+  "_widgetLabel": "Derived",
   "showActions": "Acties weergeven op geselecteerde object(en)",
   "toggleSelectability": "Klik om selecteerbaarheid te wisselen",
   "showSelectedFeatures": "Klik om geselecteerde objecten te tonen",

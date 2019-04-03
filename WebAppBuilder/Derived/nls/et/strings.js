@@ -1,5 +1,5 @@
 define({
-  "_widgetLabel": "Vali",
+  "_widgetLabel": "Derived",
   "showActions": "Kuva valitud objekti(de) toimingud",
   "toggleSelectability": "Klõpsake valitavuse sisse-ja väljalülitamiseks",
   "showSelectedFeatures": "Klõpsake valitud objektide kuvamiseks",

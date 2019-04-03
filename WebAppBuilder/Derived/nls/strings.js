@@ -1,10 +1,10 @@
 define({
   root: ({
-    _widgetLabel: "DerivedTemplate",
-    showActions: "Show actions on selected feature(s)",
-    toggleSelectability: "Click to toggle selectability",
-    showSelectedFeatures: "Click to show selected features",
-    actionsTitle: "Selection Actions"
+    "_widgetLabel": "Derived",
+    "showActions": "Show actions on selected feature(s)",
+    "toggleSelectability": "Click to toggle selectability",
+    "showSelectedFeatures": "Click to show selected features",
+    "actionsTitle": "Selection Actions"
   }),
   "ar": 1,
   "bs": 1,

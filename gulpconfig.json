@@ -6,8 +6,8 @@
         "!./WebAppBuilder/**/*.md"
     ],
     "wabDeploymentPaths": [
-        "C:/NIKDATA/WebAppBuilderForArcGIS/2.4/client/stemapp/widgets",
-        "C:/NIKDATA/WebAppBuilderForArcGIS/2.4/server/apps/4/widgets"
+        "C:/NIKDATA/WebAppBuilderForArcGIS/2.11/client/stemapp/widgets",
+        "C:/NIKDATA/WebAppBuilderForArcGIS/2.11/server/apps/4/widgets"
     ],
     "watchFileTypesNeedBuild": [
         "./**/*.ts",

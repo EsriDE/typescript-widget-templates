@@ -1,5 +1,5 @@
 define({
-  "_widgetLabel": "Seleziona",
+  "_widgetLabel": "Derived",
   "showActions": "Mostra azioni su feature selezionate",
   "toggleSelectability": "Fare clic per attivare o disattivare lo stato di selezione",
   "showSelectedFeatures": "Fare clic per mostrare le feature selezionate",

@@ -1,5 +1,5 @@
 define({
-  "_widgetLabel": "Valitse",
+  "_widgetLabel": "Derived",
   "showActions": "Näytä toiminnot valituissa kohteissa",
   "toggleSelectability": "Vaihda valittavuutta napsauttamalla",
   "showSelectedFeatures": "Näytä valitut kohteet napsauttamalla",

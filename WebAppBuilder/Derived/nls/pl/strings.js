@@ -1,5 +1,5 @@
 define({
-  "_widgetLabel": "Zaznacz",
+  "_widgetLabel": "Derived",
   "showActions": "Pokaż działania dla wybranych obiektów",
   "toggleSelectability": "Kliknij, aby przełączyć możliwość wybierania",
   "showSelectedFeatures": "Kliknij, aby pokazać wybrane obiekty",
