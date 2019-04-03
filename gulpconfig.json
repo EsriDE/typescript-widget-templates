@@ -6,18 +6,19 @@
         "!./WebAppBuilder/**/*.md"
     ],
     "wabDeploymentPaths": [
-        "C:/NIKDATA/WebAppBuilderForArcGIS/2.11/client/stemapp/widgets",
-        "C:/NIKDATA/WebAppBuilderForArcGIS/2.11/server/apps/4/widgets"
+        "./docs/2d/widgets"
     ],
     "watchFileTypesNeedBuild": [
         "./**/*.ts",
-        "./**/*.tsx"
+        "./**/*.tsx",
+        "!./docs/**"
     ],
     "watchFileTypesNoBuild": [
         "./**/*.html",
         "./**/*.css",
         "./**/*.json",
         "./**/*.html",
-        "./**/strings.js"
+        "./**/strings.js",
+        "!./docs/**"
     ]
 }
