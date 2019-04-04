@@ -6,6 +6,8 @@ import lang = require("dojo/_base/lang");
 import domStyle = require("dojo/dom-style");
 import domConstruct = require("dojo/dom-construct");
 import domClass = require("dojo/dom-class");
+import Button = require("dijit/form/Button");
+import FeatureLayer = require("esri/layers/FeatureLayer");
 
 // Add your esri imports here
 import FeatureLayer = require("esri/map");
@@ -56,7 +58,19 @@ class Widget extends SelectWidget {
 
   private postCreate() {
     super.postCreate();
-    console.log(this.manifest.name + ' onpostCreate');    
+    var btnContainer = domConstruct.create("div", {}, this.layerListNode, "last");
+    var allSelectedFeaturesBtn = new Button({
+      label: "Log all selected features",
+      style:"position: absolute; top: 41px;",
+      onClick: (evt: any) => {
+        console.log(this.manifest.name + ' You clicked send! | layerItems:', this.layerItems, evt);  
+        let allSelectedFeatures = this.layerItems.map((layerItem: FeatureLayer) => {
+          return layerItem.featureLayer.getSelectedFeatures();
+        });
+        console.log("allSelectedFeatures: " , allSelectedFeatures);
+      }
+    }, btnContainer).startup();
+    console.log(this.manifest.name + ' onpostCreate | layerItems:', this.layerItems);    
   }
 
   private onOpen() {
