@@ -3,3 +3,4 @@
 **/Widget.js
 **/Setting.js
 **/*.js.map
+!/docs/**/*
