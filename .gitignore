@@ -1,1 +1,6 @@
 /node_modules
+**/node_modules
+**/Widget.js
+**/Setting.js
+**/*.js.map
+!/docs/**/*

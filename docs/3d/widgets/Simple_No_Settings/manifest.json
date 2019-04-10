@@ -1,0 +1,19 @@
+{
+    "name": "Simple_No_Settings",
+    "platform": "HTML3D",
+    "2D": false,
+    "3D": true,
+    "version": "0.0",
+    "wabVersion": "2.11",
+    "author": "Stephan Mendler, Niklas Köhn, Esri Deutschland GmbH",
+    "description": "Sample for a simple widget without settings. Version 1.5",
+    "copyright": "Esri Deutschland GmbH 2019",
+    "license": "",
+    "properties": {
+        "supportMultiInstance": false,
+        "hasSettingPage": false,
+        "hasSettingUIFile": false,
+        "hasSettingLocale": false,
+        "hasSettingStyle": false
+    }
+}

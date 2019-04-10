@@ -1,0 +1,18 @@
+{
+  "name": "Derived",
+  "2D": true,
+  "platform": "HTML",
+  "version": "0.0",
+  "wabVersion": "2.11",
+  "author": "Niklas Köhn, Stephan Mendler, Esri Deutschland GmbH",
+  "description": "Sample for a derived widget. Version 1.5",
+  "copyright": "Esri Deutschland GmbH 2019",
+  "license": "",
+  "properties": {
+    "supportMultiInstance": false,
+    "hasSettingPage": true,
+    "hasSettingUIFile": true,
+    "hasSettingLocale": true,
+    "hasSettingStyle": true
+  }
+}

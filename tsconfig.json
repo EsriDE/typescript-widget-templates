@@ -1,12 +1,14 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
     "target": "es5",
     "module": "amd",
-    "sourceMap": true,
-    "watch": true,
+    "sourceMap": false,
+    "rootDir": "",
+    "outDir": "",
     "noImplicitAny": true,
-    "strictNullChecks": true
+    "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "typeRoots" : ["../node_modules/@types", "./node_modules/@types", "../jimu.d.ts"]
   },
   "exclude" : ["node_modules"]
 }

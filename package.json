@@ -1,0 +1,37 @@
+{
+  "name": "typescript_widget_templates",
+  "version": "1.0.1",
+  "description": "Getting up to speed with TypeScript and the ArcGIS API for JavaScript in just a few minutes.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "postinstall": "node promptForConfig.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EsriDE/typescript-widget-templates.git"
+  },
+  "keywords": [
+    "wab",
+    "javascript",
+    "typescript",
+    "templates",
+    "jsapi3",
+    "jsapi4",
+    "esri",
+    "arcgis"
+  ],
+  "author": "Stephan Mendler, Niklas Köhn",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/dojo": "^1.9.40",
+    "@types/arcgis-js-api": "^3.25.0",
+    "browser-sync": "^2.26.3",
+    "gulp": "^4.0.0",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-typescript": "^5.0.0-alpha.3",
+    "jsonfile": "^5.0.0",
+    "prompt": "^1.0.0",
+    "typescript": "next"
+  }
+}
