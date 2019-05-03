@@ -2,14 +2,23 @@
 # TypeScript Widget Templates
 This repository provides setup instructions and starting points to develop widgets with TypeScript for applications based on the ArcGIS API for JavaScript in different versions, with or without the ArcGIS Web AppBuilder.
 
-### Getting started
+## Getting started
+### Installation
 Checkout repository and execute ```npm install``` to install necessary node packages.
 
-#### First Build
-You should already see .JS and .JS.MAP files generated from your .TS file after running the first build:
-```
-Ctrl-Shift B
-```
+### First Build
+You should already see .JS and .JS.MAP files generated from your .TS file after running the first build: ```Ctrl-Shift B```
+
+That's it. You should be good to go. The main build task has been defined in ```./vscode/tasks.json```. I points to a Gulp task called ```watchCompileDeploy```, which 
+* builds the TypeScript files
+* copies them over into the demo applications in the ```docs``` folder 
+* starts BrowserSync to serve from the root directory
+* starts a file watcher to build and deploy on every change
+
+
+## Further information
+
+This is just background info. You don't need to perform the steps below to have a running demo application.
 
 ### Random notes
 * We recommend using [Visual Studio Code](https://code.visualstudio.com).
