@@ -15,6 +15,7 @@ That's it. You should be good to go. The main build task has been defined in ```
 * starts BrowserSync to serve from the root directory
 * starts a file watcher to build and deploy on every change
 
+---
 
 ## Further information
 
