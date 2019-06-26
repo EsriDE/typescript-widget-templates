@@ -7,10 +7,9 @@ import domStyle = require("dojo/dom-style");
 import domConstruct = require("dojo/dom-construct");
 import domClass = require("dojo/dom-class");
 import Button = require("dijit/form/Button");
-import FeatureLayer = require("esri/layers/FeatureLayer");
 
 // Add your esri imports here
-import FeatureLayer = require("esri/map");
+import FeatureLayer = require("esri/layers/FeatureLayer");
 
 // Don't forget to import the base class!
 import SelectWidget = require("./SelectWidget");
