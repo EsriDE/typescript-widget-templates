@@ -9,6 +9,8 @@ Checkout repository and execute ```npm install``` to install necessary node pack
 ### First Build
 You should already see .JS and .JS.MAP files generated from your .TS file after running the first build: ```Ctrl-Shift B```
 
+> **Attention VS Code users:** Gulp may fail to run in "bash" terminal. Please use another shell, like Powershell or Git Bash.
+
 **That's it. You're good to go.**
 
 
