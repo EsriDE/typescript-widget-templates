@@ -68,7 +68,8 @@ function serve() {
     console.log("serve docs");
     server.init({
         server: {
-        baseDir: './docs'
+            baseDir: './docs',
+            https: true
         }
     });
 }
