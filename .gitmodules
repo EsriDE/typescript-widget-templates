@@ -1,0 +1,3 @@
+[submodule "WebAppBuilder/subm_PrintPlus"]
+	path = WebAppBuilder/subm_PrintPlus
+	url = https://github.com/esride-nik/AWAB-Print-Plus-Widget.git
