@@ -8,9 +8,9 @@
                 "!./WebAppBuilder/**/*.ts",
                 "!./WebAppBuilder/**/*.md",
                 "./WebAppBuilder/subm_PrintPlus/**",
-                "!./WebAppBuilder/subm_PrintPlus/*.js.map",
-                "!./WebAppBuilder/subm_PrintPlus/*.ts",
-                "!./WebAppBuilder/subm_PrintPlus/*.md"
+                "!./WebAppBuilder/subm_PrintPlus/**/*.js.map",
+                "!./WebAppBuilder/subm_PrintPlus/**/*.ts",
+                "!./WebAppBuilder/subm_PrintPlus/**/*.md"
             ],
             "deployment": [
                 "./docs/2d/widgets"

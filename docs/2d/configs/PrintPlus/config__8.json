@@ -1,7 +1,7 @@
 {
   "serviceURL": "http://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task",
-  "defaultTitle": "Karlsruhe WebMap",
-  "defaultAuthor": "Stadt Karlsruhe",
+  "defaultTitle": "Print my WebMap",
+  "defaultAuthor": "Niklas Köhn // Esri Deutschland",
   "defaultCopyright": "",
   "defaultFormat": "PDF",
   "defaultLayout": "A4 Portrait",
