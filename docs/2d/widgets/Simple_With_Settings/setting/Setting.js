@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -30,6 +30,7 @@ define(["require", "exports", "dojo/_base/lang", "dojo/dom-construct", "./builde
             // if (this.config) {
             this._init();
             // }
+            _super.prototype.postCreate.call(this);
         };
         Setting.prototype.setConfig = function (config) {
             var e = aceEditor; // need this prothesis due to JS memory allocation

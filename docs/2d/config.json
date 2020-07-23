@@ -139,7 +139,12 @@
           "relativeTo": "map"
         },
         "placeholderIndex": 1,
-        "id": "_8"
+        "id": "_8",
+        "name": "PrintPlus",
+        "version": "1.1.6",
+        "closeable": true,
+        "uri": "widgets/PrintPlus/Widget",
+        "config": "configs/PrintPlus/config__8.json"
       },
       {
         "position": {
