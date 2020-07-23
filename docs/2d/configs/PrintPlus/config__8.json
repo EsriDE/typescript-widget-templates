@@ -1,8 +1,8 @@
 {
   "serviceURL": "http://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task",
-  "defaultTitle": "Print my WebMap",
-  "defaultAuthor": "Niklas Köhn // Esri Deutschland",
-  "defaultCopyright": "",
+  "defaultTitle": "PrintPlus WebMap",
+  "defaultAuthor": "Niklas Köhn",
+  "defaultCopyright": "Esri Deutschland",
   "defaultFormat": "PDF",
   "defaultLayout": "A4 Portrait",
   "defaultDpi": 96,

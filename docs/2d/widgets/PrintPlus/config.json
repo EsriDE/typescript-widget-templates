@@ -1,10 +1,10 @@
 {
-  "serviceURL": "//ags1.hamiltoncounty.in.gov/arcgis/rest/services/HamCoUtilities/PrintingTools/GPServer/Export Web Map Task",
-  "defaultTitle": "ArcGIS WebMap",
+  "serviceURL": "http://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task",
+  "defaultTitle": "PrintPlus WebMap",
   "defaultAuthor": "ArcGIS WebApp Builder",
   "defaultCopyright": "",
   "defaultFormat": "PDF",
-  "defaultLayout": "Letter ANSI A Landscape",
+  "defaultLayout": "A4 Portrait",
   "defaultDpi": 96,
   "noTitleBlockPrefix": "No TB ",
   "layoutParams": {

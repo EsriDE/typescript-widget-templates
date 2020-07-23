@@ -42,7 +42,7 @@ define({
     unitsCentimeters: "Centimeters",  //lcs
     mapOnScreen: "Map on screen",  //lcs
     printedMap: "Printed Map",  //lcs
-    showLayout: "Show&nbsp;Layout",  //lcs
+    showLayout: "Show Layout",  //lcs
     layoutInstruction: "Pan map inside layout to adjust the print area",  //lcs
     max: "Max",  //lcs
     min: "Min",  //lcs
