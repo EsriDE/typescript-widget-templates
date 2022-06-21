@@ -23,13 +23,13 @@
   "author": "Stephan Mendler, Niklas Köhn",
   "license": "UNLICENSED",
   "devDependencies": {
-    "@types/arcgis-js-api": "^3.30.0",
-    "@types/dojo": "^1.9.42",
-    "browser-sync": "^2.26.10",
+    "@types/arcgis-js-api": "^3.40.0",
+    "@types/dojo": "^1.9.43",
+    "browser-sync": "^2.27.10",
     "gulp": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^5.0.1",
     "jsonfile": "^5.0.0",
-    "typescript": "^3.8.0-dev.20191125"
+    "typescript": "^4.7.4"
   }
 }
