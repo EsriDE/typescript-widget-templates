@@ -4,3 +4,4 @@
 **/Setting.js
 **/*.js.map
 !/docs/**/*
+package-lock.json
