@@ -2,17 +2,24 @@
 # TypeScript Widget Templates
 This repository provides setup instructions and starting points to develop widgets with TypeScript for applications based on the ArcGIS API for JavaScript in different versions, with or without the ArcGIS Web AppBuilder.
 
+<b>Please note</b><br/>
+This repository was used for developer workshops with Web AppBuilder for ArcGIS and is not anymore actively maintained. From time to time, we might update NPM packages. The Gulp tasks and config (previously used to copy the widgets into the "stemapp" and configured apps after build) are outdated, but we've added simple "build" and "watch" npm scripts to be able to compile the widgets.
+
 ## Getting started
 ### Installation
 Checkout repository and execute ```npm install``` to install necessary node packages.
 
+To compile, type ```npm run watch```.
+
+
 ### First Build
+<s>
 You should already see .JS and .JS.MAP files generated from your .TS file after running the first build: ```Ctrl-Shift B```
 
 > **Attention VS Code users:** Gulp may fail to run in "bash" terminal. Please set another default shell for the Gulp task to execute in.
 
 **That's it. You're good to go.**
-
+</s>
 
 ---
 
