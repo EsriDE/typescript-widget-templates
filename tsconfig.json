@@ -5,10 +5,11 @@
     "sourceMap": false,
     "rootDir": "",
     "outDir": "",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "experimentalDecorators": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
+    "noEmit": false,
     "typeRoots" : ["../node_modules/@types", "./node_modules/@types", "../jimu.d.ts"]
   },
-  "exclude" : ["node_modules"]
+  "exclude" : ["node_modules", "docs/*", "jimu.d.ts"]
 }

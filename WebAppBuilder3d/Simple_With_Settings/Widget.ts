@@ -1,3 +1,4 @@
+// @ts-ignore:next-line
 import BaseWidget = require("jimu/BaseWidget");
 import lang = require("dojo/_base/lang");
 

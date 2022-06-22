@@ -1,0 +1,18 @@
+{
+    "name": "TranslatableOutput",
+    "2D": true,
+    "platform": "HTML",
+    "version": "0.1",
+    "wabVersion": "2.24",
+    "author": "Niklas Köhn, Esri Deutschland GmbH",
+    "description": "Just print translatable text.",
+    "copyright": "Esri Deutschland GmbH 2022",
+    "license": "",
+    "properties": {
+        "supportMultiInstance": false,
+        "hasSettingPage": false,
+        "hasSettingUIFile": false,
+        "hasSettingLocale": false,
+        "hasSettingStyle": false
+    }
+}

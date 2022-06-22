@@ -1,3 +1,4 @@
+// @ts-ignore:next-line
 import BaseWidget = require("jimu/BaseWidget");
 import lang = require("dojo/_base/lang");
 
@@ -13,7 +14,7 @@ class Widget extends BaseWidget {
 
   postCreate() {
     super.postCreate();
-    let divs = Object.keys(this.config).map((key) => `<div>${key} with value: ${this.config[key]}</div>`);
+    let divs = Object.keys((this as BaseWidget).config).map((key) => `<div>${key} with value: ${(this as BaseWidget).config[key]}</div>`);
     this.subnode.innerHTML = divs.join('');
   }
 

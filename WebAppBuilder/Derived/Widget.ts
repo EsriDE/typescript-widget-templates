@@ -57,19 +57,19 @@ class Widget extends SelectWidget {
 
   private postCreate() {
     super.postCreate();
-    var btnContainer = domConstruct.create("div", {}, this.layerListNode, "last");
+    var btnContainer = domConstruct.create("div", {}, (this as SelectWidget).layerListNode, "last");
     var allSelectedFeaturesBtn = new Button({
       label: "Log all selected features",
       style:"position: absolute; top: 41px;",
       onClick: (evt: any) => {
-        console.log(this.manifest.name + ' You clicked send! | layerItems:', this.layerItems, evt);  
-        let allSelectedFeatures = this.layerItems.map((layerItem: FeatureLayer) => {
-          return layerItem.featureLayer.getSelectedFeatures();
+        console.log(this.manifest.name + ' You clicked send! | layerItems:', (this as SelectWidget).layerItems, evt);  
+        let allSelectedFeatures = (this as SelectWidget).layerItems.map((layerItem: FeatureLayer) => {
+          return layerItem.getSelectedFeatures();
         });
         console.log("allSelectedFeatures: " , allSelectedFeatures);
       }
     }, btnContainer).startup();
-    console.log(this.manifest.name + ' onpostCreate | layerItems:', this.layerItems);    
+    console.log(this.manifest.name + ' onpostCreate | layerItems:', (this as SelectWidget).layerItems);    
   }
 
   private onOpen() {

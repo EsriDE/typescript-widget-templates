@@ -4,18 +4,17 @@ import lang = require("dojo/_base/lang");
 
 class Widget extends BaseWidget {
 
-  baseClass = "Simple_With_Settings";
-  config: any;
+  baseClass = "TranslatableOutput";
   private subnode: HTMLElement;
 
   constructor(args?: Array<any>) {
-    super(lang.mixin({baseClass: "Simple_With_Settings"}, args));
+    super(lang.mixin({baseClass: "TranslatableOutput"}, args));
     console.log(`Constructor of ${this.baseClass}`);    
   }
 
   postCreate() {
     super.postCreate();
-    let divs = Object.keys(this.config).map((key) => `<div>${key} with value: ${this.config[key]}</div>`);
+    let divs = Object.keys(lang).map((key) => `<div>${key} with value: ${lang[key]}</div>`);
     this.subnode.innerHTML = divs.join('');
   }
 
@@ -26,7 +25,7 @@ class Widget extends BaseWidget {
 
   onOpen() {
     super.onOpen();
-    console.log(`OnOpen of ${this.baseClass}`);    
+    console.log(`OnOpen of ${this.baseClass}`);   
   }
 
   onClose(){
@@ -36,7 +35,7 @@ class Widget extends BaseWidget {
 
   onMinimize(){
     super.onMinimize();
-    console.log(`OnMinimize of ${this.baseClass}`);    
+    console.log(`OnMinimize of ${this.baseClass}`);
   }
 
   onMaximize(){

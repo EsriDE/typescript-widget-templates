@@ -1,6 +1,7 @@
 import Map = require("esri/map");
 import lang = require("dojo/_base/lang");
 import domConstruct = require("dojo/dom-construct");
+// @ts-ignore:next-line
 import aceEditor = require("./builder/libs/ace/ace.js");
 import OrigSetting = require("./OrigSetting");
 
@@ -44,7 +45,7 @@ class Setting extends OrigSetting {
   setConfig(config: any) {
     let e = aceEditor; // need this prothesis due to JS memory allocation
     console.debug("ACE Editor", e);
-    this.editor = window.ace.edit("queries");
+    this.editor = (window as any).ace.edit("queries");
     this.editor.session.setMode("ace/mode/json");
     this.editor.setValue(JSON.stringify(config, null, "\t"));
   }

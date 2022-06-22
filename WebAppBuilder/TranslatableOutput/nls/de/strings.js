@@ -1,0 +1,25 @@
+﻿define({
+  root: ({
+    "_widgetLabel": "TranslatableOutput",
+    "label1": "Film",
+    "label2": "Wohltätigkeit",
+    "label3": "Geburtstag",
+    "label4": "Eigentum",
+    "label5": "Serie",
+    "label6": "Brust",
+    "label7": "verlust",
+    "label8": "Mädchen",
+    "label9": "auswahl",
+    "label10": "Nacht",
+    "label11": "fremd",
+    "label12": "mode",
+    "label13": "Supermarkt",
+    "label14": "Ohr",
+    "label15": "Blut",
+    "label16": "märchen",
+    "label17": "revolution",
+    "label18": "Nachrichten",
+    "label19": "Kritik",
+    "label20": "Temperatur",
+  })
+});
