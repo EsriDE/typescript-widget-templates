@@ -14,8 +14,9 @@ class Widget extends BaseWidget {
 
   postCreate() {
     super.postCreate();
-    let divs = Object.keys(lang).map((key) => `<div>${key} with value: ${lang[key]}</div>`);
-    this.subnode.innerHTML = divs.join('');
+    // const divs = Object.keys((this as any).nls.__proto__).map((key) => `<div>${key} with value: ${(this as any).nls[key]}</div>`).join('');
+    const divs = `<div>${(this as any).nls['label16']}</div>`
+    this.subnode.innerHTML = divs;
   }
 
   startup() {

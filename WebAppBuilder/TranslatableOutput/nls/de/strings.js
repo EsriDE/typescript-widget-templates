@@ -1,5 +1,4 @@
 ﻿define({
-  root: ({
     "_widgetLabel": "TranslatableOutput",
     "label1": "Film",
     "label2": "Wohltätigkeit",
@@ -21,5 +20,4 @@
     "label18": "Nachrichten",
     "label19": "Kritik",
     "label20": "Temperatur",
-  })
 });

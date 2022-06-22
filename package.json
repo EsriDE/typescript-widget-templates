@@ -5,6 +5,7 @@
   "main": "gulpfile.js",
   "scripts": {
     "build": "tsc --build",
+    "watch": "tsc --build -w",
     "clean": "tsc --build --clean"
   },
   "repository": {
