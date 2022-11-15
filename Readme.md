@@ -16,6 +16,9 @@ To compile, type ```npm run watch```.
 
 This refers to the Gulp task. Our implementation is not compatible with current versions of Gulp, and we probably won't bother to update because this repo is no longer in use for customer workshops.
 
+It used to cover the deployment issues when you want to keep your code seperate in a repository:
+<img src="assets/WAB_Deployment_eng.png">
+
 <s>
 You should already see .JS and .JS.MAP files generated from your .TS file after running the first build: ```Ctrl-Shift B```
 
