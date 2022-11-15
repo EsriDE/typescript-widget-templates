@@ -11,13 +11,33 @@ Checkout repository and execute ```npm install``` to install necessary node pack
 
 To compile, type ```npm run watch```.
 
-
-### First Build
-
-This refers to the Gulp task. Our implementation is not compatible with current versions of Gulp, and we probably won't bother to update because this repo is no longer in use for customer workshops.
-
-It used to cover the deployment issues when you want to keep your code seperate in a repository:
+### Widget deployment
+Keeping your code in a separate folder an in it's own repository is quite a challenge with WAB, because we usually want to keep our sourcecode in repository. The WAB Dev Edition copies the original source code from the ``/client/widgets`` folder into your demo app folder when configuring it. At the same time, we don't wanna end up checking in the WAB jimu code. While you could solve this by checking out your code to your demo app and adding the to ``.gitignore``, you're gonna face another problem when trying to integrate several projects into one local instance of the WAB Dev Edition. we have to cover these issues:
 <img src="assets/WAB_Deployment_eng.png">
+
+We used to 
+* create dynamic links to the source code folder or 
+* create a copy job with Gulp that runs after each build. 
+
+Our implementation is not compatible with current versions of Gulp, and we probably won't bother to update because this repo is no longer in use for customer workshops. But there's a 3rd way:
+* We can solve these issues by using the npm package ``ncp`` and define come copy scripts in our ``package.json``:
+
+```
+  "scripts": {
+    "start:<user>": "tsc-watch --onCompilationComplete \"npm run copy:<user>\"",
+    "copy:<user>": "npm run ncp:stemapp<user> && npm run ncp:testapp<user>",
+    "ncp:stemapp<user>": "ncp <widgetName> <WAB path>/client/stemapp/widgets/<widgetName>",
+    "ncp:testapp<user>": "ncp <widgetName> <WAB path>/server/apps/<appId>/widgets/<widgetName>",
+    ...
+  }
+```
+
+Please note that the <user> part is totally optional. We've been setting up these scripts for several developers working on the same project to cover their respective local paths.
+
+
+### First Build and Gulp task
+
+This is about the deprecated Gulp part.
 
 <s>
 You should already see .JS and .JS.MAP files generated from your .TS file after running the first build: ```Ctrl-Shift B```
